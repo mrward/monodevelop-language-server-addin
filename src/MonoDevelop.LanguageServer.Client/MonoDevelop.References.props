@@ -24,6 +24,10 @@
       <Private>False</Private>
       <HintPath>$(MDBinDir)\Microsoft.CodeAnalysis.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.CoreUtility">
+      <Private>False</Private>
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.CoreUtility.dll</HintPath>
+    </Reference>
     <Reference Include="MonoDevelop.Refactoring">
       <Private>False</Private>
       <HintPath>$(MDBinDir)\..\AddIns\MonoDevelop.Refactoring\MonoDevelop.Refactoring.dll</HintPath>
