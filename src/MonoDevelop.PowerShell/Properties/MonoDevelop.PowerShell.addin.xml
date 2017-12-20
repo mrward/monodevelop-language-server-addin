@@ -1,0 +1,5 @@
+<ExtensionModel>
+	<Runtime>
+		<Import assembly="MonoDevelop.PowerShell.LanguageServer.Client.dll" />
+	</Runtime>
+</ExtensionModel>
