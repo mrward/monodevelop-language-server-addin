@@ -32,15 +32,18 @@ namespace Microsoft.VisualStudio.Threading
 	public static class TplExtensions
 	{
 		/// <summary>
-		/// Code is incorrect. It should execute each handler fully before the next
-		/// in the list is executed.
+		/// Each handler is executed before the next handler in the list is executed.
+		/// Code is still not completely correct - should execute all handlers even if they
+		/// throw an exception.
 		/// 
 		/// https://docs.microsoft.com/en-us/dotnet/api/microsoft.visualstudio.threading.tplextensions.invokeasync
 		/// </summary>
-		public static Task InvokeAsync<TEventArgs> (this AsyncEventHandler<TEventArgs> handlers, object sender, TEventArgs e)
+		public static async Task InvokeAsync<TEventArgs> (this AsyncEventHandler<TEventArgs> handlers, object sender, TEventArgs e)
 			where TEventArgs : EventArgs
 		{
-			return handlers (sender, e);
+			foreach (AsyncEventHandler<TEventArgs> handler in handlers.GetInvocationList ()) {
+				await handler (sender, e);
+			}
 		}
 	}
 }
