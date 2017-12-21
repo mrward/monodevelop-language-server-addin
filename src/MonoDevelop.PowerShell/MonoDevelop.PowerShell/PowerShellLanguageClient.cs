@@ -61,9 +61,9 @@ namespace MonoDevelop.PowerShell
 
 		public event AsyncEventHandler<EventArgs> StartAsync;
 
-		#pragma warning disable 67
+		#pragma warning disable CS0067 // The event is never used.
 		public event AsyncEventHandler<EventArgs> StopAsync;
-		#pragma warning restore 67
+		#pragma warning restore CS0067
 
 		public async Task<Connection> ActivateAsync (CancellationToken token)
 		{

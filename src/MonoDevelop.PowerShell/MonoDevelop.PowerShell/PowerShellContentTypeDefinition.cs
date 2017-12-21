@@ -35,7 +35,7 @@ using Microsoft.VisualStudio.Utilities;
 
 namespace MonoDevelop.PowerShell
 {
-	#pragma warning disable 649
+	#pragma warning disable CS0649 // Field is never assigned to.
 
 	class PowerShellContentTypeDefinition
 	{
@@ -50,5 +50,5 @@ namespace MonoDevelop.PowerShell
 		internal static FileExtensionToContentTypeDefinition fileExtensionDefinition;
 	}
 
-	#pragma warning restore 649
+	#pragma warning restore CS0649
 }
