@@ -39,9 +39,9 @@
     <Compile Include="Microsoft.VisualStudio.LanguageServer.Client\Connection.cs" />
     <Compile Include="Microsoft.VisualStudio.Threading\AsyncEventHandler.cs" />
     <Compile Include="Microsoft.VisualStudio.Threading\TplExtensions.cs" />
-    <Compile Include="MonoDevelop.LanguageServer.Client\LanguageServerTextEditorExtension.cs" />
+    <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientTextEditorExtension.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientProvider.cs" />
-    <Compile Include="MonoDevelop.LanguageServer.Client\LanguageServerServices.cs" />
+    <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientServices.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\IContentTypeExtensions.cs" />
   </ItemGroup>
   <ItemGroup>

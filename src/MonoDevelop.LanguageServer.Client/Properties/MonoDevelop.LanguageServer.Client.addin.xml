@@ -10,6 +10,6 @@
 	<Extension path="/MonoDevelop/Ide/TextEditorExtensions">
 		<Class
 			id="LanguageServer.Client.TextEditorExtension"
-			class="MonoDevelop.LanguageServer.Client.LanguageServerTextEditorExtension" />
+			class="MonoDevelop.LanguageServer.Client.LanguageClientTextEditorExtension" />
 	</Extension>
 </ExtensionModel>

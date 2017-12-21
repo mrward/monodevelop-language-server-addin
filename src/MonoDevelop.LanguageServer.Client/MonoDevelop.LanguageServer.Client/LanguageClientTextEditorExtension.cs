@@ -1,5 +1,5 @@
 ﻿//
-// LanguageServerServices.cs
+// LanguageServerTextEditorExtension.cs
 //
 // Author:
 //       Matt Ward <matt.ward@xamarin.com>
@@ -24,39 +24,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
-using MonoDevelop.Core;
-using MonoDevelop.Ide.Composition;
+using MonoDevelop.Ide.Editor;
+using MonoDevelop.Ide.Editor.Extension;
 
 namespace MonoDevelop.LanguageServer.Client
 {
-	static class LanguageServerServices
+	class LanguageClientTextEditorExtension : CompletionTextEditorExtension
 	{
-		static LanguageClientProvider provider;
-
-		static void Initialize ()
+		public override bool IsValidInContext (DocumentContext context)
 		{
-			provider = CompositionManager.GetExportedValue<LanguageClientProvider> ();
-			provider.Initialize ();
-		}
-
-		public static LanguageClientProvider ClientProvider {
-			get {
-				EnsureInitialized ();
-				return provider;
-			}
-		}
-
-		static void EnsureInitialized ()
-		{
-			if (provider != null)
-				return;
-
-			try {
-				Initialize ();
-			} catch (Exception ex) {
-				LoggingService.LogError ("Unable to initialize LanguageServerServices.", ex);
-			}
+			return LanguageClientServices.ClientProvider.HasLanguageClient (context.Name);
 		}
 	}
 }
