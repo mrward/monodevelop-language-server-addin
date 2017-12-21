@@ -2,4 +2,14 @@
 	<Runtime>
 		<Import assembly="MonoDevelop.LanguageServer.Client.dll" />
 	</Runtime>
+
+	<Extension path="/MonoDevelop/Ide/Composition">
+		<Assembly file="MonoDevelop.LanguageServer.Client.dll" />
+	</Extension>
+
+	<Extension path="/MonoDevelop/Ide/TextEditorExtensions">
+		<Class
+			id="LanguageServer.Client.TextEditorExtension"
+			class="MonoDevelop.LanguageServer.Client.LanguageServerTextEditorExtension" />
+	</Extension>
 </ExtensionModel>

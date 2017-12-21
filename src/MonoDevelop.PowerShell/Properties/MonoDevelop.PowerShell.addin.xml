@@ -2,4 +2,8 @@
 	<Runtime>
 		<Import assembly="MonoDevelop.PowerShell.LanguageServer.Client.dll" />
 	</Runtime>
+
+	<Extension path="/MonoDevelop/Ide/Composition">
+		<Assembly file="MonoDevelop.PowerShell.LanguageServer.Client.dll" />
+	</Extension>
 </ExtensionModel>
