@@ -73,12 +73,22 @@ namespace MonoDevelop.LanguageServer.Client
 
 		public bool HasLanguageClient (FilePath fileName)
 		{
+			ILanguageClient client = GetLanguageClient (fileName);
+			return client != null;
+		}
+
+		public ILanguageClient GetLanguageClient (FilePath fileName)
+		{
 			IContentType contentType = fileExtensionRegistry.GetContentTypeForExtension (fileName.Extension);
 			if (contentType.IsUnknown ()) {
-				return false;
+				return null;
 			}
 
-			return contentTypeMappings.ContainsKey (contentType.TypeName);
+			if (contentTypeMappings.TryGetValue (contentType.TypeName, out ILanguageClient client)) {
+				return client;
+			}
+
+			return null;
 		}
 	}
 }

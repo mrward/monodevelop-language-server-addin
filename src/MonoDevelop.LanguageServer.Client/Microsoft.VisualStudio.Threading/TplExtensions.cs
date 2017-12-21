@@ -29,6 +29,8 @@ using System.Threading.Tasks;
 
 namespace Microsoft.VisualStudio.Threading
 {
+	#pragma warning disable CS0436 // Type conflicts with imported type
+
 	public static class TplExtensions
 	{
 		/// <summary>
@@ -46,4 +48,6 @@ namespace Microsoft.VisualStudio.Threading
 			}
 		}
 	}
+
+	#pragma warning restore CS0436 // Type conflicts with imported type
 }

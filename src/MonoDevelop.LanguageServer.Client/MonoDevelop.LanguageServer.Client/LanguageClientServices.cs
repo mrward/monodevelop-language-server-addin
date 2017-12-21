@@ -33,18 +33,14 @@ namespace MonoDevelop.LanguageServer.Client
 	static class LanguageClientServices
 	{
 		static LanguageClientProvider provider;
+		static LanguageClientWorkspace workspace;
 
 		static void Initialize ()
 		{
 			provider = CompositionManager.GetExportedValue<LanguageClientProvider> ();
 			provider.Initialize ();
-		}
 
-		public static LanguageClientProvider ClientProvider {
-			get {
-				EnsureInitialized ();
-				return provider;
-			}
+			workspace = new LanguageClientWorkspace ();
 		}
 
 		static void EnsureInitialized ()
@@ -56,6 +52,20 @@ namespace MonoDevelop.LanguageServer.Client
 				Initialize ();
 			} catch (Exception ex) {
 				LoggingService.LogError ("Unable to initialize LanguageServerServices.", ex);
+			}
+		}
+
+		public static LanguageClientProvider ClientProvider {
+			get {
+				EnsureInitialized ();
+				return provider;
+			}
+		}
+
+		public static LanguageClientWorkspace Workspace {
+			get {
+				EnsureInitialized ();
+				return workspace;
 			}
 		}
 	}

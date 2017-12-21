@@ -34,8 +34,10 @@ namespace Microsoft.VisualStudio.LanguageServer.Client
 {
 	public interface ILanguageClient
 	{
+		#pragma warning disable CS0436 // Type conflicts with imported type
 		event AsyncEventHandler<EventArgs> StartAsync;
 		event AsyncEventHandler<EventArgs> StopAsync;
+		#pragma warning restore CS0436 // Type conflicts with imported type
 
 		IEnumerable<string> ConfigurationSections { get; }
 		IEnumerable<string> FilesToWatch { get; }

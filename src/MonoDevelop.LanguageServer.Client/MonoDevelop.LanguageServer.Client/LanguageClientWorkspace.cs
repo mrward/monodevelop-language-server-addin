@@ -1,5 +1,5 @@
 ﻿//
-// LanguageServerTextEditorExtension.cs
+// LanguageClientWorkspace.cs
 //
 // Author:
 //       Matt Ward <matt.ward@xamarin.com>
@@ -24,32 +24,43 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using MonoDevelop.Ide.Editor;
-using MonoDevelop.Ide.Editor.Extension;
+using MonoDevelop.Core;
+using Microsoft.VisualStudio.LanguageServer.Client;
+using System.Collections.Generic;
+using System;
 
 namespace MonoDevelop.LanguageServer.Client
 {
-	class LanguageClientTextEditorExtension : CompletionTextEditorExtension
+	class LanguageClientWorkspace
 	{
-		LanguageClientSession session;
+		Dictionary<string, LanguageClientSession> sessions =
+			new Dictionary<string, LanguageClientSession> (StringComparer.OrdinalIgnoreCase);
 
-		public override bool IsValidInContext (DocumentContext context)
+		public bool IsSupported (FilePath fileName)
 		{
-			return LanguageClientServices.Workspace.IsSupported (context.Name);
+			return LanguageClientServices.ClientProvider.HasLanguageClient (fileName);
 		}
 
-		protected override void Initialize ()
+		public LanguageClientSession GetSession (FilePath fileName)
 		{
-			session = LanguageClientServices.Workspace.GetSession (DocumentContext.Name);
+			Runtime.AssertMainThread ();
 
-			base.Initialize ();
+			if (!sessions.TryGetValue (fileName.Extension, out LanguageClientSession session)) {
+				session = CreateSession (fileName);
+				sessions [fileName.Extension] = session;
+			}
+
+			return session;
 		}
 
-		public override void Dispose ()
+		LanguageClientSession CreateSession (FilePath fileName)
 		{
-			session = null;
+			ILanguageClient client = LanguageClientServices.ClientProvider.GetLanguageClient (fileName);
 
-			base.Dispose ();
+			var session = new LanguageClientSession (client);
+			session.Start ();
+
+			return session;
 		}
 	}
 }
