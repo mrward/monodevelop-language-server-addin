@@ -86,7 +86,7 @@ namespace MonoDevelop.PowerShell
 
 			var info = new ProcessStartInfo {
 				FileName = @"/usr/local/bin/pwsh",
-				Arguments = $@"-NoProfile -NonInteractive -ExecutionPolicy Bypass -Command "" & '{script}' -EditorServicesVersion '1.5.1' -HostName 'Visual Studio Code Host' -HostProfileId 'Microsoft.VSCode' -HostVersion '1.5.1' -AdditionalModules @('PowerShellEditorServices.VSCode') -BundledModulesPath '{extensionDirectory}/modules' -EnableConsoleRepl -LogLevel 'verbose' -LogPath '{extensionDirectory}/logs/VSEditorServices.log' -SessionDetailsPath '{extensionDirectory}/sessions/PSES-VS' -FeatureFlags @()""",
+				Arguments = $@"-NoProfile -NonInteractive -ExecutionPolicy Bypass -Command "" & '{script}' -EditorServicesVersion '1.5.1' -HostName 'Visual Studio Code Host' -HostProfileId 'Microsoft.VSCode' -HostVersion '1.5.1' -AdditionalModules @('PowerShellEditorServices.VSCode') -BundledModulesPath '{extensionDirectory}/modules' -EnableConsoleRepl -LogLevel 'verbose' -LogPath '{extensionDirectory}/logs/VSEditorServices.log' -SessionDetailsPath '{extensionDirectory}/logs/PSES-VS' -FeatureFlags @()""",
 				RedirectStandardInput = true,
 				RedirectStandardOutput = true,
 				UseShellExecute = false,
@@ -100,7 +100,7 @@ namespace MonoDevelop.PowerShell
 				//Wait for startup....
 				Thread.Sleep (5000);
 
-				var sessionInfo = File.ReadAllText ($@"{extensionDirectory}/sessions/PSES-VS");
+				var sessionInfo = File.ReadAllText ($@"{extensionDirectory}/logs/PSES-VS");
 
 				var sessionInfoJObject = JsonConvert.DeserializeObject<JObject> (sessionInfo);
 
