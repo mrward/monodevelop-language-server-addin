@@ -41,6 +41,7 @@ namespace MonoDevelop.LanguageServer.Client
 			provider.Initialize ();
 
 			workspace = new LanguageClientWorkspace ();
+			workspace.Initialize ();
 		}
 
 		static void EnsureInitialized ()

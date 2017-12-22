@@ -39,6 +39,21 @@ namespace MonoDevelop.LanguageServer.Client
 		Dictionary<string, LanguageClientSession> sessions =
 			new Dictionary<string, LanguageClientSession> (StringComparer.OrdinalIgnoreCase);
 
+		public void Initialize ()
+		{
+			IdeApp.Workbench.DocumentOpened += WorkbenchDocumentOpened;
+		}
+
+		public void Dispose ()
+		{
+			IdeApp.Workbench.DocumentOpened -= WorkbenchDocumentOpened;
+		}
+
+		public bool IsSupported (Document document)
+		{
+			return IsSupported (document.FileName);
+		}
+
 		public bool IsSupported (FilePath fileName)
 		{
 			return LanguageClientServices.ClientProvider.HasLanguageClient (fileName);
@@ -94,6 +109,23 @@ namespace MonoDevelop.LanguageServer.Client
 		IEnumerable<Document> GetOpenDocumentsForSession (LanguageClientSession session)
 		{
 			return IdeApp.Workbench.Documents.Where (document => session.IsSupportedDocument (document));
+		}
+
+		void WorkbenchDocumentOpened (object sender, DocumentEventArgs e)
+		{
+			if (IsSupported (e.Document)) {
+				LanguageClientDocumentOpened (e.Document);
+			}
+		}
+
+		void LanguageClientDocumentOpened (Document document)
+		{
+			try {
+				LanguageClientSession currentSession = GetSession (document.FileName);
+				currentSession.OpenDocument (document);
+			} catch (Exception ex) {
+				LoggingService.LogError ("Error opening document.", ex);
+			}
 		}
 	}
 }
