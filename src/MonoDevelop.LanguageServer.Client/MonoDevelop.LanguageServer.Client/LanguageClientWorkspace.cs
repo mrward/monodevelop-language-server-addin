@@ -24,10 +24,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using MonoDevelop.Core;
-using Microsoft.VisualStudio.LanguageServer.Client;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.VisualStudio.LanguageServer.Client;
+using MonoDevelop.Core;
+using MonoDevelop.Ide;
+using MonoDevelop.Ide.Gui;
 
 namespace MonoDevelop.LanguageServer.Client
 {
@@ -57,10 +60,40 @@ namespace MonoDevelop.LanguageServer.Client
 		{
 			ILanguageClient client = LanguageClientServices.ClientProvider.GetLanguageClient (fileName);
 
-			var session = new LanguageClientSession (client);
+			var session = new LanguageClientSession (client, fileName.Extension);
+			session.Started += SessionStarted;
 			session.Start ();
 
 			return session;
+		}
+
+		void SessionStarted (object sender, EventArgs e)
+		{
+			var session = (LanguageClientSession)sender;
+
+			if (Runtime.IsMainThread) {
+				AddOpenDocumentsToSession (session);
+			} else {
+				Runtime.RunInMainThread (() => {
+					AddOpenDocumentsToSession (session);
+				}).Wait ();
+			}
+		}
+
+		void AddOpenDocumentsToSession (LanguageClientSession session)
+		{
+			try {
+				foreach (Document document in GetOpenDocumentsForSession (session)) {
+					session.OpenDocument (document);
+				}
+			} catch (Exception ex) {
+				LoggingService.LogError ("Error processing after session started.", ex);
+			}
+		}
+
+		IEnumerable<Document> GetOpenDocumentsForSession (LanguageClientSession session)
+		{
+			return IdeApp.Workbench.Documents.Where (document => session.IsSupportedDocument (document));
 		}
 	}
 }

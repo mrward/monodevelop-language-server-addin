@@ -29,9 +29,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.LanguageServer.Client;
 using Microsoft.VisualStudio.LanguageServer.Protocol;
+using MonoDevelop.Core;
+using MonoDevelop.Ide.Gui;
 using Newtonsoft.Json;
 using StreamJsonRpc;
-using MonoDevelop.Core;
 
 namespace MonoDevelop.LanguageServer.Client
 {
@@ -39,16 +40,21 @@ namespace MonoDevelop.LanguageServer.Client
 	{
 		ILanguageClient client;
 		JsonRpc jsonRpc;
+		string fileExtension;
 		CancellationToken cancellationToken = CancellationToken.None;
 
-		public LanguageClientSession (ILanguageClient client)
+		public LanguageClientSession (ILanguageClient client, string fileExtension)
 		{
 			this.client = client;
+			this.fileExtension = fileExtension;
+
 			client.StartAsync += OnStartAsync;
 		}
 
 		public ServerCapabilities ServerCapabilities { get; private set; }
 		public bool IsStarted { get; private set; }
+
+		public event EventHandler Started;
 
 		/// <summary>
 		/// ILanguageClient.StartAsync += StartAsync;
@@ -78,6 +84,7 @@ namespace MonoDevelop.LanguageServer.Client
 			try {
 				await OnStartAsync ();
 				IsStarted = true;
+				Started?.Invoke (this, EventArgs.Empty);
 			} catch (Exception ex) {
 				LoggingService.LogError ("LanguageClientSession start error.", ex);
 			}
@@ -99,6 +106,33 @@ namespace MonoDevelop.LanguageServer.Client
 		public void Dispose ()
 		{
 			Stop ();
+		}
+
+		public bool IsSupportedDocument (Document document)
+		{
+			return document.FileName.HasExtension (fileExtension);
+		}
+
+		public void OpenDocument (Document document)
+		{
+			Runtime.AssertMainThread ();
+
+			if (IsStarted) {
+				SendOpenDocumentMessage (new DocumentToOpen (document))
+					.Ignore ();
+			}
+		}
+
+		Task SendOpenDocumentMessage (DocumentToOpen document)
+		{
+			var message = new DidOpenTextDocumentParams {
+				TextDocument = new TextDocumentItem {
+					Uri = document.FileName,
+					Text = document.Text
+				}
+			};
+
+			return jsonRpc.NotifyWithParameterObjectAsync ("textDocument/didOpen", message);
 		}
 	}
 }
