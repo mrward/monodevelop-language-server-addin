@@ -2,9 +2,9 @@
 // AssemblyInfo.cs
 //
 // Author:
-//       Matt Ward <matt.ward@xamarin.com>
+//       Matt Ward <matt.ward@microsoft.com>
 //
-// Copyright (c) 2017 Xamarin Inc. (http://xamarin.com)
+// Copyright (c) 2017 Microsoft
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyConfiguration ("")]
 [assembly: AssemblyCompany ("")]
 [assembly: AssemblyProduct ("")]
-[assembly: AssemblyCopyright ("Xamarin Inc. (http://xamarin.com)")]
+[assembly: AssemblyCopyright ("Microsoft")]
 [assembly: AssemblyTrademark ("")]
 [assembly: AssemblyCulture ("")]
 

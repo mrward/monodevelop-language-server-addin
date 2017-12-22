@@ -3,10 +3,10 @@
 //
 // Author:
 //       Adam Driscoll
-//       Matt Ward <matt.ward@xamarin.com>
+//       Matt Ward <matt.ward@microsoft.com>
 //
 // Copyright (c) 2017 Adam Driscoll
-// Copyright (c) 2017 Xamarin Inc. (http://xamarin.com)
+// Copyright (c) 2017 Microsoft
 //
 // Based on: PowerShellLSP/PowerShellLSP/PowerShellLanguageClient.cs
 // From: https://github.com/adamdriscoll/powershell-lsp
