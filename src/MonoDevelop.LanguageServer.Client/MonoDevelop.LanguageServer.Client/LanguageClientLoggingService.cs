@@ -1,5 +1,5 @@
 ﻿//
-// LanguageClientServices.cs
+// LanguageClientLoggingService.cs
 //
 // Author:
 //       Matt Ward <matt.ward@xamarin.com>
@@ -26,49 +26,44 @@
 
 using System;
 using MonoDevelop.Core;
-using MonoDevelop.Ide.Composition;
 
 namespace MonoDevelop.LanguageServer.Client
 {
-	static class LanguageClientServices
+	public static class LanguageClientLoggingService
 	{
-		static LanguageClientProvider provider;
-		static LanguageClientWorkspace workspace;
-
-		static void Initialize ()
+		public static void Log (string message)
 		{
-			provider = CompositionManager.GetExportedValue<LanguageClientProvider> ();
-			provider.Initialize ();
-			provider.LogClientsFound ();
-
-			workspace = new LanguageClientWorkspace ();
-			workspace.Initialize ();
+			LanguageClientOutputPad.WriteText (message);
 		}
 
-		static void EnsureInitialized ()
+		public static void Log (string format, object arg0)
 		{
-			if (provider != null)
-				return;
-
-			try {
-				Initialize ();
-			} catch (Exception ex) {
-				LanguageClientLoggingService.LogError ("Unable to initialize LanguageServerServices.", ex);
-			}
+			string message = string.Format (format, arg0);
+			Log (message);
 		}
 
-		public static LanguageClientProvider ClientProvider {
-			get {
-				EnsureInitialized ();
-				return provider;
-			}
+		public static void Log (string format, object arg0, object arg1)
+		{
+			string message = string.Format (format, arg0, arg1);
+			Log (message);
 		}
 
-		public static LanguageClientWorkspace Workspace {
-			get {
-				EnsureInitialized ();
-				return workspace;
-			}
+		public static void LogError (string message)
+		{
+			LanguageClientOutputPad.WriteError (message);
+		}
+
+		public static void LogError (string message, Exception ex)
+		{
+			LoggingService.LogError (message, ex);
+
+			LogError (message + Environment.NewLine + ex);
+		}
+
+		public static void LogError (Exception ex, string format, object arg0)
+		{
+			string message = string.Format (format, arg0);
+			LogError (message, ex);
 		}
 	}
 }

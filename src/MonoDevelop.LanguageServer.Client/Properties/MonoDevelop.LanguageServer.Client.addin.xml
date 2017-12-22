@@ -12,4 +12,15 @@
 			id="LanguageServer.Client.TextEditorExtension"
 			class="MonoDevelop.LanguageServer.Client.LanguageClientTextEditorExtension" />
 	</Extension>
+
+	<Extension path="/MonoDevelop/Ide/Pads">
+		<Pad
+			id="LanguageServer.Client.LanguageClientOutputPad"
+			defaultLayout="*"
+			defaultPlacement="Center Bottom"
+			defaultStatus="AutoHide"
+			icon="md-console"
+			class="MonoDevelop.LanguageServer.Client.LanguageClientOutputPad"
+			_label="Language Client Log" />
+	</Extension>
 </ExtensionModel>

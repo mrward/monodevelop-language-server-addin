@@ -1,5 +1,5 @@
 ﻿//
-// LanguageClientServices.cs
+// TaskExtensions.cs
 //
 // Author:
 //       Matt Ward <matt.ward@xamarin.com>
@@ -24,51 +24,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
-using MonoDevelop.Core;
-using MonoDevelop.Ide.Composition;
+using System.Threading.Tasks;
 
 namespace MonoDevelop.LanguageServer.Client
 {
-	static class LanguageClientServices
+	static class TaskExtensions
 	{
-		static LanguageClientProvider provider;
-		static LanguageClientWorkspace workspace;
-
-		static void Initialize ()
+		public static void LogFault (this Task task)
 		{
-			provider = CompositionManager.GetExportedValue<LanguageClientProvider> ();
-			provider.Initialize ();
-			provider.LogClientsFound ();
-
-			workspace = new LanguageClientWorkspace ();
-			workspace.Initialize ();
-		}
-
-		static void EnsureInitialized ()
-		{
-			if (provider != null)
-				return;
-
-			try {
-				Initialize ();
-			} catch (Exception ex) {
-				LanguageClientLoggingService.LogError ("Unable to initialize LanguageServerServices.", ex);
-			}
-		}
-
-		public static LanguageClientProvider ClientProvider {
-			get {
-				EnsureInitialized ();
-				return provider;
-			}
-		}
-
-		public static LanguageClientWorkspace Workspace {
-			get {
-				EnsureInitialized ();
-				return workspace;
-			}
+			task.ContinueWith (t => {
+				if (t.IsFaulted) {
+					LanguageClientLoggingService.LogError ("Async operation failed", t.Exception);
+				}
+			});
 		}
 	}
 }

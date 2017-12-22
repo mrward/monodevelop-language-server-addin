@@ -30,6 +30,10 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -47,6 +51,9 @@
     <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientSession.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\DocumentToOpen.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\LanguageIdentifiers.cs" />
+    <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientOutputPad.cs" />
+    <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientLoggingService.cs" />
+    <Compile Include="MonoDevelop.LanguageServer.Client\TaskExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\MonoDevelop.LanguageServer.Client.addin.xml" />

@@ -51,6 +51,10 @@ namespace MonoDevelop.LanguageServer.Client
 			client.StartAsync += OnStartAsync;
 		}
 
+		public string Id {
+			get { return fileExtension; }
+		}
+
 		public ServerCapabilities ServerCapabilities { get; private set; }
 		public bool IsStarted { get; private set; }
 
@@ -61,11 +65,12 @@ namespace MonoDevelop.LanguageServer.Client
 		/// ILanguageClient.OnLoadedAsync ();
 		/// StartAsync then calls ILanguageClient.ActivateAsync;
 		/// </summary>
-		// startup:
 		public void Start ()
 		{
+			LanguageClientLoggingService.Log ("LanguageClient[{0}]: Call OnLoadedAsync.", Id);
+
 			client.OnLoadedAsync ()
-				.Ignore ();
+				.LogFault ();
 		}
 
 		public void Stop ()
@@ -86,19 +91,28 @@ namespace MonoDevelop.LanguageServer.Client
 				IsStarted = true;
 				Started?.Invoke (this, EventArgs.Empty);
 			} catch (Exception ex) {
-				LoggingService.LogError ("LanguageClientSession start error.", ex);
+				LanguageClientLoggingService.LogError (ex, "LanguageClient[{0}]: OnStartAsync error.", Id);
 			}
 		}
 
 		async Task OnStartAsync ()
 		{
+			LanguageClientLoggingService.Log ("LanguageClient[{0}]: Call ActivateAsync.", Id);
+
 			Connection connection = await client.ActivateAsync (CancellationToken.None);
+
+			LanguageClientLoggingService.Log ("LanguageClient[{0}]: JsonRpc.StartListening.", Id);
+
 			jsonRpc = new JsonRpc (connection.Writer, connection.Reader);
 			jsonRpc.StartListening ();
+			jsonRpc.JsonSerializer.NullValueHandling = NullValueHandling.Ignore;
+
+			LanguageClientLoggingService.Log ("LanguageClient[{0}]: Sending 'initialize' message.", Id);
 
 			var message = new InitializeParams ();
-			jsonRpc.JsonSerializer.NullValueHandling = NullValueHandling.Ignore;
 			var result = await jsonRpc.InvokeWithParameterObjectAsync<InitializeResult> ("initialize", message);
+
+			LanguageClientLoggingService.Log ("LanguageClient[{0}]: Initialized.", Id);
 
 			ServerCapabilities = result.Capabilities;
 		}
@@ -119,12 +133,14 @@ namespace MonoDevelop.LanguageServer.Client
 
 			if (IsStarted) {
 				SendOpenDocumentMessage (new DocumentToOpen (document))
-					.Ignore ();
+					.LogFault ();
 			}
 		}
 
 		Task SendOpenDocumentMessage (DocumentToOpen document)
 		{
+			LanguageClientLoggingService.Log ("LanguageClient[{0}]: Sending 'textDocument/didOpen'. File: '{1}'", Id, document.FileName);
+
 			var message = new DidOpenTextDocumentParams {
 				TextDocument = new TextDocumentItem {
 					LanguageId = LanguageIdentifiers.GetLanguageIdentifier (document.FileName),
@@ -142,12 +158,14 @@ namespace MonoDevelop.LanguageServer.Client
 
 			if (IsStarted) {
 				SendCloseDocumentMessage (document.FileName)
-					.Ignore ();
+					.LogFault ();
 			}
 		}
 
 		Task SendCloseDocumentMessage (FilePath fileName)
 		{
+			LanguageClientLoggingService.Log ("LanguageClient[{0}]: Sending 'textDocument/didClose'. File: '{1}'", Id, fileName);
+
 			var message = new DidCloseTextDocumentParams {
 				TextDocument = new TextDocumentIdentifier {
 					Uri = fileName

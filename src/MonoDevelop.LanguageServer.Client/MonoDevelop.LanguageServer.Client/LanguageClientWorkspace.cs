@@ -111,7 +111,7 @@ namespace MonoDevelop.LanguageServer.Client
 					session.OpenDocument (document);
 				}
 			} catch (Exception ex) {
-				LoggingService.LogError ("Error processing after session started.", ex);
+				LanguageClientLoggingService.LogError ("Error processing after session started.", ex);
 			}
 		}
 
@@ -138,7 +138,7 @@ namespace MonoDevelop.LanguageServer.Client
 				LanguageClientSession currentSession = GetSession (document.FileName);
 				currentSession.OpenDocument (document);
 			} catch (Exception ex) {
-				LoggingService.LogError ("Error opening document.", ex);
+				LanguageClientLoggingService.LogError ("Error opening document.", ex);
 			}
 		}
 

@@ -90,5 +90,21 @@ namespace MonoDevelop.LanguageServer.Client
 
 			return null;
 		}
+
+		public void LogClientsFound ()
+		{
+			if (!clients.Any ()) {
+				LanguageClientLoggingService.Log ("No LanguageClients found.");
+			}
+
+			LanguageClientLoggingService.Log ("LanguageClients:");
+
+			foreach (KeyValuePair<string, ILanguageClient> mapping in contentTypeMappings) {
+				LanguageClientLoggingService.Log (
+					"    Name: '{0}', ContentType: '{1}'",
+					mapping.Value.Name,
+					mapping.Key);
+			}
+		}
 	}
 }
