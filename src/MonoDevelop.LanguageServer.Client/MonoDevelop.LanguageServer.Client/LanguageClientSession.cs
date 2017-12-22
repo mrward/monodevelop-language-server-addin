@@ -127,6 +127,7 @@ namespace MonoDevelop.LanguageServer.Client
 		{
 			var message = new DidOpenTextDocumentParams {
 				TextDocument = new TextDocumentItem {
+					LanguageId = LanguageIdentifiers.GetLanguageIdentifier (document.FileName),
 					Uri = document.FileName,
 					Text = document.Text
 				}

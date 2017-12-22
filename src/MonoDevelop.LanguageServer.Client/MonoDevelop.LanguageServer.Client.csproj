@@ -46,6 +46,7 @@
     <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientWorkspace.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientSession.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\DocumentToOpen.cs" />
+    <Compile Include="MonoDevelop.LanguageServer.Client\LanguageIdentifiers.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\MonoDevelop.LanguageServer.Client.addin.xml" />
