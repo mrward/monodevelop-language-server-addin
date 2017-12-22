@@ -42,11 +42,13 @@ namespace MonoDevelop.LanguageServer.Client
 		public void Initialize ()
 		{
 			IdeApp.Workbench.DocumentOpened += WorkbenchDocumentOpened;
+			IdeApp.Workbench.DocumentClosed += WorkbenchDocumentClosed;
 		}
 
 		public void Dispose ()
 		{
 			IdeApp.Workbench.DocumentOpened -= WorkbenchDocumentOpened;
+			IdeApp.Workbench.DocumentClosed -= WorkbenchDocumentClosed;
 		}
 
 		public bool IsSupported (Document document)
@@ -63,9 +65,16 @@ namespace MonoDevelop.LanguageServer.Client
 		{
 			Runtime.AssertMainThread ();
 
+			return GetSession (fileName, true);
+		}
+
+		LanguageClientSession GetSession (FilePath fileName, bool createNewSession)
+		{
 			if (!sessions.TryGetValue (fileName.Extension, out LanguageClientSession session)) {
-				session = CreateSession (fileName);
-				sessions [fileName.Extension] = session;
+				if (createNewSession) {
+					session = CreateSession (fileName);
+					sessions [fileName.Extension] = session;
+				}
 			}
 
 			return session;
@@ -111,6 +120,11 @@ namespace MonoDevelop.LanguageServer.Client
 			return IdeApp.Workbench.Documents.Where (document => session.IsSupportedDocument (document));
 		}
 
+		bool IsAnyDocumentOpenForSession (LanguageClientSession session)
+		{
+			return GetOpenDocumentsForSession (session).Any ();
+		}
+
 		void WorkbenchDocumentOpened (object sender, DocumentEventArgs e)
 		{
 			if (IsSupported (e.Document)) {
@@ -125,6 +139,22 @@ namespace MonoDevelop.LanguageServer.Client
 				currentSession.OpenDocument (document);
 			} catch (Exception ex) {
 				LoggingService.LogError ("Error opening document.", ex);
+			}
+		}
+
+		void WorkbenchDocumentClosed (object sender, DocumentEventArgs e)
+		{
+			if (IsSupported (e.Document)) {
+				LanguageClientDocumentClosed (e.Document);
+			}
+		}
+
+		void LanguageClientDocumentClosed (Document document)
+		{
+			LanguageClientSession currentSession = GetSession (document.FileName, false);
+
+			if (currentSession != null) {
+				currentSession.CloseDocument (document);
 			}
 		}
 	}

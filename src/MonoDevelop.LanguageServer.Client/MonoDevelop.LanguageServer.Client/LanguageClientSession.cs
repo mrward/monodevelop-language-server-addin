@@ -135,5 +135,26 @@ namespace MonoDevelop.LanguageServer.Client
 
 			return jsonRpc.NotifyWithParameterObjectAsync ("textDocument/didOpen", message);
 		}
+
+		public void CloseDocument (Document document)
+		{
+			Runtime.AssertMainThread ();
+
+			if (IsStarted) {
+				SendCloseDocumentMessage (document.FileName)
+					.Ignore ();
+			}
+		}
+
+		Task SendCloseDocumentMessage (FilePath fileName)
+		{
+			var message = new DidCloseTextDocumentParams {
+				TextDocument = new TextDocumentIdentifier {
+					Uri = fileName
+				}
+			};
+
+			return jsonRpc.NotifyWithParameterObjectAsync ("textDocument/didClose", message);
+		}
 	}
 }
