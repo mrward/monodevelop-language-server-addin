@@ -103,7 +103,8 @@ namespace MonoDevelop.LanguageServer.Client
 
 			LanguageClientLoggingService.Log ("LanguageClient[{0}]: JsonRpc.StartListening.", Id);
 
-			jsonRpc = new JsonRpc (connection.Writer, connection.Reader);
+			var target = new LanguageClientTarget();
+			jsonRpc = new JsonRpc (connection.Writer, connection.Reader, target);
 			jsonRpc.StartListening ();
 			jsonRpc.JsonSerializer.NullValueHandling = NullValueHandling.Ignore;
 
