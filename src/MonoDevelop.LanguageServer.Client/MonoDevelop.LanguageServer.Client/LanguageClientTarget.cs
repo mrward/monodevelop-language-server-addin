@@ -60,6 +60,20 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 		}
 
+		[JsonRpcMethod (Methods.WindowShowMessageRequest)]
+		public object OnWindowShowRequestMessage (JToken arg)
+		{
+			try {
+				Log (Methods.WindowShowMessageRequest, arg);
+
+				var message = arg.ToObject<ShowMessageRequestParams> ();
+				return LanguageClientMessageService.ShowMessage (message);
+			} catch (Exception ex) {
+				LanguageClientLoggingService.LogError ("OnWindowShowRequestMessage error.", ex);
+			}
+			return null;
+		}
+
 		void Log (string message, JToken arg)
 		{
 			LanguageClientLoggingService.Log("{0}\n{1}\n", message, arg);

@@ -24,9 +24,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System.Linq;
 using Microsoft.VisualStudio.LanguageServer.Protocol;
 using MonoDevelop.Core;
 using MonoDevelop.Ide;
+using MonoDevelop.Ide.Gui;
 
 namespace MonoDevelop.LanguageServer.Client
 {
@@ -56,6 +58,57 @@ namespace MonoDevelop.LanguageServer.Client
 					MessageService.ShowMessage (message.Message);
 					break;
 			}
+		}
+
+		public static MessageActionItem ShowMessage (ShowMessageRequestParams message)
+		{
+			MessageActionItem result = null;
+
+			Runtime.RunInMainThread (() => {
+				result = ShowMessageInternal (message);
+			}).Wait ();
+
+			return result;
+		}
+
+		static MessageActionItem ShowMessageInternal (ShowMessageRequestParams message)
+		{
+			if (message.Actions == null || !message.Actions.Any ()) {
+				ShowMessageInternal ((ShowMessageParams)message);
+				return null;
+			}
+
+			var questionMessage = new QuestionMessage (message.Message);
+
+			foreach (MessageActionItem action in message.Actions) {
+				questionMessage.Buttons.Add (new AlertButton (action.Title));
+			}
+
+			questionMessage.Icon = GetIcon (message.MessageType);
+
+			questionMessage.Buttons.Add (AlertButton.Cancel);
+			questionMessage.DefaultButton = questionMessage.Buttons.Count - 1;
+
+			AlertButton button = MessageService.AskQuestion (questionMessage);
+
+			int index = questionMessage.Buttons.IndexOf (button);
+			if (index < message.Actions.Length) {
+				return message.Actions [index];
+			}
+
+			return null;
+		}
+
+		static IconId GetIcon (MessageType messageType)
+		{
+			switch (messageType) {
+				case MessageType.Error:
+					return Stock.Error;
+				case MessageType.Warning:
+					return Stock.Warning;
+			}
+
+			return null;
 		}
 	}
 }
