@@ -55,6 +55,12 @@ namespace LanguageServer
 			server.OnTextDocumentOpened(parameter);
 		}
 
+		[JsonRpcMethod(Methods.TextDocumentDidClose)]
+		public void OnTextDocumentClosed(JToken arg)
+		{
+			Log(Methods.TextDocumentDidOpen, arg);
+		}
+
 		[JsonRpcMethod(Methods.TextDocumentDidChange)]
 		public void OnTextDocumentChanged(JToken arg)
 		{
