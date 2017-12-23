@@ -1,5 +1,5 @@
 ﻿//
-// LanguageClientTarget.cs
+// StatusBarExtensions.cs
 //
 // Author:
 //       Matt Ward <matt.ward@microsoft.com>
@@ -24,32 +24,38 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
 using Microsoft.VisualStudio.LanguageServer.Protocol;
+using MonoDevelop.Core;
 using MonoDevelop.Ide;
-using Newtonsoft.Json.Linq;
-using StreamJsonRpc;
+using MonoDevelop.Ide.Gui;
 
 namespace MonoDevelop.LanguageServer.Client
 {
-	class LanguageClientTarget
+	static class StatusBarExtensions
 	{
-		[JsonRpcMethod (Methods.WindowLogMessage)]
-		public void OnWindowLogMessage (JToken arg)
+		public static void ShowMessage (this StatusBar statusBar, LogMessageParams message)
 		{
-			try {
-				Log (Methods.WindowLogMessage, arg);
-
-				var message = arg.ToObject<LogMessageParams> ();
-				IdeApp.Workbench.StatusBar.ShowMessage (message);
-			} catch (Exception ex) {
-				LanguageClientLoggingService.LogError ("OnWindowLogMessage error.", ex);
+			if (string.IsNullOrEmpty (message.Message)) {
+				return;
 			}
+
+			Runtime.RunInMainThread (() => {
+				IconId icon = GetIcon (message);
+				statusBar.ShowMessage (icon, message.Message);
+				statusBar.SetMessageSourcePad (LanguageClientOutputPad.Pad);
+			});
 		}
 
-		void Log (string message, JToken arg)
+		static IconId GetIcon (LogMessageParams message)
 		{
-			LanguageClientLoggingService.Log("{0}\n{1}\n", message, arg);
+			switch (message.MessageType) {
+				case MessageType.Error:
+					return Stock.StatusError;
+				case MessageType.Warning:
+					return Stock.StatusWarning;
+				default:
+					return null;
+			}
 		}
 	}
 }

@@ -25,10 +25,12 @@
 // THE SOFTWARE.
 
 using System;
+using System.Linq;
 using Gtk;
 using MonoDevelop.Components;
 using MonoDevelop.Components.Docking;
 using MonoDevelop.Core;
+using MonoDevelop.Ide;
 using MonoDevelop.Ide.Gui;
 using MonoDevelop.Ide.Gui.Components;
 
@@ -38,6 +40,7 @@ namespace MonoDevelop.LanguageServer.Client
 	{
 		static LanguageClientOutputPad instance;
 		static readonly LogView logView = new LogView ();
+		static Pad pad;
 
 		public LanguageClientOutputPad ()
 		{
@@ -66,6 +69,21 @@ namespace MonoDevelop.LanguageServer.Client
 
 		public static LogView LogView {
 			get { return logView; }
+		}
+
+		public static Pad Pad {
+			get {
+				if (pad == null) {
+					pad = GetPad ();
+				}
+				return pad;
+			}
+		}
+
+		static Pad GetPad ()
+		{
+			return IdeApp.Workbench.Pads.FirstOrDefault (
+				pad => pad.Id == "LanguageServer.Client.LanguageClientOutputPad");
 		}
 
 		void ButtonClearClick (object sender, EventArgs e)

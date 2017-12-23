@@ -55,6 +55,7 @@
     <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientLoggingService.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\TaskExtensions.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientTarget.cs" />
+    <Compile Include="MonoDevelop.LanguageServer.Client\StatusBarExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\MonoDevelop.LanguageServer.Client.addin.xml" />
