@@ -5,6 +5,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoDevelop.LanguageServer.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoDevelop.PowerShell", "MonoDevelop.PowerShell\MonoDevelop.PowerShell.csproj", "{23B4E80D-06BB-462C-A46A-8D629D57821F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoDevelop.MockLanguageExtension", "MonoDevelop.MockLanguageExtension\MonoDevelop.MockLanguageExtension.csproj", "{32450BB5-0B38-40D2-B0E7-4D297D547F9D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LanguageServerLibrary", "LanguageServerLibrary\LanguageServerLibrary.csproj", "{738B3D86-F59E-4E15-A890-155A6DCACB9F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MockLanguageExtension", "MockLanguageExtension", "{3D98DFCB-2F89-40FF-8120-6051F80202D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LanguageServer.UI", "LanguageServer.UI\LanguageServer.UI.csproj", "{C5D81F0E-809A-488F-BB57-BC1C0102FA6A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,5 +27,22 @@ Global
 		{23B4E80D-06BB-462C-A46A-8D629D57821F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{23B4E80D-06BB-462C-A46A-8D629D57821F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{23B4E80D-06BB-462C-A46A-8D629D57821F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32450BB5-0B38-40D2-B0E7-4D297D547F9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32450BB5-0B38-40D2-B0E7-4D297D547F9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32450BB5-0B38-40D2-B0E7-4D297D547F9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32450BB5-0B38-40D2-B0E7-4D297D547F9D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{738B3D86-F59E-4E15-A890-155A6DCACB9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{738B3D86-F59E-4E15-A890-155A6DCACB9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{738B3D86-F59E-4E15-A890-155A6DCACB9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{738B3D86-F59E-4E15-A890-155A6DCACB9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5D81F0E-809A-488F-BB57-BC1C0102FA6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5D81F0E-809A-488F-BB57-BC1C0102FA6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5D81F0E-809A-488F-BB57-BC1C0102FA6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5D81F0E-809A-488F-BB57-BC1C0102FA6A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{738B3D86-F59E-4E15-A890-155A6DCACB9F} = {3D98DFCB-2F89-40FF-8120-6051F80202D0}
+		{32450BB5-0B38-40D2-B0E7-4D297D547F9D} = {3D98DFCB-2F89-40FF-8120-6051F80202D0}
+		{C5D81F0E-809A-488F-BB57-BC1C0102FA6A} = {3D98DFCB-2F89-40FF-8120-6051F80202D0}
 	EndGlobalSection
 EndGlobal

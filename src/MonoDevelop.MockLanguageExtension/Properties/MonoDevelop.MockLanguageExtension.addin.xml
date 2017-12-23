@@ -1,0 +1,9 @@
+<ExtensionModel>
+	<Runtime>
+		<Import assembly="MonoDevelop.MockLanguageExtension.dll" />
+	</Runtime>
+
+	<Extension path="/MonoDevelop/Ide/Composition">
+		<Assembly file="MonoDevelop.MockLanguageExtension.dll" />
+	</Extension>
+</ExtensionModel>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\build\Common.props" />
+  <PropertyGroup>
+    <MDBinDir Condition=" '$(MDBinDir)' == '' ">..\..\..\..\monodevelop\main\build\bin</MDBinDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>$(MDBinDir)\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Xwt">
+      <HintPath>$(MDBinDir)\Xwt.dll</HintPath>
+    </Reference>
+    <Reference Include="Xwt">
+      <HintPath>$(MDBinDir)\Xwt.dll</HintPath>
+    </Reference>
+    <Reference Include="Xwt">
+      <HintPath>$(MDBinDir)\Xwt.dll</HintPath>
+    </Reference>
+    <Reference Include="Xwt.Gtk">
+      <HintPath>$(MDBinDir)\Xwt.Gtk.dll</HintPath>
+    </Reference>
+    <Reference Include="Xwt.Gtk.Mac">
+      <HintPath>$(MDBinDir)\Xwt.Gtk.Mac.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>
