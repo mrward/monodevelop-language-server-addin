@@ -45,6 +45,7 @@ namespace LanguageServer.UI
 
 			clearLoggingTextButton.Clicked += ClearLoggingTextButtonClicked;
 			sendLogMessageButton.Clicked += SendLogMessageButtonClicked;
+			showMessageButton.Clicked += ShowMessageButtonClicked;
 		}
 
 		protected override void OnClosed ()
@@ -86,6 +87,13 @@ namespace LanguageServer.UI
 			viewModel.LogMessage = messagingTextEntry.Text;
 			viewModel.MessageType = (MessageType)messagingComboBox.SelectedItem;
 			viewModel.SendLogMessage ();
+		}
+
+		void ShowMessageButtonClicked (object sender, EventArgs e)
+		{
+			viewModel.LogMessage = messagingTextEntry.Text;
+			viewModel.MessageType = (MessageType)messagingComboBox.SelectedItem;
+			viewModel.SendMessage ();
 		}
 	}
 }

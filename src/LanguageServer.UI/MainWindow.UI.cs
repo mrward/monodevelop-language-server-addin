@@ -36,6 +36,7 @@ namespace LanguageServer.UI
 		ComboBox messagingComboBox;
 		TextEntry messagingTextEntry;
 		Button sendLogMessageButton;
+		Button showMessageButton;
 
 		void Build ()
 		{
@@ -95,6 +96,10 @@ namespace LanguageServer.UI
 			sendLogMessageButton = new Button ();
 			sendLogMessageButton.Label = "Log message";
 			rightVBox.PackStart (sendLogMessageButton);
+
+			showMessageButton = new Button ();
+			showMessageButton.Label = "Show message";
+			rightVBox.PackStart (showMessageButton);
 		}
 
 		void AddDiagnosticsTab ()
