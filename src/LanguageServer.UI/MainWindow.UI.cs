@@ -37,6 +37,8 @@ namespace LanguageServer.UI
 		TextEntry messagingTextEntry;
 		Button sendLogMessageButton;
 		Button showMessageButton;
+		Button showMessageRequestButton;
+		TextEntry responseTextEntry;
 
 		void Build ()
 		{
@@ -89,6 +91,13 @@ namespace LanguageServer.UI
 			messagingComboBox = new ComboBox ();
 			topHBox.PackStart (messagingComboBox, false, hpos: WidgetPlacement.End);
 
+			var responseLabel = new Label ();
+			responseLabel.Text = "Response from show message request:";
+			leftVBox.PackStart (responseLabel);
+
+			responseTextEntry = new TextEntry ();
+			leftVBox.PackStart (responseTextEntry, true, vpos: WidgetPlacement.Start);
+
 			var rightVBox = new VBox ();
 			rightVBox.MarginLeft = 10;
 			mainHBox.PackStart (rightVBox);
@@ -100,6 +109,10 @@ namespace LanguageServer.UI
 			showMessageButton = new Button ();
 			showMessageButton.Label = "Show message";
 			rightVBox.PackStart (showMessageButton);
+
+			showMessageRequestButton = new Button ();
+			showMessageRequestButton.Label = "Show request message";
+			rightVBox.PackStart (showMessageRequestButton);
 		}
 
 		void AddDiagnosticsTab ()

@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.ComponentModel;
 using Microsoft.VisualStudio.LanguageServer.Protocol;
 using Xwt;
 using Xwt.Formats;
@@ -38,7 +39,9 @@ namespace LanguageServer.UI
 		public MainWindow ()
 		{
 			LoggingService.Logger = this;
+
 			viewModel = new MainWindowViewModel ();
+			viewModel.PropertyChanged += ViewModelPropertyChanged;
 
 			Build ();
 			PopulateMessagingComboBox ();
@@ -46,6 +49,7 @@ namespace LanguageServer.UI
 			clearLoggingTextButton.Clicked += ClearLoggingTextButtonClicked;
 			sendLogMessageButton.Clicked += SendLogMessageButtonClicked;
 			showMessageButton.Clicked += ShowMessageButtonClicked;
+			showMessageRequestButton.Clicked += ShowMessageRequestButtonClicked;
 		}
 
 		protected override void OnClosed ()
@@ -94,6 +98,20 @@ namespace LanguageServer.UI
 			viewModel.LogMessage = messagingTextEntry.Text;
 			viewModel.MessageType = (MessageType)messagingComboBox.SelectedItem;
 			viewModel.SendMessage ();
+		}
+
+		void ViewModelPropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == nameof (viewModel.ResponseText)) {
+				responseTextEntry.Text = viewModel.ResponseText;
+			}
+		}
+
+		void ShowMessageRequestButtonClicked (object sender, EventArgs e)
+		{
+			viewModel.LogMessage = messagingTextEntry.Text;
+			viewModel.MessageType = (MessageType)messagingComboBox.SelectedItem;
+			viewModel.SendMessageRequest ();
 		}
 	}
 }
