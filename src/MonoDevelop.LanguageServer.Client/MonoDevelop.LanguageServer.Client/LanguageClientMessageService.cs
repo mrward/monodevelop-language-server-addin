@@ -1,5 +1,5 @@
 ﻿//
-// LanguageClientTarget.cs
+// LanguageClientMessageService.cs
 //
 // Author:
 //       Matt Ward <matt.ward@microsoft.com>
@@ -24,45 +24,38 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
 using Microsoft.VisualStudio.LanguageServer.Protocol;
+using MonoDevelop.Core;
 using MonoDevelop.Ide;
-using Newtonsoft.Json.Linq;
-using StreamJsonRpc;
 
 namespace MonoDevelop.LanguageServer.Client
 {
-	class LanguageClientTarget
+	static class LanguageClientMessageService
 	{
-		[JsonRpcMethod (Methods.WindowLogMessage)]
-		public void OnWindowLogMessage (JToken arg)
+		public static void ShowMessage (ShowMessageParams message)
 		{
-			try {
-				Log (Methods.WindowLogMessage, arg);
-
-				var message = arg.ToObject<LogMessageParams> ();
-				IdeApp.Workbench.StatusBar.ShowMessage (message);
-			} catch (Exception ex) {
-				LanguageClientLoggingService.LogError ("OnWindowLogMessage error.", ex);
+			if (string.IsNullOrEmpty (message.Message)) {
+				return;
 			}
+
+			Runtime.RunInMainThread (() => {
+				ShowMessageInternal (message);
+			});
 		}
 
-		[JsonRpcMethod (Methods.WindowShowMessage)]
-		public void OnWindowShowMessage (JToken arg)
+		static void ShowMessageInternal (ShowMessageParams message)
 		{
-			try {
-				Log (Methods.WindowShowMessage, arg);
-
-				var message = arg.ToObject<ShowMessageParams> ();
-				LanguageClientMessageService.ShowMessage (message);
-			} catch (Exception ex) {
-				LanguageClientLoggingService.LogError ("OnWindowShowMessage error.", ex);
+			switch (message.MessageType) {
+				case MessageType.Error:
+					MessageService.ShowError (message.Message);
+					break;
+				case MessageType.Warning:
+					MessageService.ShowWarning (message.Message);
+					break;
+				default:
+					MessageService.ShowMessage (message.Message);
+					break;
 			}
-		}
-
-		void Log (string message, JToken arg)
-		{
-			LanguageClientLoggingService.Log("{0}\n{1}\n", message, arg);
 		}
 	}
 }
