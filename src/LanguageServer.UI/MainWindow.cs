@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using Microsoft.VisualStudio.LanguageServer.Protocol;
 using Xwt;
 using Xwt.Formats;
 
@@ -40,7 +41,10 @@ namespace LanguageServer.UI
 			viewModel = new MainWindowViewModel ();
 
 			Build ();
+			PopulateMessagingComboBox ();
+
 			clearLoggingTextButton.Clicked += ClearLoggingTextButtonClicked;
+			sendLogMessageButton.Clicked += SendLogMessageButtonClicked;
 		}
 
 		protected override void OnClosed ()
@@ -66,6 +70,22 @@ namespace LanguageServer.UI
 		void ClearLoggingTextButtonClicked (object sender, EventArgs e)
 		{
 			loggingTextView.LoadText (string.Empty, TextFormat.Plain);
+		}
+
+		void PopulateMessagingComboBox ()
+		{
+			foreach (MessageType messageType in Enum.GetValues (typeof (MessageType))) {
+				messagingComboBox.Items.Add (messageType);
+			}
+
+			messagingComboBox.SelectedIndex = 0;
+		}
+
+		void SendLogMessageButtonClicked (object sender, EventArgs e)
+		{
+			viewModel.LogMessage = messagingTextEntry.Text;
+			viewModel.MessageType = (MessageType)messagingComboBox.SelectedItem;
+			viewModel.SendLogMessage ();
 		}
 	}
 }

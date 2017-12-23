@@ -33,6 +33,9 @@ namespace LanguageServer.UI
 		Notebook notebook;
 		RichTextView loggingTextView;
 		Button clearLoggingTextButton;
+		ComboBox messagingComboBox;
+		TextEntry messagingTextEntry;
+		Button sendLogMessageButton;
 
 		void Build ()
 		{
@@ -45,7 +48,7 @@ namespace LanguageServer.UI
 
 			AddLoggingTab ();
 			//AddDiagnosticsTab ();
-			//AddMessagingTab ();
+			AddMessagingTab ();
 			//AddSettingsTab ();
 			//AddCustomTab ();
 		}
@@ -64,8 +67,34 @@ namespace LanguageServer.UI
 
 		void AddMessagingTab ()
 		{
-			var messagingVBox = new VBox ();
-			notebook.Add (messagingVBox, "Messaging");
+			var mainHBox = new HBox ();
+			mainHBox.Margin = 10;
+			notebook.Add (mainHBox, "Messaging");
+
+			var leftVBox = new VBox ();
+			mainHBox.PackStart (leftVBox, true, true);
+
+			var topHBox = new HBox ();
+			leftVBox.PackStart (topHBox);
+
+			var label = new Label ();
+			label.Text = "Text:";
+
+			topHBox.PackStart (label);
+
+			messagingTextEntry = new TextEntry ();
+			topHBox.PackStart (messagingTextEntry, true);
+
+			messagingComboBox = new ComboBox ();
+			topHBox.PackStart (messagingComboBox, false, hpos: WidgetPlacement.End);
+
+			var rightVBox = new VBox ();
+			rightVBox.MarginLeft = 10;
+			mainHBox.PackStart (rightVBox);
+
+			sendLogMessageButton = new Button ();
+			sendLogMessageButton.Label = "Log message";
+			rightVBox.PackStart (sendLogMessageButton);
 		}
 
 		void AddDiagnosticsTab ()
