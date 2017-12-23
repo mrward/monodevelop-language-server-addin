@@ -1,5 +1,5 @@
 ﻿//
-// MainWindow.cs
+// LoggingService.cs
 //
 // Author:
 //       Matt Ward <matt.ward@microsoft.com>
@@ -24,48 +24,33 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
-using Xwt;
-using Xwt.Formats;
-
-namespace LanguageServer.UI
+namespace LanguageServer
 {
-	partial class MainWindow : ILogger
+	public interface ILogger
 	{
-		MainWindowViewModel viewModel;
+		void Log (string message);
+	}
 
-		public MainWindow ()
-		{
-			LoggingService.Logger = this;
-			viewModel = new MainWindowViewModel ();
-
-			Build ();
-			clearLoggingTextButton.Clicked += ClearLoggingTextButtonClicked;
-		}
-
-		protected override void OnClosed ()
-		{
-			base.OnClosed ();
-			Application.Exit ();
-		}
-
+	class NullLogger : ILogger
+	{
 		public void Log (string message)
 		{
-			Application.Invoke (() => {
-				AppendLogMessage (message);
-			});
+		}
+	}
+
+	public static class LoggingService
+	{
+		public static ILogger Logger { get; set; } = new NullLogger ();
+
+		public static void Log (string message)
+		{
+			Logger.Log (message);
 		}
 
-		void AppendLogMessage (string message)
+		public static void Log (string format, object arg0)
 		{
-			string text = loggingTextView.PlainText;
-			text += message + "\n";
-			loggingTextView.LoadText (text, TextFormat.Plain);
-		}
-
-		void ClearLoggingTextButtonClicked (object sender, EventArgs e)
-		{
-			loggingTextView.LoadText (string.Empty, TextFormat.Plain);
+			string message = string.Format (format, arg0);
+			Log (message);
 		}
 	}
 }

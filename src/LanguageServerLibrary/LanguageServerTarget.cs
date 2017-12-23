@@ -1,4 +1,5 @@
 ﻿//
+// Based on:
 // https://github.com/Microsoft/VSSDK-Extensibility-Samples
 // LanguageServerProtocol/LanguageServerLibrary/LanguageServerTarget.cs
 //
@@ -27,6 +28,8 @@ namespace LanguageServer
 		[JsonRpcMethod(Methods.Initialize)]
 		public object Initialize(JToken arg)
 		{
+			Log(Methods.Initialize, arg);
+
 			var capabilities = new ServerCapabilities();
 			capabilities.TextDocumentSync = new TextDocumentSyncOptions();
 			capabilities.TextDocumentSync.OpenClose = true;
@@ -46,6 +49,8 @@ namespace LanguageServer
 		[JsonRpcMethod(Methods.TextDocumentDidOpen)]
 		public void OnTextDocumentOpened(JToken arg)
 		{
+			Log(Methods.TextDocumentDidOpen, arg);
+
 			var parameter = arg.ToObject<DidOpenTextDocumentParams>();
 			server.OnTextDocumentOpened(parameter);
 		}
@@ -53,6 +58,8 @@ namespace LanguageServer
 		[JsonRpcMethod(Methods.TextDocumentDidChange)]
 		public void OnTextDocumentChanged(JToken arg)
 		{
+			Log(Methods.TextDocumentDidChange, arg);
+
 			var parameter = arg.ToObject<DidChangeTextDocumentParams>();
 			server.SendDiagnostics(parameter.TextDocument.Uri, parameter.ContentChanges[0].Text);
 		}
@@ -60,6 +67,8 @@ namespace LanguageServer
 		[JsonRpcMethod(Methods.TextDocumentCompletion)]
 		public CompletionItem[] OnTextDocumentCompletion(JToken arg)
 		{
+			Log(Methods.TextDocumentCompletion, arg);
+
 			List<CompletionItem> items = new List<CompletionItem>();
 
 			for (int i = 0; i < 10; i++)
@@ -77,6 +86,8 @@ namespace LanguageServer
 		[JsonRpcMethod(Methods.WorkspaceDidChangeConfiguration)]
 		public void OnDidChangeConfiguration(JToken arg)
 		{
+			LoggingService.Log(Methods.WorkspaceDidChangeConfiguration, arg);
+
 			var parameter = arg.ToObject<DidChangeConfigurationParams>();
 			this.server.SendSettings(parameter);
 		}
@@ -84,18 +95,32 @@ namespace LanguageServer
 		[JsonRpcMethod(Methods.Shutdown)]
 		public object Shutdown()
 		{
+			Log(Methods.Shutdown);
+
 			return null;
 		}
 
 		[JsonRpcMethod(Methods.Exit)]
 		public void Exit()
 		{
+			Log(Methods.Exit);
+
 			server.Exit();
 		}
 
 		public string GetText()
 		{
 			return string.IsNullOrWhiteSpace(this.server.CustomText) ? "custom text from language server target" : this.server.CustomText;
+		}
+
+		void Log(string message)
+		{
+			LoggingService.Log("Client: {0}", message);
+		}
+
+		void Log(string message, JToken arg)
+		{
+			Log(message + "\n" + arg + "\n");
 		}
 	}
 }

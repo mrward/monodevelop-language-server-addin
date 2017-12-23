@@ -33,6 +33,7 @@
     <Compile Include="LanguageServerTarget.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="LanguageServer.cs" />
+    <Compile Include="LoggingService.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="StreamJsonRpc" Version="1.2.8" />

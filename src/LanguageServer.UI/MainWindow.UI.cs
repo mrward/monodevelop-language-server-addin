@@ -30,11 +30,69 @@ namespace LanguageServer.UI
 {
 	partial class MainWindow : Window
 	{
+		Notebook notebook;
+		RichTextView loggingTextView;
+		Button clearLoggingTextButton;
+
 		void Build ()
 		{
 			Title = "Language Server";
-			Width = 500;
-			Height = 400;
+			Width = 720;
+			Height = 480;
+
+			notebook = new Notebook ();
+			Content = notebook;
+
+			AddLoggingTab ();
+			//AddDiagnosticsTab ();
+			//AddMessagingTab ();
+			//AddSettingsTab ();
+			//AddCustomTab ();
+		}
+
+		void AddCustomTab ()
+		{
+			var customVBox = new VBox ();
+			notebook.Add (customVBox, "Custom");
+		}
+
+		void AddSettingsTab ()
+		{
+			var settingsVBox = new VBox ();
+			notebook.Add (settingsVBox, "Settings");
+		}
+
+		void AddMessagingTab ()
+		{
+			var messagingVBox = new VBox ();
+			notebook.Add (messagingVBox, "Messaging");
+		}
+
+		void AddDiagnosticsTab ()
+		{
+			var diagnosticsVBox = new VBox ();
+			notebook.Add (diagnosticsVBox, "Diagnostics");
+		}
+
+		void AddLoggingTab ()
+		{
+			var loggingVBox = new VBox ();
+			notebook.Add (loggingVBox, "Logging");
+
+			loggingTextView = new RichTextView ();
+			loggingTextView.ReadOnly = true;
+
+			var scrollView = new ScrollView ();
+			scrollView.ExpandVertical = true;
+			scrollView.ExpandHorizontal = true;
+			scrollView.Content = loggingTextView;
+			scrollView.VerticalScrollPolicy = ScrollPolicy.Always;
+			scrollView.HorizontalScrollPolicy = ScrollPolicy.Automatic;
+
+			loggingVBox.PackStart (scrollView, true, true);
+
+			clearLoggingTextButton = new Button ("Clear");
+			loggingVBox.PackStart (clearLoggingTextButton, false, hpos: WidgetPlacement.End);
 		}
 	}
 }

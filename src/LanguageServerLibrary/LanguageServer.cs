@@ -1,4 +1,5 @@
 ﻿//
+// Based on:
 // https://github.com/Microsoft/VSSDK-Extensibility-Samples
 // LanguageServerProtocol/LanguageServerLibrary/LanguageServer.cs
 //
@@ -15,6 +16,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using Newtonsoft.Json;
 
 namespace LanguageServer
 {
@@ -118,6 +120,8 @@ namespace LanguageServer
 				parameter.Diagnostics = parameter.Diagnostics.Take(this.maxProblems).ToArray();
 			}
 
+			Log(Methods.TextDocumentPublishDiagnostics, parameter);
+
 			this.rpc.NotifyWithParameterObjectAsync(Methods.TextDocumentPublishDiagnostics, parameter);
 		}
 
@@ -169,6 +173,8 @@ namespace LanguageServer
 				parameter.Diagnostics = parameter.Diagnostics.Take(this.maxProblems).ToArray();
 			}
 
+			Log(Methods.TextDocumentPublishDiagnostics, parameter);
+
 			this.rpc.NotifyWithParameterObjectAsync(Methods.TextDocumentPublishDiagnostics, parameter);
 		}
 
@@ -189,6 +195,9 @@ namespace LanguageServer
 				Message = message,
 				MessageType = messageType
 			};
+
+			Log(Methods.WindowLogMessage, parameter);
+
 			this.rpc.NotifyWithParameterObjectAsync(Methods.WindowLogMessage, parameter);
 		}
 
@@ -199,6 +208,9 @@ namespace LanguageServer
 				Message = message,
 				MessageType = messageType
 			};
+
+			Log(Methods.WindowShowMessage, parameter);
+
 			this.rpc.NotifyWithParameterObjectAsync(Methods.WindowShowMessage, parameter);
 		}
 
@@ -210,6 +222,8 @@ namespace LanguageServer
 				MessageType = messageType,
 				Actions = actionItems.Select(a => new MessageActionItem { Title = a }).ToArray()
 			};
+
+			Log(Methods.WindowShowMessageRequest, parameter);
 
 			var response = await this.rpc.InvokeWithParameterObjectAsync<JToken>(Methods.WindowShowMessageRequest, parameter);
 			return response.ToObject<MessageActionItem>();
@@ -272,6 +286,17 @@ namespace LanguageServer
 		private void NotifyPropertyChanged(string propertyName)
 		{
 			this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+		}
+
+		void Log(string message)
+		{
+			LoggingService.Log("Server: {0}", message);
+		}
+
+		void Log(string message, object parameter)
+		{
+			string json = JsonConvert.SerializeObject(parameter);
+			Log(message + "\n" + json + "\n");
 		}
 	}
 }
