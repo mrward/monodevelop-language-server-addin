@@ -1,5 +1,5 @@
 ﻿//
-// LanguageClientLoggingService.cs
+// CompletionItemExtensions.cs
 //
 // Author:
 //       Matt Ward <matt.ward@microsoft.com>
@@ -24,52 +24,53 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
+using Microsoft.VisualStudio.LanguageServer.Protocol;
 using MonoDevelop.Core;
+using MonoDevelop.Ide.Gui;
 
 namespace MonoDevelop.LanguageServer.Client
 {
-	public static class LanguageClientLoggingService
+	static class CompletionItemExtensions
 	{
-		public static void Log (string message)
+		public static IconId GetIcon (this CompletionItem item)
 		{
-			LanguageClientOutputPad.WriteText (message);
-		}
+			switch (item.Kind) {
+				case CompletionItemKind.Property:
+					return Stock.Property;
 
-		public static void Log (string format, object arg0)
-		{
-			string message = string.Format (format, arg0);
-			Log (message);
-		}
+				case CompletionItemKind.Constructor:
+				case CompletionItemKind.Method:
+				case CompletionItemKind.Function:
+					return Stock.Method;
 
-		public static void Log (string format, object arg0, object arg1)
-		{
-			string message = string.Format (format, arg0, arg1);
-			Log (message);
-		}
+				case CompletionItemKind.Text:
+				case CompletionItemKind.Keyword:
+					return Stock.Literal;
 
-		public static void Log (string format, object arg0, object arg1, object arg2)
-		{
-			string message = string.Format (format, arg0, arg1, arg2);
-			Log (message);
-		}
+				case CompletionItemKind.Class:
+					return Stock.Class;
 
-		public static void LogError (string message)
-		{
-			LanguageClientOutputPad.WriteError (message);
-		}
+				case CompletionItemKind.Field:
+					return Stock.PrivateField;
 
-		public static void LogError (string message, Exception ex)
-		{
-			LoggingService.LogError (message, ex);
+				case CompletionItemKind.Interface:
+					return Stock.Interface;
 
-			LogError (message + Environment.NewLine + ex);
-		}
+				case CompletionItemKind.Module:
+					return Stock.NameSpace;
 
-		public static void LogError (Exception ex, string format, object arg0)
-		{
-			string message = string.Format (format, arg0);
-			LogError (message, ex);
+				case CompletionItemKind.Enum:
+					return Stock.Enum;
+
+				case CompletionItemKind.Variable:
+					return "md-variable";
+
+				case CompletionItemKind.File:
+					return Stock.EmptyFileIcon;
+
+				default:
+					return null;
+			}
 		}
 	}
 }

@@ -1,5 +1,5 @@
 ﻿//
-// LanguageClientLoggingService.cs
+// LanguageClientCompletionData.cs
 //
 // Author:
 //       Matt Ward <matt.ward@microsoft.com>
@@ -24,52 +24,47 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
-using MonoDevelop.Core;
+using Microsoft.VisualStudio.LanguageServer.Protocol;
+using MonoDevelop.Ide.CodeCompletion;
 
 namespace MonoDevelop.LanguageServer.Client
 {
-	public static class LanguageClientLoggingService
+	class LanguageClientCompletionData : CompletionData
 	{
-		public static void Log (string message)
+		LanguageClientSession session;
+
+		public LanguageClientCompletionData (LanguageClientSession session, CompletionItem item)
 		{
-			LanguageClientOutputPad.WriteText (message);
+			this.session = session;
+			CompletionItem = item;
+			CompletionText = item.InsertText;
+
+			Icon = item.GetIcon ();
 		}
 
-		public static void Log (string format, object arg0)
-		{
-			string message = string.Format (format, arg0);
-			Log (message);
+		public CompletionItem CompletionItem { get; private set; }
+
+		/// <summary>
+		/// Returns InsertText instead of Label so parameters are handled (e.g. -path).
+		/// VSCode shows only the parameter name without the '-'. It is simpler to
+		/// show the '-' as part of the text in the code completion list in MonoDevelop
+		/// than to support it as VSCode does.
+		/// </summary>
+		public override string DisplayText {
+			get { return CompletionItem.InsertText; }
+			set { base.DisplayText = value; }
 		}
 
-		public static void Log (string format, object arg0, object arg1)
-		{
-			string message = string.Format (format, arg0, arg1);
-			Log (message);
+		public override string Description {
+			get {
+				return GLib.Markup.EscapeText (GetDescription ());
+			}
+			set { base.Description = value; }
 		}
 
-		public static void Log (string format, object arg0, object arg1, object arg2)
+		string GetDescription ()
 		{
-			string message = string.Format (format, arg0, arg1, arg2);
-			Log (message);
-		}
-
-		public static void LogError (string message)
-		{
-			LanguageClientOutputPad.WriteError (message);
-		}
-
-		public static void LogError (string message, Exception ex)
-		{
-			LoggingService.LogError (message, ex);
-
-			LogError (message + Environment.NewLine + ex);
-		}
-
-		public static void LogError (Exception ex, string format, object arg0)
-		{
-			string message = string.Format (format, arg0);
-			LogError (message, ex);
+			return CompletionItem.Detail ?? string.Empty;
 		}
 	}
 }

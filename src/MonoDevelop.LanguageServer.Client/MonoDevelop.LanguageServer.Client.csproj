@@ -59,6 +59,9 @@
     <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientMessageService.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\DiagnosticsEventArgs.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\DiagnosticExtensions.cs" />
+    <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientCompletionData.cs" />
+    <Compile Include="MonoDevelop.LanguageServer.Client\CompletionItemExtensions.cs" />
+    <Compile Include="MonoDevelop.LanguageServer.Client\CompletionDataListExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\MonoDevelop.LanguageServer.Client.addin.xml" />

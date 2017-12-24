@@ -25,11 +25,14 @@
 // THE SOFTWARE.
 
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.LanguageServer.Client;
 using Microsoft.VisualStudio.LanguageServer.Protocol;
 using MonoDevelop.Core;
+using MonoDevelop.Ide.CodeCompletion;
+using MonoDevelop.Ide.Editor;
 using MonoDevelop.Ide.Gui;
 using Newtonsoft.Json;
 using StreamJsonRpc;
@@ -180,6 +183,65 @@ namespace MonoDevelop.LanguageServer.Client
 		public void OnPublishDiagnostics (PublishDiagnosticParams diagnostic)
 		{
 			DiagnosticsPublished?.Invoke (this, new DiagnosticsEventArgs (diagnostic));
+		}
+
+		Task<CompletionItem[]> GetCompletionItems (
+			FilePath fileName,
+			CodeCompletionContext completionContext,
+			CancellationToken token)
+		{
+			if (!IsStarted) {
+				return Task.FromResult<CompletionItem[]> (null);
+			}
+
+			LanguageClientLoggingService.Log ("LanguageClient[{0}]: Sending '{1}'. File: '{2}'", Id, Methods.TextDocumentCompletion, fileName);
+
+			var message = CreateTextDocumentPosition (fileName, completionContext);
+			return jsonRpc.InvokeWithParameterObjectAsync<CompletionItem[]> (Methods.TextDocumentCompletion, message, token);
+		}
+
+		public async Task<CompletionDataList> GetCompletionList (
+			FilePath fileName,
+			CodeCompletionContext completionContext,
+			CancellationToken token)
+		{
+			var items = await GetCompletionItems (fileName, completionContext, token);
+
+			var completionList = new CompletionDataList ();
+			completionList.AddRange (this, items);
+
+			return completionList;
+		}
+
+		static TextDocumentPositionParams CreateTextDocumentPosition (FilePath fileName, CodeCompletionContext completionContext)
+		{
+			return CreateTextDocumentPosition (
+				fileName,
+				completionContext.TriggerLineOffset,
+				completionContext.TriggerLine - 1
+			);
+		}
+
+		static TextDocumentPositionParams CreateTextDocumentPosition (FilePath fileName, DocumentLocation location)
+		{
+			return CreateTextDocumentPosition (
+				fileName,
+				location.Column - 1,
+				location.Line - 1
+			);
+		}
+
+		static TextDocumentPositionParams CreateTextDocumentPosition (FilePath fileName, int column, int line)
+		{
+			return new TextDocumentPositionParams {
+				Position = new Position {
+					Character = column,
+					Line = line
+				},
+				TextDocument = new TextDocumentIdentifier {
+					Uri = fileName
+				}
+			};
 		}
 	}
 }
