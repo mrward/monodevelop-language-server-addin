@@ -71,7 +71,7 @@ namespace MonoDevelop.LanguageServer.Client
 		/// </summary>
 		public void Start ()
 		{
-			LanguageClientLoggingService.Log ("LanguageClient[{0}]: Call OnLoadedAsync.", Id);
+			Log ("Call OnLoadedAsync.");
 
 			client.OnLoadedAsync ()
 				.LogFault ();
@@ -95,29 +95,29 @@ namespace MonoDevelop.LanguageServer.Client
 				IsStarted = true;
 				Started?.Invoke (this, EventArgs.Empty);
 			} catch (Exception ex) {
-				LanguageClientLoggingService.LogError (ex, "LanguageClient[{0}]: OnStartAsync error.", Id);
+				LogError ("OnStartAsync error.", ex);
 			}
 		}
 
 		async Task OnStartAsync ()
 		{
-			LanguageClientLoggingService.Log ("LanguageClient[{0}]: Call ActivateAsync.", Id);
+			Log ("Call ActivateAsync.");
 
 			Connection connection = await client.ActivateAsync (CancellationToken.None);
 
-			LanguageClientLoggingService.Log ("LanguageClient[{0}]: JsonRpc.StartListening.", Id);
+			Log ("JsonRpc.StartListening.");
 
 			var target = new LanguageClientTarget (this);
 			jsonRpc = new JsonRpc (connection.Writer, connection.Reader, target);
 			jsonRpc.StartListening ();
 			jsonRpc.JsonSerializer.NullValueHandling = NullValueHandling.Ignore;
 
-			LanguageClientLoggingService.Log ("LanguageClient[{0}]: Sending 'initialize' message.", Id);
+			Log ("Sending '{0}' message.", Methods.Initialize);
 
 			var message = new InitializeParams ();
-			var result = await jsonRpc.InvokeWithParameterObjectAsync<InitializeResult> ("initialize", message);
+			var result = await jsonRpc.InvokeWithParameterObjectAsync<InitializeResult> (Methods.Initialize, message);
 
-			LanguageClientLoggingService.Log ("LanguageClient[{0}]: Initialized.", Id);
+			Log ("Initialized.", Id);
 
 			ServerCapabilities = result.Capabilities;
 		}
@@ -144,7 +144,7 @@ namespace MonoDevelop.LanguageServer.Client
 
 		Task SendOpenDocumentMessage (DocumentToOpen document)
 		{
-			LanguageClientLoggingService.Log ("LanguageClient[{0}]: Sending 'textDocument/didOpen'. File: '{1}'", Id, document.FileName);
+			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentDidOpen, document.FileName);
 
 			var message = new DidOpenTextDocumentParams {
 				TextDocument = new TextDocumentItem {
@@ -154,7 +154,7 @@ namespace MonoDevelop.LanguageServer.Client
 				}
 			};
 
-			return jsonRpc.NotifyWithParameterObjectAsync ("textDocument/didOpen", message);
+			return jsonRpc.NotifyWithParameterObjectAsync (Methods.TextDocumentDidOpen, message);
 		}
 
 		public void CloseDocument (Document document)
@@ -169,7 +169,7 @@ namespace MonoDevelop.LanguageServer.Client
 
 		Task SendCloseDocumentMessage (FilePath fileName)
 		{
-			LanguageClientLoggingService.Log ("LanguageClient[{0}]: Sending 'textDocument/didClose'. File: '{1}'", Id, fileName);
+			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentDidClose, fileName);
 
 			var message = new DidCloseTextDocumentParams {
 				TextDocument = new TextDocumentIdentifier {
@@ -177,7 +177,7 @@ namespace MonoDevelop.LanguageServer.Client
 				}
 			};
 
-			return jsonRpc.NotifyWithParameterObjectAsync ("textDocument/didClose", message);
+			return jsonRpc.NotifyWithParameterObjectAsync (Methods.TextDocumentDidClose, message);
 		}
 
 		public void OnPublishDiagnostics (PublishDiagnosticParams diagnostic)
@@ -194,7 +194,7 @@ namespace MonoDevelop.LanguageServer.Client
 				return Task.FromResult<CompletionItem[]> (null);
 			}
 
-			LanguageClientLoggingService.Log ("LanguageClient[{0}]: Sending '{1}'. File: '{2}'", Id, Methods.TextDocumentCompletion, fileName);
+			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentCompletion, fileName);
 
 			var message = CreateTextDocumentPosition (fileName, completionContext);
 			return jsonRpc.InvokeWithParameterObjectAsync<CompletionItem[]> (Methods.TextDocumentCompletion, message, token);
@@ -242,6 +242,35 @@ namespace MonoDevelop.LanguageServer.Client
 					Uri = fileName
 				}
 			};
+		}
+
+		void Log (string format, object arg0)
+		{
+			string message = string.Format (format, arg0);
+			Log (message);
+		}
+
+		void Log (string format, object arg0, object arg1)
+		{
+			string message = string.Format (format, arg0, arg1);
+			Log (message);
+		}
+
+		string GetLogMessageFormat ()
+		{
+			return "LanguageClient[{0}]: {1}";
+		}
+
+		void Log (string message)
+		{
+			string fullMessage = string.Format (GetLogMessageFormat (), Id, message);
+			LanguageClientLoggingService.Log (fullMessage);
+		}
+
+		void LogError (string message, Exception ex)
+		{
+			string fullMessage = string.Format (GetLogMessageFormat (), Id, message);
+			LanguageClientLoggingService.LogError (fullMessage, ex);
 		}
 	}
 }
