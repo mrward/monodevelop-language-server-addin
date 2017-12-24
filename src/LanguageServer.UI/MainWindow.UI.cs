@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System.Collections.Generic;
 using Xwt;
 
 namespace LanguageServer.UI
@@ -39,6 +40,11 @@ namespace LanguageServer.UI
 		Button showMessageButton;
 		Button showMessageRequestButton;
 		TextEntry responseTextEntry;
+		List<DiagnosticWidget> diagnosticWidgets = new List<DiagnosticWidget> ();
+		Button sendDiagnosticsButton;
+		Button addDiagnosticButton;
+		Button clearDiagnosticsButton;
+		VBox diagnosticWidgetsVBox;
 
 		void Build ()
 		{
@@ -50,7 +56,7 @@ namespace LanguageServer.UI
 			Content = notebook;
 
 			AddLoggingTab ();
-			//AddDiagnosticsTab ();
+			AddDiagnosticsTab ();
 			AddMessagingTab ();
 			//AddSettingsTab ();
 			//AddCustomTab ();
@@ -117,8 +123,36 @@ namespace LanguageServer.UI
 
 		void AddDiagnosticsTab ()
 		{
-			var diagnosticsVBox = new VBox ();
-			notebook.Add (diagnosticsVBox, "Diagnostics");
+			var mainHBox = new HBox ();
+			mainHBox.Margin = 10;
+			notebook.Add (mainHBox, "Diagnostics");
+
+			diagnosticWidgetsVBox = new VBox ();
+
+			var scrollView = new ScrollView ();
+			scrollView.ExpandVertical = true;
+			scrollView.ExpandHorizontal = true;
+			scrollView.Content = diagnosticWidgetsVBox;
+			scrollView.VerticalScrollPolicy = ScrollPolicy.Always;
+			scrollView.HorizontalScrollPolicy = ScrollPolicy.Never;
+
+			mainHBox.PackStart (scrollView, true, true);
+
+			var rightVBox = new VBox ();
+			rightVBox.MarginLeft = 10;
+			mainHBox.PackStart (rightVBox);
+
+			sendDiagnosticsButton = new Button ();
+			sendDiagnosticsButton.Label = "Send Diagnostics";
+			rightVBox.PackStart (sendDiagnosticsButton);
+
+			addDiagnosticButton = new Button ();
+			addDiagnosticButton.Label = "Add";
+			rightVBox.PackStart (addDiagnosticButton);
+
+			clearDiagnosticsButton = new Button ();
+			clearDiagnosticsButton.Label = "Clear";
+			rightVBox.PackStart (clearDiagnosticsButton);
 		}
 
 		void AddLoggingTab ()

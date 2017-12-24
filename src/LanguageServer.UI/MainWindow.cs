@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using Microsoft.VisualStudio.LanguageServer.Protocol;
 using Xwt;
@@ -50,6 +51,12 @@ namespace LanguageServer.UI
 			sendLogMessageButton.Clicked += SendLogMessageButtonClicked;
 			showMessageButton.Clicked += ShowMessageButtonClicked;
 			showMessageRequestButton.Clicked += ShowMessageRequestButtonClicked;
+			sendDiagnosticsButton.Clicked += SendDiagnosticsButtonClicked;
+			addDiagnosticButton.Clicked += AddDiagnosticButtonClicked;
+			clearDiagnosticsButton.Clicked += ClearDiagnosticsButtonClicked;
+			viewModel.Tags.CollectionChanged += TagsCollectionChanged;
+
+			OnDiagnosticTagsChanged ();
 		}
 
 		protected override void OnClosed ()
@@ -112,6 +119,42 @@ namespace LanguageServer.UI
 			viewModel.LogMessage = messagingTextEntry.Text;
 			viewModel.MessageType = (MessageType)messagingComboBox.SelectedItem;
 			viewModel.SendMessageRequest ();
+		}
+
+		void SendDiagnosticsButtonClicked (object sender, EventArgs e)
+		{
+			viewModel.SendDiagnostics ();
+		}
+
+		void ClearDiagnosticsButtonClicked (object sender, EventArgs e)
+		{
+			viewModel.Tags.Clear ();
+		}
+
+		void AddDiagnosticButtonClicked (object sender, EventArgs e)
+		{
+			viewModel.Tags.Add (new DiagnosticTag ());
+		}
+
+		void TagsCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
+		{
+			OnDiagnosticTagsChanged ();
+		}
+
+		void OnDiagnosticTagsChanged ()
+		{
+			foreach (DiagnosticWidget widget in diagnosticWidgets) {
+				diagnosticWidgetsVBox.Remove (widget);
+				widget.Dispose ();
+			}
+
+			diagnosticWidgets.Clear ();
+
+			foreach (DiagnosticTag diagnostic in viewModel.Tags) {
+				var widget = new DiagnosticWidget (diagnostic);
+				diagnosticWidgets.Add (widget);
+				diagnosticWidgetsVBox.PackStart (widget);
+			}
 		}
 	}
 }

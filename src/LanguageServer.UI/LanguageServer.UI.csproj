@@ -38,6 +38,10 @@
       <DependentUpon>MainWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="MainWindowViewModel.cs" />
+    <Compile Include="DiagnosticWidget.cs" />
+    <Compile Include="DiagnosticWidget.UI.cs">
+      <DependentUpon>DiagnosticWidget.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.LanguageServer.Protocol" Version="1.0.71-pre" />
