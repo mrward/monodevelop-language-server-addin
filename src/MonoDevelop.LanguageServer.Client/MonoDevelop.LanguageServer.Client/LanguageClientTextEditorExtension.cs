@@ -24,14 +24,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.VisualStudio.LanguageServer.Protocol;
+using MonoDevelop.Core;
 using MonoDevelop.Ide.Editor;
 using MonoDevelop.Ide.Editor.Extension;
+using MonoDevelop.Ide.TypeSystem;
 
 namespace MonoDevelop.LanguageServer.Client
 {
 	class LanguageClientTextEditorExtension : CompletionTextEditorExtension
 	{
 		LanguageClientSession session;
+		FilePath fileName;
+		List<IErrorMarker> errorMarkers = new List<IErrorMarker> ();
 
 		public override bool IsValidInContext (DocumentContext context)
 		{
@@ -40,16 +47,50 @@ namespace MonoDevelop.LanguageServer.Client
 
 		protected override void Initialize ()
 		{
-			session = LanguageClientServices.Workspace.GetSession (DocumentContext.Name);
+			fileName = DocumentContext.Name;
+
+			session = LanguageClientServices.Workspace.GetSession (fileName);
+			session.DiagnosticsPublished += OnDiagnostics;
 
 			base.Initialize ();
 		}
 
 		public override void Dispose ()
 		{
-			session = null;
+			if (session != null) {
+				session.DiagnosticsPublished -= OnDiagnostics;
+				session = null;
+			}
 
 			base.Dispose ();
+		}
+
+		void OnDiagnostics (object sender, DiagnosticsEventArgs e)
+		{
+			if (e.Uri == null || !(fileName == e.Uri)) {
+				return;
+			}
+
+			Runtime.RunInMainThread (() => {
+				ShowDiagnostics (e.Diagnostics);
+			});
+		}
+
+		void ShowDiagnostics (Diagnostic[] diagnostics)
+		{
+			ClearDiagnostics ();
+
+			foreach (Error error in diagnostics.Select (diagnostic => diagnostic.CreateError ())) {
+				IErrorMarker marker = TextMarkerFactory.CreateErrorMarker (Editor, error);
+				Editor.AddMarker (marker);
+				errorMarkers.Add (marker);
+			}
+		}
+
+		void ClearDiagnostics ()
+		{
+			errorMarkers.ForEach (error => Editor.RemoveMarker (error));
+			errorMarkers.Clear ();
 		}
 	}
 }

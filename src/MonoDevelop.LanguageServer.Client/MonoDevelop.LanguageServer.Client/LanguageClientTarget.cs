@@ -34,6 +34,13 @@ namespace MonoDevelop.LanguageServer.Client
 {
 	class LanguageClientTarget
 	{
+		LanguageClientSession session;
+
+		public LanguageClientTarget (LanguageClientSession session)
+		{
+			this.session = session;
+		}
+
 		[JsonRpcMethod (Methods.WindowLogMessage)]
 		public void OnWindowLogMessage (JToken arg)
 		{
@@ -72,6 +79,19 @@ namespace MonoDevelop.LanguageServer.Client
 				LanguageClientLoggingService.LogError ("OnWindowShowRequestMessage error.", ex);
 			}
 			return null;
+		}
+
+		[JsonRpcMethod (Methods.TextDocumentPublishDiagnostics)]
+		public void OnPublishDiagnostics (JToken arg)
+		{
+			try {
+				Log (Methods.TextDocumentPublishDiagnostics, arg);
+
+				var message = arg.ToObject<PublishDiagnosticParams> ();
+				session.OnPublishDiagnostics (message);
+			} catch (Exception ex) {
+				LanguageClientLoggingService.LogError ("OnPublishDiagnostics error.", ex);
+			}
 		}
 
 		void Log (string message, JToken arg)

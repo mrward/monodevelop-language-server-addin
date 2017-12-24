@@ -59,6 +59,7 @@ namespace MonoDevelop.LanguageServer.Client
 		public bool IsStarted { get; private set; }
 
 		public event EventHandler Started;
+		public event EventHandler<DiagnosticsEventArgs> DiagnosticsPublished;
 
 		/// <summary>
 		/// ILanguageClient.StartAsync += StartAsync;
@@ -103,7 +104,7 @@ namespace MonoDevelop.LanguageServer.Client
 
 			LanguageClientLoggingService.Log ("LanguageClient[{0}]: JsonRpc.StartListening.", Id);
 
-			var target = new LanguageClientTarget();
+			var target = new LanguageClientTarget (this);
 			jsonRpc = new JsonRpc (connection.Writer, connection.Reader, target);
 			jsonRpc.StartListening ();
 			jsonRpc.JsonSerializer.NullValueHandling = NullValueHandling.Ignore;
@@ -174,6 +175,11 @@ namespace MonoDevelop.LanguageServer.Client
 			};
 
 			return jsonRpc.NotifyWithParameterObjectAsync ("textDocument/didClose", message);
+		}
+
+		public void OnPublishDiagnostics (PublishDiagnosticParams diagnostic)
+		{
+			DiagnosticsPublished?.Invoke (this, new DiagnosticsEventArgs (diagnostic));
 		}
 	}
 }
