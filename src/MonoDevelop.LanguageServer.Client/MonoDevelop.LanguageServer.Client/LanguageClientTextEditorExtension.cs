@@ -30,12 +30,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.LanguageServer.Protocol;
+using MonoDevelop.Components.Commands;
 using MonoDevelop.Core;
 using MonoDevelop.Core.Text;
 using MonoDevelop.Ide.CodeCompletion;
 using MonoDevelop.Ide.Editor;
 using MonoDevelop.Ide.Editor.Extension;
 using MonoDevelop.Ide.TypeSystem;
+using MonoDevelop.Refactoring;
 
 namespace MonoDevelop.LanguageServer.Client
 {
@@ -115,6 +117,13 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 
 			return null;
+		}
+
+		[CommandHandler (RefactoryCommands.FindReferences)]
+		void FindReferences ()
+		{
+			var finder = new LanguageClientReferencesFinder (Editor, session);
+			finder.FindReferences (fileName, Editor.CaretLocation).Ignore ();
 		}
 	}
 }

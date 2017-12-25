@@ -62,6 +62,10 @@
     <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientCompletionData.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\CompletionItemExtensions.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\CompletionDataListExtensions.cs" />
+    <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientReferencesFinder.cs" />
+    <Compile Include="MonoDevelop.LanguageServer.Client\TextEditorExtensions.cs" />
+    <Compile Include="MonoDevelop.LanguageServer.Client\DocumentLocationExtensions.cs" />
+    <Compile Include="MonoDevelop.LanguageServer.Client\FileHasLanguageClientCondition.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\MonoDevelop.LanguageServer.Client.addin.xml" />

@@ -244,6 +244,30 @@ namespace MonoDevelop.LanguageServer.Client
 			};
 		}
 
+		public Task<Location[]> GetReferences (FilePath fileName, Position position, CancellationToken token)
+		{
+			if (!IsStarted) {
+				return Task.FromResult (new Location[0]);
+			}
+
+			var message = new ReferenceParams {
+				Context = new ReferenceContext {
+					IncludeDeclaration = true
+				},
+				TextDocument = new TextDocumentIdentifier {
+					Uri = fileName
+				},
+				Position = position
+			};
+
+			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentReferences, fileName);
+
+			return jsonRpc.InvokeWithParameterObjectAsync<Location[]> (
+				Methods.TextDocumentReferences,
+				message,
+				token);
+		}
+
 		void Log (string format, object arg0)
 		{
 			string message = string.Format (format, arg0);

@@ -3,6 +3,10 @@
 		<Import assembly="MonoDevelop.LanguageServer.Client.dll" />
 	</Runtime>
 
+	<ConditionType
+		id="FileHasLanguageClient"
+		type="MonoDevelop.LanguageServer.Client.FileHasLanguageClientCondition" />
+
 	<Extension path="/MonoDevelop/Ide/Composition">
 		<Assembly file="MonoDevelop.LanguageServer.Client.dll" />
 	</Extension>
@@ -11,6 +15,15 @@
 		<Class
 			id="LanguageServer.Client.TextEditorExtension"
 			class="MonoDevelop.LanguageServer.Client.LanguageClientTextEditorExtension" />
+	</Extension>
+
+	<Extension path="/MonoDevelop/SourceEditor2/ContextMenu/Editor">
+		<Condition id="FileHasLanguageClient" fileExtensions=".ps1,.psm1,.psd1">
+			<CommandItem
+				id="MonoDevelop.Refactoring.RefactoryCommands.FindReferences"
+				insertafter="MonoDevelop.SourceEditor.SourceEditorCommands.MarkerOperations"
+				insertbefore="MonoDevelop.Debugger.DebugCommands.ExpressionEvaluator" />
+		</Condition>
 	</Extension>
 
 	<Extension path="/MonoDevelop/Ide/Pads">
