@@ -178,6 +178,89 @@ namespace LanguageServer
 			this.rpc.NotifyWithParameterObjectAsync(Methods.TextDocumentPublishDiagnostics, parameter);
 		}
 
+		public Location[] FindReferences(ReferenceParams parameter)
+		{
+			if (textDocument?.Uri != parameter.TextDocument.Uri)
+			{
+				Log(string.Format("FindReferences: TextDocument.Uri does not match."));
+				return null;
+			}
+
+			string[] lines = textDocument.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+
+			string item = GetReferenceItem(lines, parameter.Position);
+			if (string.IsNullOrEmpty(item))
+			{
+				Log(string.Format("FindReferences: No item to search for."));
+				return null;
+			}
+
+			Log(string.Format("FindReferences: Searching for '{0}'", item));
+
+			var locations = new List<Location>();
+
+			for (int i = 0; i < lines.Length; ++i)
+			{
+				string line = lines[i];
+				int index = line.IndexOf(item, StringComparison.Ordinal);
+				if (index >=0)
+				{
+					var location = new Location
+					{
+						Range = new Range
+						{
+							Start = new Position
+							{
+								Character = index,
+								Line = i
+							},
+							End = new Position
+							{
+								Character = index + item.Length,
+								Line = i
+							}
+						},
+						Uri = textDocument.Uri
+					};
+					locations.Add(location);
+				}
+			}
+
+			return locations.ToArray();
+		}
+
+		private string GetReferenceItem (string[] lines, Position position)
+		{
+			if (lines.Length < position.Line)
+			{
+				return null;
+			}
+
+			int positionChar = position.Character;
+
+			string line = lines[position.Line];
+
+			if (positionChar >= line.Length)
+			{
+				positionChar = line.Length - 1;
+			}
+
+			int endIndex = line.IndexOf(' ', positionChar);
+			int startIndex = -1;
+
+			if (positionChar > 0)
+			{
+				startIndex = line.LastIndexOf(' ', positionChar - 1);
+			}
+
+			if (endIndex == -1)
+			{
+				endIndex = line.Length;
+			}
+
+			return line.Substring(startIndex + 1, endIndex - startIndex - 1);
+		}
+
 		public void LogMessage(object arg)
 		{
 			this.LogMessage(arg, MessageType.Info);

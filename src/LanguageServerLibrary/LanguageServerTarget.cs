@@ -114,6 +114,15 @@ namespace LanguageServer
 			server.Exit();
 		}
 
+		[JsonRpcMethod(Methods.TextDocumentReferences)]
+		public Location[] OnTextDocumentReferences(JToken arg)
+		{
+			Log(Methods.TextDocumentReferences, arg);
+
+			var parameter = arg.ToObject<ReferenceParams>();
+			return server.FindReferences(parameter);
+		}
+
 		public string GetText()
 		{
 			return string.IsNullOrWhiteSpace(this.server.CustomText) ? "custom text from language server target" : this.server.CustomText;
