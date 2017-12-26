@@ -105,6 +105,10 @@ namespace MonoDevelop.LanguageServer.Client
 
 			Connection connection = await client.ActivateAsync (CancellationToken.None);
 
+			if (connection == null) {
+				throw new ApplicationException ("No connection returned from ActivateAsync.");
+			}
+
 			Log ("JsonRpc.StartListening.");
 
 			var target = new LanguageClientTarget (this);
