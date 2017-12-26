@@ -23,6 +23,10 @@
 				id="MonoDevelop.Refactoring.RefactoryCommands.FindReferences"
 				insertafter="MonoDevelop.SourceEditor.SourceEditorCommands.MarkerOperations"
 				insertbefore="MonoDevelop.Debugger.DebugCommands.ExpressionEvaluator" />
+			<CommandItem
+				id="MonoDevelop.Ide.Commands.EditCommands.Rename"
+				insertafter="MonoDevelop.SourceEditor.SourceEditorCommands.MarkerOperations"
+				insertbefore="MonoDevelop.Debugger.DebugCommands.ExpressionEvaluator" />
 		</Condition>
 	</Extension>
 

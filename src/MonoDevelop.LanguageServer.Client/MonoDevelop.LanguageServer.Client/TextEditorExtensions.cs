@@ -24,9 +24,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.VisualStudio.LanguageServer.Protocol;
 using MonoDevelop.Core;
+using MonoDevelop.Core.Text;
 using MonoDevelop.Ide.Editor;
+using MonoDevelop.Ide.FindInFiles;
 
 namespace MonoDevelop.LanguageServer.Client
 {
@@ -37,6 +41,42 @@ namespace MonoDevelop.LanguageServer.Client
 			Runtime.AssertMainThread ();
 
 			return editor.LocationToOffset (position.Line + 1, position.Character + 1);
+		}
+
+		public static void StartTextEditorRename (this TextEditor editor, IEnumerable<SearchResult> references)
+		{
+			var oldVersion = editor.Version;
+
+			var links = editor.CreateTextLinks (references);
+
+			editor.StartTextLinkMode (new TextLinkModeOptions (links, (arg) => {
+				if (!arg.Success) {
+					List<TextChangeEventArgs> eventArgs = editor.Version.GetChangesTo (oldVersion).ToList ();
+					foreach (TextChangeEventArgs eventArg in eventArgs) {
+						foreach (TextChange textChange in eventArg.TextChanges) {
+							editor.ReplaceText (textChange.Offset, textChange.RemovalLength, textChange.InsertedText);
+						}
+					}
+				}
+			}));
+		}
+
+		static List<TextLink> CreateTextLinks (this TextEditor editor, IEnumerable<SearchResult> references)
+		{
+			var links = new List<TextLink> ();
+			var link = new TextLink ("name");
+
+			foreach (SearchResult reference in references) {
+				var segment = new TextSegment (reference.Offset, reference.Length);
+				if (segment.Offset <= editor.CaretOffset && editor.CaretOffset <= segment.EndOffset) {
+					link.Links.Insert (0, segment);
+				} else {
+					link.AddLink (segment);
+				}
+			}
+			links.Add (link);
+
+			return links;
 		}
 	}
 }

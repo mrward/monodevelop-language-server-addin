@@ -32,8 +32,8 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.LanguageServer.Protocol;
 using MonoDevelop.Components.Commands;
 using MonoDevelop.Core;
-using MonoDevelop.Core.Text;
 using MonoDevelop.Ide.CodeCompletion;
+using MonoDevelop.Ide.Commands;
 using MonoDevelop.Ide.Editor;
 using MonoDevelop.Ide.Editor.Extension;
 using MonoDevelop.Ide.TypeSystem;
@@ -124,6 +124,13 @@ namespace MonoDevelop.LanguageServer.Client
 		{
 			var finder = new LanguageClientReferencesFinder (Editor, session);
 			finder.FindReferences (fileName, Editor.CaretLocation).Ignore ();
+		}
+
+		[CommandHandler (EditCommands.Rename)]
+		void Rename ()
+		{
+			var renamer = new LanguageClientReferencesFinder (Editor, session);
+			renamer.RenameOccurrences (fileName, Editor.CaretLocation).Ignore ();
 		}
 	}
 }
