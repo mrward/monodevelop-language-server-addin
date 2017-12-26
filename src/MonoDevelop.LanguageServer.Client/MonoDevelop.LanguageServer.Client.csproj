@@ -68,6 +68,7 @@
     <Compile Include="MonoDevelop.LanguageServer.Client\FileHasLanguageClientCondition.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientTooltipProvider.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\ProtocolMethods.cs" />
+    <Compile Include="MonoDevelop.LanguageServer.Client\TextChangeEventArgsExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\MonoDevelop.LanguageServer.Client.addin.xml" />

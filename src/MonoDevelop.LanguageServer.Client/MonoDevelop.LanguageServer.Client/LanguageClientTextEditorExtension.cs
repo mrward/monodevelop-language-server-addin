@@ -32,6 +32,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.LanguageServer.Protocol;
 using MonoDevelop.Components.Commands;
 using MonoDevelop.Core;
+using MonoDevelop.Core.Text;
 using MonoDevelop.Ide.CodeCompletion;
 using MonoDevelop.Ide.Commands;
 using MonoDevelop.Ide.Editor;
@@ -46,6 +47,7 @@ namespace MonoDevelop.LanguageServer.Client
 		LanguageClientSession session;
 		FilePath fileName;
 		List<IErrorMarker> errorMarkers = new List<IErrorMarker> ();
+		int documentVersion;
 
 		public override bool IsValidInContext (DocumentContext context)
 		{
@@ -59,6 +61,8 @@ namespace MonoDevelop.LanguageServer.Client
 			session = LanguageClientServices.Workspace.GetSession (fileName);
 			session.DiagnosticsPublished += OnDiagnostics;
 
+			Editor.TextChanging += TextChanging;
+
 			base.Initialize ();
 		}
 
@@ -67,6 +71,10 @@ namespace MonoDevelop.LanguageServer.Client
 			if (session != null) {
 				session.DiagnosticsPublished -= OnDiagnostics;
 				session = null;
+			}
+
+			if (Editor != null) {
+				Editor.TextChanged -= TextChanging;
 			}
 
 			base.Dispose ();
@@ -131,6 +139,17 @@ namespace MonoDevelop.LanguageServer.Client
 		{
 			var renamer = new LanguageClientReferencesFinder (Editor, session);
 			renamer.RenameOccurrences (fileName, Editor.CaretLocation).Ignore ();
+		}
+
+		void TextChanging (object sender, TextChangeEventArgs e)
+		{
+			try {
+				documentVersion++;
+				session.TextChanged (fileName, documentVersion, e, Editor)
+					.LogFault ();
+			} catch (Exception ex) {
+				LanguageClientLoggingService.LogError ("TextChanged error.", ex);
+			}
 		}
 	}
 }

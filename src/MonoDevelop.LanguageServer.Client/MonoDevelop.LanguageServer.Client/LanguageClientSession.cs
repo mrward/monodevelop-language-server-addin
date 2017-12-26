@@ -31,6 +31,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.LanguageServer.Client;
 using Microsoft.VisualStudio.LanguageServer.Protocol;
 using MonoDevelop.Core;
+using MonoDevelop.Core.Text;
 using MonoDevelop.Ide.CodeCompletion;
 using MonoDevelop.Ide.Editor;
 using MonoDevelop.Ide.Gui;
@@ -282,6 +283,27 @@ namespace MonoDevelop.LanguageServer.Client
 
 			var position = CreateTextDocumentPosition (fileName, location);
 			return jsonRpc.InvokeWithParameterObjectAsync<Hover> (ProtocolMethods.TextDocumentHover, position);
+		}
+
+		public Task TextChanged (FilePath fileName, int version, TextChangeEventArgs e, TextEditor editor)
+		{
+			Runtime.AssertMainThread ();
+
+			if (!IsStarted) {
+				return Task.FromResult (0);
+			}
+
+			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentDidChange, fileName);
+
+			var message = new DidChangeTextDocumentParams {
+				TextDocument = new VersionedTextDocumentIdentifier {
+					Uri = fileName,
+					Version = version
+				},
+				ContentChanges = e.CreateTextDocumentContentChangeEvents (editor).ToArray ()
+			};
+
+			return jsonRpc.NotifyWithParameterObjectAsync (Methods.TextDocumentDidChange, message);
 		}
 
 		void Log (string format, object arg0)
