@@ -29,7 +29,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.LanguageServer.Protocol;
 using MonoDevelop.Components;
-using MonoDevelop.Core.Text;
 using MonoDevelop.Ide.CodeCompletion;
 using MonoDevelop.Ide.Editor;
 
@@ -128,6 +127,58 @@ namespace MonoDevelop.LanguageServer.Client
 			result.RepositionWindow ();
 
 			return result;
+		}
+
+		public override void ShowTooltipWindow (
+			TextEditor editor,
+			Window tipWindow,
+			TooltipItem item,
+			Xwt.ModifierKeys modifierState,
+			int mouseX,
+			int mouseY)
+		{
+			if (item.Offset == -1) {
+				var tooltipWindow = (TooltipInformationWindow)tipWindow;
+				ShowTooltipWindowAtMouseLocation (editor, tooltipWindow, mouseX, mouseY);
+			} else {
+				base.ShowTooltipWindow (editor, tipWindow, item, modifierState, mouseX, mouseY);
+			}
+		}
+
+		/// <summary>
+		/// No text range returned from the language server so the tooltip will
+		/// be shown based on the mouse cursor position. The arrow from the
+		/// tooltip should be pointing to the mouse cursor.
+		/// </summary>
+		void ShowTooltipWindowAtMouseLocation (
+			TextEditor editor,
+			TooltipInformationWindow tooltipWindow,
+			int mouseX,
+			int mouseY)
+		{
+			// mouseX here does not seem to produce the correct text editor column
+			// so only Point.Y is used from the TextEditor's LocationToPoint. Point.X
+			// is incorrect and cannot be used to determine the tooltip rectangle
+			// location.
+			DocumentLocation location = editor.PointToLocation (mouseX, mouseY);
+			Xwt.Point point = editor.LocationToPoint (location);
+
+			// The target rectangle should be a segment of text in the text editor. Since
+			// this does not exist the width of the tooltip window is used as the rectangle
+			// width and the X position is taken from the mouseX but shifted to the left by
+			// half the width of the tooltip window so the middle of the tooltip window
+			// appears under the mouse position so the arrow from the tooltip should be
+			// pointing to where the mouse cursor is. The mouseX and mouseY are captured by
+			// the tooltip provider at the time the tooltip is initially requested and so
+			// this is not necessarily the current mouse position.
+			var targetRectangle = new Xwt.Rectangle (
+				mouseX - (tooltipWindow.Width / 2), // Arrow from tooltip should point to mouse cursor.
+				point.Y, // The top of the line where the mouse cursor is
+				tooltipWindow.Width,
+				editor.GetLineHeight (editor.CaretLine)
+			);
+
+			tooltipWindow.ShowPopup (editor, targetRectangle, PopupPosition.Top);
 		}
 	}
 }
