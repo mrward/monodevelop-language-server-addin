@@ -44,7 +44,7 @@
 	<Extension path="/MonoDevelop/Ide/Editor/TooltipProviders">
 		<Provider
 			id="LanguageServer.Client.LanguageClientTooltipProvider"
-			insertafter="Debug"
+			insertafter="CompileError"
 			class="MonoDevelop.LanguageServer.Client.LanguageClientTooltipProvider" />
 	</Extension>
 </ExtensionModel>
