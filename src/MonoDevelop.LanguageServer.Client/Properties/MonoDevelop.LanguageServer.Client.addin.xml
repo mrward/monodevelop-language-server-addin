@@ -40,4 +40,11 @@
 			class="MonoDevelop.LanguageServer.Client.LanguageClientOutputPad"
 			_label="Language Client Log" />
 	</Extension>
+
+	<Extension path="/MonoDevelop/Ide/Editor/TooltipProviders">
+		<Provider
+			id="LanguageServer.Client.LanguageClientTooltipProvider"
+			insertafter="Debug"
+			class="MonoDevelop.LanguageServer.Client.LanguageClientTooltipProvider" />
+	</Extension>
 </ExtensionModel>

@@ -272,6 +272,18 @@ namespace MonoDevelop.LanguageServer.Client
 				token);
 		}
 
+		public Task<Hover> Hover (FilePath fileName, DocumentLocation location, CancellationToken token)
+		{
+			if (!IsStarted) {
+				return Task.FromResult (new Hover ());
+			}
+
+			Log ("Sending '{0}'. File: '{1}'", ProtocolMethods.TextDocumentHover, fileName);
+
+			var position = CreateTextDocumentPosition (fileName, location);
+			return jsonRpc.InvokeWithParameterObjectAsync<Hover> (ProtocolMethods.TextDocumentHover, position);
+		}
+
 		void Log (string format, object arg0)
 		{
 			string message = string.Format (format, arg0);

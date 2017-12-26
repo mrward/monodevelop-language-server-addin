@@ -123,6 +123,28 @@ namespace LanguageServer
 			return server.FindReferences(parameter);
 		}
 
+		[JsonRpcMethod("textDocument/hover")]
+		public Hover OnTextDocumentHover(JToken arg)
+		{
+			Log("textDocument/hover", arg);
+
+			var contents = new List<MarkedString>();
+
+			contents.Add(new MarkedString
+			{
+				Value = "Documentation"
+			});
+			contents.Add(new MarkedString
+			{
+				Value = "Summary"
+			});
+
+			return new Hover
+			{
+				Contents = contents.ToArray()
+			};
+		}
+
 		public string GetText()
 		{
 			return string.IsNullOrWhiteSpace(this.server.CustomText) ? "custom text from language server target" : this.server.CustomText;

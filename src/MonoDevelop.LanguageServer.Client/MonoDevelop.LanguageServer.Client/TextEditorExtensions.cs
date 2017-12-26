@@ -78,5 +78,16 @@ namespace MonoDevelop.LanguageServer.Client
 
 			return links;
 		}
+
+		public static TextSegment GetTextSegment (this TextEditor editor, Range range)
+		{
+			if (range != null) {
+				int startOffset = editor.PositionToOffset (range.Start);
+				int endOffset = editor.PositionToOffset (range.End);
+				return new TextSegment (startOffset, endOffset - startOffset);
+			}
+
+			return TextSegment.Invalid;
+		}
 	}
 }

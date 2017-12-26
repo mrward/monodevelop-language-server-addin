@@ -68,7 +68,7 @@ namespace MonoDevelop.LanguageServer.Client
 			return GetSession (fileName, true);
 		}
 
-		LanguageClientSession GetSession (FilePath fileName, bool createNewSession)
+		public LanguageClientSession GetSession (FilePath fileName, bool createNewSession)
 		{
 			if (!sessions.TryGetValue (fileName.Extension, out LanguageClientSession session)) {
 				if (createNewSession) {
