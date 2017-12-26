@@ -46,6 +46,7 @@ namespace MonoDevelop.LanguageServer.Client
 		JsonRpc jsonRpc;
 		string fileExtension;
 		CancellationToken cancellationToken = CancellationToken.None;
+		TextDocumentSyncKind documentSyncKind = TextDocumentSyncKind.None;
 
 		public LanguageClientSession (ILanguageClient client, string fileExtension)
 		{
@@ -125,6 +126,7 @@ namespace MonoDevelop.LanguageServer.Client
 			Log ("Initialized.", Id);
 
 			ServerCapabilities = result.Capabilities;
+			OnServerCapabilitiesChanged ();
 		}
 
 		public void Dispose ()
@@ -293,6 +295,11 @@ namespace MonoDevelop.LanguageServer.Client
 				return Task.FromResult (0);
 			}
 
+			if (!IsDocumentSyncSupported) {
+				Log ("Document sync not supported by server for '{0}'. File: '{1}'", Methods.TextDocumentDidChange, fileName);
+				return Task.FromResult (0);
+			}
+
 			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentDidChange, fileName);
 
 			var message = new DidChangeTextDocumentParams {
@@ -300,10 +307,31 @@ namespace MonoDevelop.LanguageServer.Client
 					Uri = fileName,
 					Version = version
 				},
-				ContentChanges = e.CreateTextDocumentContentChangeEvents (editor).ToArray ()
+				ContentChanges = e.CreateTextDocumentContentChangeEvents (editor, IsDocumentSyncFull)
+					.ToArray ()
 			};
 
 			return jsonRpc.NotifyWithParameterObjectAsync (Methods.TextDocumentDidChange, message);
+		}
+
+		void OnServerCapabilitiesChanged ()
+		{
+			TextDocumentSyncKind? documentSync = ServerCapabilities?.TextDocumentSync?.Change;
+			if (documentSync.HasValue) {
+				documentSyncKind = documentSync.Value;
+			}
+		}
+
+		bool IsDocumentSyncIncremental {
+			get { return documentSyncKind == TextDocumentSyncKind.Incremental; }
+		}
+
+		bool IsDocumentSyncFull {
+			get { return documentSyncKind == TextDocumentSyncKind.Full; }
+		}
+
+		bool IsDocumentSyncSupported {
+			get { return documentSyncKind != TextDocumentSyncKind.None; }
 		}
 
 		void Log (string format, object arg0)

@@ -36,12 +36,19 @@ namespace MonoDevelop.LanguageServer.Client
 	{
 		public static IEnumerable<TextDocumentContentChangeEvent> CreateTextDocumentContentChangeEvents (
 			this TextChangeEventArgs e,
-			TextEditor editor)
+			TextEditor editor,
+			bool fullContent)
 		{
-			return e.TextChanges.Select (textChange => CreateTextDocumentContentChangeEvents (textChange, editor));
+			if (fullContent) {
+				return CreateFullTextDocumentContentChangeEvents (editor);
+			}
+
+			return e.TextChanges.Select (textChange => {
+				return CreateIncrementalTextDocumentContentChangeEvent (textChange, editor);
+			});
 		}
 
-		public static TextDocumentContentChangeEvent CreateTextDocumentContentChangeEvents (
+		static TextDocumentContentChangeEvent CreateIncrementalTextDocumentContentChangeEvent (
 			this TextChange textChange,
 			TextEditor editor)
 		{
@@ -61,5 +68,13 @@ namespace MonoDevelop.LanguageServer.Client
 			};
 		}
 
+		static IEnumerable<TextDocumentContentChangeEvent> CreateFullTextDocumentContentChangeEvents (
+			TextEditor editor)
+		{
+			yield return new TextDocumentContentChangeEvent {
+				Text = editor.Text,
+				RangeLength = editor.Text.Length
+			};
+		}
 	}
 }

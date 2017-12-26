@@ -61,7 +61,7 @@ namespace MonoDevelop.LanguageServer.Client
 			session = LanguageClientServices.Workspace.GetSession (fileName);
 			session.DiagnosticsPublished += OnDiagnostics;
 
-			Editor.TextChanging += TextChanging;
+			Editor.TextChanged += TextChanged;
 
 			base.Initialize ();
 		}
@@ -74,7 +74,7 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 
 			if (Editor != null) {
-				Editor.TextChanged -= TextChanging;
+				Editor.TextChanged -= TextChanged;
 			}
 
 			base.Dispose ();
@@ -141,7 +141,7 @@ namespace MonoDevelop.LanguageServer.Client
 			renamer.RenameOccurrences (fileName, Editor.CaretLocation).Ignore ();
 		}
 
-		void TextChanging (object sender, TextChangeEventArgs e)
+		void TextChanged (object sender, TextChangeEventArgs e)
 		{
 			try {
 				documentVersion++;
