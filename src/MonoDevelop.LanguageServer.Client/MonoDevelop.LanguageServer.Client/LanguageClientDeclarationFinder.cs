@@ -58,7 +58,7 @@ namespace MonoDevelop.LanguageServer.Client
 						monitor.CancellationToken);
 
 					if (locations == null || locations.Length == 0) {
-						ShowNoDeclarationsFound ();
+						monitor.ReportSuccess (GettextCatalog.GetString ("No declaration found."));
 					} else if (locations.Length == 1) {
 						OpenDeclaration (locations [0]);
 					} else {
@@ -77,13 +77,6 @@ namespace MonoDevelop.LanguageServer.Client
 				Stock.StatusSearch,
 				false,
 				false);
-		}
-
-		void ShowNoDeclarationsFound ()
-		{
-			using (var monitor = IdeApp.Workbench.ProgressMonitors.GetSearchProgressMonitor (true, true)) {
-				monitor.ReportStatus (GettextCatalog.GetString ("No declaration found"));
-			}
 		}
 
 		static void OpenDeclaration (Location location)
