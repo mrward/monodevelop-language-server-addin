@@ -31,7 +31,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.LanguageServer.Protocol;
 using MonoDevelop.Core;
-using MonoDevelop.Ide;
 using MonoDevelop.Ide.Editor;
 using MonoDevelop.Ide.FindInFiles;
 
@@ -77,14 +76,18 @@ namespace MonoDevelop.LanguageServer.Client
 		public async Task RenameOccurrences (FilePath fileName, DocumentLocation location)
 		{
 			try {
-				Location[] locations = await session.GetReferences (
-					fileName,
-					location.CreatePosition (),
-					CancellationToken.None);
+				using (var monitor = LanguageClientProgressMonitors.GetRenameProgressMonitor ()) {
+					Location[] locations = await session.GetReferences (
+						fileName,
+						location.CreatePosition (),
+						CancellationToken.None);
 
-				if (locations != null) {
-					List<SearchResult> references = locations.Select (CreateSearchResult).ToList ();
-					editor.StartTextEditorRename (references);
+					if (locations == null) {
+						monitor.ReportSuccess (GettextCatalog.GetString ("No references found."));
+					} else {
+						List<SearchResult> references = locations.Select (CreateSearchResult).ToList ();
+						editor.StartTextEditorRename (references);
+					}
 				}
 			} catch (Exception ex) {
 				LanguageClientLoggingService.LogError ("RenameOccurrences error.", ex);

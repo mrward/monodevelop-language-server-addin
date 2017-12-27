@@ -41,10 +41,18 @@ namespace MonoDevelop.LanguageServer.Client
 		public static ProgressMonitor GetOpenDeclarationProgressMonitor ()
 		{
 			return IdeApp.Workbench.ProgressMonitors.GetStatusProgressMonitor (
-				GettextCatalog.GetString ("Finding declaration"),
+				GettextCatalog.GetString ("Searching\u2026"),
 				Stock.StatusSearch,
 				false,
-				false);
+				false,
+				false,
+				null,
+				true);
+		}
+
+		public static SearchProgressMonitor GetRenameProgressMonitor ()
+		{
+			return IdeApp.Workbench.ProgressMonitors.GetSearchProgressMonitor (false, false);
 		}
 	}
 }
