@@ -63,6 +63,8 @@ namespace MonoDevelop.LanguageServer.Client
 						monitor.ReportResults (references);
 					}
 				}
+			} catch (TaskCanceledException) {
+				LanguageClientLoggingService.Log ("Find references was canceled.");
 			} catch (Exception ex) {
 				LanguageClientLoggingService.LogError ("FindReferences error.", ex);
 			}
@@ -76,19 +78,21 @@ namespace MonoDevelop.LanguageServer.Client
 		public async Task RenameOccurrences (FilePath fileName, DocumentLocation location)
 		{
 			try {
-				using (var monitor = LanguageClientProgressMonitors.GetRenameProgressMonitor ()) {
+				using (var monitor = LanguageClientProgressMonitors.GetSearchProgressMonitorForRename ()) {
 					Location[] locations = await session.GetReferences (
 						fileName,
 						location.CreatePosition (),
 						CancellationToken.None);
 
 					if (locations == null) {
-						monitor.ReportSuccess (GettextCatalog.GetString ("No references found."));
+						monitor.ReportNoReferencesFound ();
 					} else {
 						List<SearchResult> references = locations.Select (CreateSearchResult).ToList ();
 						editor.StartTextEditorRename (references);
 					}
 				}
+			} catch (TaskCanceledException) {
+				LanguageClientLoggingService.Log ("Rename was canceled.");
 			} catch (Exception ex) {
 				LanguageClientLoggingService.LogError ("RenameOccurrences error.", ex);
 			}

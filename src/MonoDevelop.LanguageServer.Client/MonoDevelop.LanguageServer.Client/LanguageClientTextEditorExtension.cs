@@ -120,6 +120,8 @@ namespace MonoDevelop.LanguageServer.Client
 			try {
 				var completionList = await session.GetCompletionList (fileName, completionContext, token);
 				return completionList;
+			} catch (TaskCanceledException) {
+				// Ignore.
 			} catch (Exception ex) {
 				LanguageClientLoggingService.LogError ("HandleCodeCompletionAsync error.", ex);
 			}

@@ -50,20 +50,27 @@ namespace MonoDevelop.LanguageServer.Client
 
 		public async Task OpenDeclaration (FilePath fileName, DocumentLocation location)
 		{
+			ProgressMonitor monitor = null;
+
 			try {
-				using (var monitor = LanguageClientProgressMonitors.GetOpenDeclarationProgressMonitor ()) {
+				using (monitor = LanguageClientProgressMonitors.GetOpenDeclarationProgressMonitor ()) {
 					Location[] locations = await session.FindDefinitions (
 						fileName,
 						location.CreatePosition (),
 						monitor.CancellationToken);
 
 					if (locations == null || locations.Length == 0) {
-						monitor.ReportSuccess (GettextCatalog.GetString ("No declaration found."));
+						monitor.ReportNoDeclarationFound ();
 					} else if (locations.Length == 1) {
 						OpenDeclaration (locations [0]);
 					} else {
 						ShowMultipleDeclarations (locations);
 					}
+				}
+			} catch (TaskCanceledException) {
+				LanguageClientLoggingService.Log ("Go to declaration canceled.");
+				if (monitor != null) {
+					monitor.ReportGoToDeclarationCanceled ();
 				}
 			} catch (Exception ex) {
 				LanguageClientLoggingService.LogError ("OpenDeclaration error.", ex);

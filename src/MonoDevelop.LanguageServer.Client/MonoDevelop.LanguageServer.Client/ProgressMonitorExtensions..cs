@@ -1,5 +1,5 @@
 ﻿//
-// LanguageClientProgressMonitors.cs
+// ProgressMonitorExtensions..cs
 //
 // Author:
 //       Matt Ward <matt.ward@microsoft.com>
@@ -23,36 +23,25 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using MonoDevelop.Core;
-using MonoDevelop.Ide;
-using MonoDevelop.Ide.FindInFiles;
-using MonoDevelop.Ide.Gui;
 
 namespace MonoDevelop.LanguageServer.Client
 {
-	static class LanguageClientProgressMonitors
+	public static class ProgressMonitorExtensions_
 	{
-		public static SearchProgressMonitor GetSearchProgressMonitor ()
+		public static void ReportGoToDeclarationCanceled (this ProgressMonitor monitor)
 		{
-			return IdeApp.Workbench.ProgressMonitors.GetSearchProgressMonitor (true, true);
+			monitor.ReportWarning (GettextCatalog.GetString ("Go to declaration operation was canceled."));
 		}
 
-		public static ProgressMonitor GetOpenDeclarationProgressMonitor ()
+		public static void ReportNoDeclarationFound (this ProgressMonitor monitor)
 		{
-			return IdeApp.Workbench.ProgressMonitors.GetStatusProgressMonitor (
-				GettextCatalog.GetString ("Searching\u2026"),
-				Stock.StatusSearch,
-				false,
-				false,
-				false,
-				null,
-				true);
+			monitor.ReportSuccess (GettextCatalog.GetString ("No declaration found."));
 		}
 
-		public static SearchProgressMonitor GetSearchProgressMonitorForRename ()
+		public static void ReportNoReferencesFound (this ProgressMonitor monitor)
 		{
-			return IdeApp.Workbench.ProgressMonitors.GetSearchProgressMonitor (false, false);
+			monitor.ReportSuccess (GettextCatalog.GetString ("No references found."));
 		}
 	}
 }
