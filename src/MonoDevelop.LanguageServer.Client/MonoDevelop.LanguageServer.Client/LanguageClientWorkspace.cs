@@ -32,6 +32,7 @@ using Microsoft.VisualStudio.LanguageServer.Client;
 using MonoDevelop.Core;
 using MonoDevelop.Ide;
 using MonoDevelop.Ide.Gui;
+using MonoDevelop.Projects;
 
 namespace MonoDevelop.LanguageServer.Client
 {
@@ -44,12 +45,14 @@ namespace MonoDevelop.LanguageServer.Client
 		{
 			IdeApp.Workbench.DocumentOpened += WorkbenchDocumentOpened;
 			IdeApp.Workbench.DocumentClosed += WorkbenchDocumentClosed;
+			IdeApp.Workspace.SolutionUnloaded += SolutionUnloaded;
 		}
 
 		public void Dispose ()
 		{
 			IdeApp.Workbench.DocumentOpened -= WorkbenchDocumentOpened;
 			IdeApp.Workbench.DocumentClosed -= WorkbenchDocumentClosed;
+			IdeApp.Workspace.SolutionUnloaded -= SolutionUnloaded;
 		}
 
 		public bool IsSupported (Document document)
@@ -177,6 +180,24 @@ namespace MonoDevelop.LanguageServer.Client
 			} catch (Exception ex) {
 				LanguageClientLoggingService.LogError ("Error shutting down language client.", ex);
 			}
+		}
+
+		void SolutionUnloaded (object sender, SolutionEventArgs e)
+		{
+			ShutdownAllSessions ().LogFault ();
+		}
+
+		async Task ShutdownAllSessions ()
+		{
+			foreach (LanguageClientSession session in sessions.Values.ToArray ()) {
+				try {
+					await ShutdownSession (session);
+				} catch (Exception ex) {
+					LanguageClientLoggingService.LogError ("Shutdown error.", ex);
+				}
+			}
+
+			sessions.Clear ();
 		}
 	}
 }
