@@ -51,7 +51,7 @@ namespace MonoDevelop.LanguageServer.Client
 		public async Task OpenDeclaration (FilePath fileName, DocumentLocation location)
 		{
 			try {
-				using (var monitor = CreateOpenDeclarationProgressMonitor ()) {
+				using (var monitor = LanguageClientProgressMonitors.GetOpenDeclarationProgressMonitor ()) {
 					Location[] locations = await session.FindDefinitions (
 						fileName,
 						location.CreatePosition (),
@@ -70,15 +70,6 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 		}
 
-		ProgressMonitor CreateOpenDeclarationProgressMonitor ()
-		{
-			return IdeApp.Workbench.ProgressMonitors.GetStatusProgressMonitor (
-				GettextCatalog.GetString ("Finding declaration"),
-				Stock.StatusSearch,
-				false,
-				false);
-		}
-
 		static void OpenDeclaration (Location location)
 		{
 			var fileInfo = new FileOpenInformation (location.Uri);
@@ -93,7 +84,7 @@ namespace MonoDevelop.LanguageServer.Client
 
 		void ShowMultipleDeclarations (Location[] locations)
 		{
-			using (var monitor = IdeApp.Workbench.ProgressMonitors.GetSearchProgressMonitor (true, true)) {
+			using (var monitor = LanguageClientProgressMonitors.GetSearchProgressMonitor ()) {
 				List<SearchResult> references = locations.Select (CreateSearchResult).ToList ();
 				monitor.ReportResults (references);
 			}

@@ -70,6 +70,7 @@
     <Compile Include="MonoDevelop.LanguageServer.Client\ProtocolMethods.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\TextChangeEventArgsExtensions.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientDeclarationFinder.cs" />
+    <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientProgressMonitors.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\MonoDevelop.LanguageServer.Client.addin.xml" />

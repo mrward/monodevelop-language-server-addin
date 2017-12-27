@@ -51,7 +51,7 @@ namespace MonoDevelop.LanguageServer.Client
 		public async Task FindReferences (FilePath fileName, DocumentLocation location)
 		{
 			try {
-				using (var monitor = IdeApp.Workbench.ProgressMonitors.GetSearchProgressMonitor (true, true)) {
+				using (var monitor = LanguageClientProgressMonitors.GetSearchProgressMonitor ()) {
 					Location[] locations = await session.GetReferences (
 						fileName,
 						location.CreatePosition (),
