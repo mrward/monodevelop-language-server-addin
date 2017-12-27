@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.LanguageServer.Client;
 using MonoDevelop.Core;
 using MonoDevelop.Ide;
@@ -153,8 +154,28 @@ namespace MonoDevelop.LanguageServer.Client
 		{
 			LanguageClientSession currentSession = GetSession (document.FileName, false);
 
-			if (currentSession != null) {
+			if (currentSession == null) {
+				return;
+			}
+
+			if (IsAnyDocumentOpenForSession (currentSession)) {
 				currentSession.CloseDocument (document);
+			} else {
+				ShutdownSession (currentSession).LogFault ();
+			}
+		}
+
+		async Task ShutdownSession (LanguageClientSession session)
+		{
+			try {
+				LanguageClientLoggingService.Log ("Shutting down language client[{0}]", session.Id);
+
+				await session.Stop ();
+				sessions.Remove (session.Id);
+
+				LanguageClientLoggingService.Log ("Language client[{0}] shutdown.", session.Id);
+			} catch (Exception ex) {
+				LanguageClientLoggingService.LogError ("Error shutting down language client.", ex);
 			}
 		}
 	}

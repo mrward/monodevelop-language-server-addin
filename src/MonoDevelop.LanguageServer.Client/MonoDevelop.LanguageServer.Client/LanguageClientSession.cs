@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,7 +41,7 @@ using StreamJsonRpc;
 
 namespace MonoDevelop.LanguageServer.Client
 {
-	class LanguageClientSession : IDisposable
+	class LanguageClientSession
 	{
 		ILanguageClient client;
 		JsonRpc jsonRpc;
@@ -79,15 +80,24 @@ namespace MonoDevelop.LanguageServer.Client
 				.LogFault ();
 		}
 
-		public void Stop ()
+		public async Task Stop ()
 		{
-			if (client != null) {
-				client.StartAsync -= OnStartAsync;
-				client = null;
+			if (!IsStarted) {
+				return;
 			}
 
-			jsonRpc?.Dispose ();
-			jsonRpc = null;
+			try {
+				Log ("Sending '{0}' message.", Methods.Shutdown);
+				await jsonRpc.InvokeAsync (Methods.Shutdown);
+
+				Log ("Sending '{0}' message.", Methods.Exit);
+				await jsonRpc.InvokeAsync (Methods.Exit);
+			} catch (Exception ex) {
+				Log ("Stop error: {0}", ex);
+			} finally {
+				IsStarted = false;
+				RemoveEventHandlers ();
+			}
 		}
 
 		async Task OnStartAsync (object sender, EventArgs e)
@@ -129,9 +139,20 @@ namespace MonoDevelop.LanguageServer.Client
 			OnServerCapabilitiesChanged ();
 		}
 
-		public void Dispose ()
+		void RemoveEventHandlers ()
 		{
-			Stop ();
+			if (client != null) {
+				client.StartAsync -= OnStartAsync;
+				client = null;
+			}
+
+			try {
+				jsonRpc?.Dispose ();
+				jsonRpc = null;
+			} catch (IOException ex) {
+				// Ignore.
+				LanguageClientLoggingService.LogError ("JsonRpc.Dispose error.", ex);
+			}
 		}
 
 		public bool IsSupportedDocument (Document document)
