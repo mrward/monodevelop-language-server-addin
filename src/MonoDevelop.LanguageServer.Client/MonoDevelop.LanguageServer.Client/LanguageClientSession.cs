@@ -275,6 +275,27 @@ namespace MonoDevelop.LanguageServer.Client
 				token);
 		}
 
+		public Task<Location[]> FindDefinitions (FilePath fileName, Position position, CancellationToken token)
+		{
+			if (!IsStarted) {
+				return Task.FromResult (new Location [0]);
+			}
+
+			var message = new TextDocumentPositionParams {
+				TextDocument = new TextDocumentIdentifier {
+					Uri = fileName
+				},
+				Position = position
+			};
+
+			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentDefinition, fileName);
+
+			return jsonRpc.InvokeWithParameterObjectAsync<Location[]> (
+				Methods.TextDocumentDefinition,
+				message,
+				token);
+		}
+
 		public Task<Hover> Hover (FilePath fileName, DocumentLocation location, CancellationToken token)
 		{
 			if (!IsStarted) {

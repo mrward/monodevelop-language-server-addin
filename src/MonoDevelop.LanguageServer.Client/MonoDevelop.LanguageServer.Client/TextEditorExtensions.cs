@@ -89,5 +89,13 @@ namespace MonoDevelop.LanguageServer.Client
 
 			return TextSegment.Invalid;
 		}
+
+		public static SearchResult CreateSearchResult (this TextEditor editor, Location location)
+		{
+			int startOffset = editor.PositionToOffset (location.Range.Start);
+			int endOffset = editor.PositionToOffset (location.Range.End);
+			var provider = new FileProvider (new FilePath (location.Uri), null, startOffset, endOffset);
+			return new SearchResult (provider, startOffset, endOffset - startOffset);
+		}
 	}
 }

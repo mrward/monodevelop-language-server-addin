@@ -71,10 +71,7 @@ namespace MonoDevelop.LanguageServer.Client
 
 		SearchResult CreateSearchResult (Location location)
 		{
-			int startOffset = editor.PositionToOffset (location.Range.Start);
-			int endOffset = editor.PositionToOffset (location.Range.End);
-			var provider = new FileProvider (new FilePath (location.Uri), null, startOffset, endOffset);
-			return new SearchResult (provider, startOffset, endOffset - startOffset);
+			return editor.CreateSearchResult (location);
 		}
 
 		public async Task RenameOccurrences (FilePath fileName, DocumentLocation location)

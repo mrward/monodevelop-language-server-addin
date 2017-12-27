@@ -151,5 +151,12 @@ namespace MonoDevelop.LanguageServer.Client
 				LanguageClientLoggingService.LogError ("TextChanged error.", ex);
 			}
 		}
+
+		[CommandHandler (RefactoryCommands.GotoDeclaration)]
+		void GoToDeclaration ()
+		{
+			var finder = new LanguageClientDeclarationFinder (Editor, session);
+			finder.OpenDeclaration (fileName, Editor.CaretLocation).Ignore ();
+		}
 	}
 }
