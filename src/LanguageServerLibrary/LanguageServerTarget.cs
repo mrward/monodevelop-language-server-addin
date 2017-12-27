@@ -145,6 +145,15 @@ namespace LanguageServer
 			};
 		}
 
+		[JsonRpcMethod(Methods.TextDocumentDefinition)]
+		public Location[] OnTextDocumentDefinition(JToken arg)
+		{
+			Log(Methods.TextDocumentDefinition, arg);
+
+			var parameter = arg.ToObject<TextDocumentPositionParams>();
+			return server.GoToDefinition(parameter);
+		}
+
 		public string GetText()
 		{
 			return string.IsNullOrWhiteSpace(this.server.CustomText) ? "custom text from language server target" : this.server.CustomText;

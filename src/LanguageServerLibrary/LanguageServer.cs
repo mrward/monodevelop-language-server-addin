@@ -229,6 +229,62 @@ namespace LanguageServer
 			return locations.ToArray();
 		}
 
+		public Location[] GoToDefinition(TextDocumentPositionParams parameter)
+		{
+			if (textDocument?.Uri != parameter.TextDocument.Uri)
+			{
+				Log(string.Format("GoToDefinition: TextDocument.Uri does not match."));
+				return null;
+			}
+
+			string[] lines = textDocument.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+
+			string item = GetReferenceItem(lines, parameter.Position);
+			if (string.IsNullOrEmpty(item))
+			{
+				Log(string.Format("GoToDefinition: No item to search for."));
+				return null;
+			}
+
+			Log(string.Format("GoToDefinition: Searching for '{0}'", item));
+
+			var locations = new List<Location>();
+
+			for (int i = 0; i < lines.Length; ++i)
+			{
+				string line = lines[i];
+				if (i == parameter.Position.Line)
+				{
+					continue;
+				}
+
+				int index = line.IndexOf(item, StringComparison.Ordinal);
+				if (index >=0)
+				{
+					var location = new Location
+					{
+						Range = new Range
+						{
+							Start = new Position
+							{
+								Character = index,
+								Line = i
+							},
+							End = new Position
+							{
+								Character = index + item.Length,
+								Line = i
+							}
+						},
+						Uri = textDocument.Uri
+					};
+					locations.Add(location);
+				}
+			}
+
+			return locations.ToArray();
+		}
+
 		private string GetReferenceItem (string[] lines, Position position)
 		{
 			if (lines.Length < position.Line)
