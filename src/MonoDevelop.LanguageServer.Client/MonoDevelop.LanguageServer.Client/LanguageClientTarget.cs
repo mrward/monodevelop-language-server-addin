@@ -26,7 +26,6 @@
 
 using System;
 using Microsoft.VisualStudio.LanguageServer.Protocol;
-using MonoDevelop.Ide;
 using Newtonsoft.Json.Linq;
 using StreamJsonRpc;
 
@@ -48,9 +47,23 @@ namespace MonoDevelop.LanguageServer.Client
 				Log (Methods.WindowLogMessage, arg);
 
 				var message = arg.ToObject<LogMessageParams> ();
-				IdeApp.Workbench.StatusBar.ShowMessage (message);
+				LogMessage (message);
 			} catch (Exception ex) {
 				LanguageClientLoggingService.LogError ("OnWindowLogMessage error.", ex);
+			}
+		}
+
+		void LogMessage (LogMessageParams message)
+		{
+			string fullMessage = string.Format ("LanguageServer[{0}]: {1}", session.Id, message.Message);
+
+			switch (message.MessageType) {
+				case MessageType.Error:
+					LanguageClientOutputPad.WriteError (fullMessage);
+					break;
+				default:
+					LanguageClientOutputPad.WriteText (fullMessage);
+					break;
 			}
 		}
 
