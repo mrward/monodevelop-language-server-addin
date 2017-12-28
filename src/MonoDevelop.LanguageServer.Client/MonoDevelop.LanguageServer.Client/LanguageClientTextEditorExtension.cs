@@ -168,5 +168,19 @@ namespace MonoDevelop.LanguageServer.Client
 			var finder = new LanguageClientDeclarationFinder (Editor, session);
 			finder.OpenDeclaration (fileName, Editor.CaretLocation).Ignore ();
 		}
+
+		[CommandUpdateHandler (RefactoryCommands.FindReferences)]
+		[CommandUpdateHandler (EditCommands.Rename)]
+		[CommandUpdateHandler (RefactoryCommands.GotoDeclaration)]
+		void EnableCommandsWhenWordAtCaretPosition (CommandInfo info)
+		{
+			info.Enabled = !IsWordAtCurrentCaretPosition ();
+		}
+
+		bool IsWordAtCurrentCaretPosition ()
+		{
+			WordAtPosition word = Editor.GetWordAtPosition (Editor.CaretLine, Editor.CaretColumn);
+			return word.IsEmpty;
+		}
 	}
 }
