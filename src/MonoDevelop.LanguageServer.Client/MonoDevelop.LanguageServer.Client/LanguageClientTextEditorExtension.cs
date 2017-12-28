@@ -118,7 +118,15 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 
 			try {
+				WordAtPosition word = Editor.GetWordAtPosition (completionContext);
+
 				var completionList = await session.GetCompletionList (fileName, completionContext, token);
+
+				if (!word.IsEmpty) {
+					completionList.TriggerWordLength = word.Length;
+					completionContext.TriggerLineOffset = word.StartColumn;
+				}
+
 				return completionList;
 			} catch (TaskCanceledException) {
 				// Ignore.

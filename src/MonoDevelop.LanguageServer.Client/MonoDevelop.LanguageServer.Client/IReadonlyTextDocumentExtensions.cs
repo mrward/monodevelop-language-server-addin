@@ -1,5 +1,5 @@
 ﻿//
-// AssemblyInfo.cs
+// IReadonlyTextDocumentExtensions.cs
 //
 // Author:
 //       Matt Ward <matt.ward@microsoft.com>
@@ -24,28 +24,45 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System.Reflection;
-using System.Runtime.CompilerServices;
+using MonoDevelop.Ide.Editor;
+using MonoDevelop.Ide.CodeCompletion;
 
-[assembly: AssemblyTitle ("MonoDevelop.LanguageServer.Client")]
-[assembly: AssemblyDescription ("")]
-[assembly: AssemblyConfiguration ("")]
-[assembly: AssemblyCompany ("")]
-[assembly: AssemblyProduct ("")]
-[assembly: AssemblyCopyright ("Microsoft")]
-[assembly: AssemblyTrademark ("")]
-[assembly: AssemblyCulture ("")]
+namespace MonoDevelop.LanguageServer.Client
+{
+	static class IReadonlyTextDocumentExtensions
+	{
+		/// <summary>
+		/// Gets the word at position. Line and column numbers start from 1.
+		/// </summary>
+		public static WordAtPosition GetWordAtPosition (this IReadonlyTextDocument document, int line, int column)
+		{
+			if (line <= 0 || column <= 0) {
+				return WordAtPosition.Invalid;
+			}
 
-// The assembly version has the format "{Major}.{Minor}.{Build}.{Revision}".
-// The form "{Major}.{Minor}.*" will automatically update the build and revision,
-// and "{Major}.{Minor}.{Build}.*" will update just the revision.
+			if (line > 0 && (line > document.LineCount)) {
+				return WordAtPosition.Invalid;
+			}
 
-[assembly: AssemblyVersion ("0.1.0")]
+			string lineText = document.GetLineText (line);
 
-// The following attributes are used to specify the signing key for the assembly, 
-// if desired. See the Mono documentation for more information about signing.
+			// Check the column exists on the line. Allow the column to
+			// be just after the last text character.
+			if (column - 1 > lineText.Length) {
+				return WordAtPosition.Invalid;
+			}
 
-//[assembly: AssemblyDelaySign(false)]
-//[assembly: AssemblyKeyFile("")]
+			return TextEditorWords.GetWordAtPosition (
+				column,
+				TextEditorWords.DefaultWordRegex,
+				lineText);
+		}
 
-[assembly: InternalsVisibleTo ("MonoDevelop.LanguageServer.Client.Tests")]
+		public static WordAtPosition GetWordAtPosition (
+			this IReadonlyTextDocument document,
+			CodeCompletionContext context)
+		{
+			return document.GetWordAtPosition (context.TriggerLine, context.TriggerLineOffset);
+		}
+	}
+}

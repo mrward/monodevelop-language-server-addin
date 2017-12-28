@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MockLanguageExtension", "Mo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LanguageServer.UI", "LanguageServer.UI\LanguageServer.UI.csproj", "{C5D81F0E-809A-488F-BB57-BC1C0102FA6A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoDevelop.LanguageServer.Client.Tests", "MonoDevelop.LanguageServer.Client.Tests\MonoDevelop.LanguageServer.Client.Tests.csproj", "{4791142B-32E0-48A9-B3CC-B81A483AE0DA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{C5D81F0E-809A-488F-BB57-BC1C0102FA6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5D81F0E-809A-488F-BB57-BC1C0102FA6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C5D81F0E-809A-488F-BB57-BC1C0102FA6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4791142B-32E0-48A9-B3CC-B81A483AE0DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4791142B-32E0-48A9-B3CC-B81A483AE0DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4791142B-32E0-48A9-B3CC-B81A483AE0DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4791142B-32E0-48A9-B3CC-B81A483AE0DA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{738B3D86-F59E-4E15-A890-155A6DCACB9F} = {3D98DFCB-2F89-40FF-8120-6051F80202D0}
