@@ -120,6 +120,10 @@ namespace MonoDevelop.LanguageServer.Client
 			try {
 				WordAtPosition word = Editor.GetWordAtPosition (completionContext);
 
+				if (!ShouldTriggerCompletion (word, completionContext, triggerInfo)) {
+					return null;
+				}
+
 				var completionList = await session.GetCompletionList (fileName, completionContext, token);
 
 				if (!word.IsEmpty) {
@@ -135,6 +139,38 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 
 			return null;
+		}
+
+		static bool ShouldTriggerCompletion (
+			WordAtPosition word,
+			CodeCompletionContext completionContext,
+			CompletionTriggerInfo triggerInfo)
+		{
+			switch (triggerInfo.CompletionTriggerReason) {
+				case CompletionTriggerReason.CharTyped:
+				case CompletionTriggerReason.BackspaceOrDeleteCommand:
+					return ShouldTriggerCompletionOnCharTyped (word, completionContext, triggerInfo);
+				default:
+					// Always trigger when Ctrl+Space typed.
+					return true;
+			}
+		}
+
+		static bool ShouldTriggerCompletionOnCharTyped (
+			WordAtPosition word,
+			CodeCompletionContext completionContext,
+			CompletionTriggerInfo triggerInfo)
+		{
+			if (word.IsEmpty) {
+				// No word near caret - do not trigger code completion.
+				return false;
+			} else if (word.EndColumn != completionContext.TriggerLineOffset) {
+				// Not at the end of the word. For example, a space was typed after
+				// the end of the word
+				return false;
+			}
+
+			return true;
 		}
 
 		[CommandHandler (RefactoryCommands.FindReferences)]
