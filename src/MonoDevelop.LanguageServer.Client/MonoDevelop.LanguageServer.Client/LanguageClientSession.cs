@@ -326,7 +326,11 @@ namespace MonoDevelop.LanguageServer.Client
 			Log ("Sending '{0}'. File: '{1}'", ProtocolMethods.TextDocumentHover, fileName);
 
 			var position = CreateTextDocumentPosition (fileName, location);
-			return jsonRpc.InvokeWithParameterObjectAsync<Hover> (ProtocolMethods.TextDocumentHover, position);
+
+			return jsonRpc.InvokeWithParameterObjectAsync<Hover> (
+				ProtocolMethods.TextDocumentHover,
+				position,
+				token);
 		}
 
 		public Task TextChanged (FilePath fileName, int version, TextChangeEventArgs e, TextEditor editor)
