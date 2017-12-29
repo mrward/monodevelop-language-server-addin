@@ -37,6 +37,8 @@ namespace LanguageServer
 			capabilities.CompletionProvider = new CompletionOptions();
 			capabilities.CompletionProvider.ResolveProvider = false;
 			capabilities.CompletionProvider.TriggerCharacters = new string[] { ",", "." };
+			capabilities.SignatureHelpProvider = new SignatureHelpOptions ();
+			capabilities.SignatureHelpProvider.TriggerCharacters = new string [] { "(" };
 
 			var result = new InitializeResult();
 			result.Capabilities = capabilities;
@@ -152,6 +154,43 @@ namespace LanguageServer
 
 			var parameter = arg.ToObject<TextDocumentPositionParams>();
 			return server.GoToDefinition(parameter);
+		}
+
+		[JsonRpcMethod("textDocument/signatureHelp")]
+		public SignatureHelp OnTextDocumentSignaureHelp(JToken arg)
+		{
+			Log("textDocument/signatureHelp", arg);
+
+			var signatures = new List<SignatureInformation>();
+
+			for (int i = 0; i < 2; ++i)
+			{
+				var signature = new SignatureInformation
+				{
+					Documentation = "Signature documentation " + i,
+					Label = "Signature " + i
+				};
+
+				var parameters = new List<ParameterInformation>();
+
+				for (int j = 0; j < 3; ++j)
+				{
+					var parameter = new ParameterInformation
+					{
+						Documentation = "Parameter documentation " + i,
+						Label = "Parameter " + i
+					};
+				}
+
+				signature.Parameters = parameters.ToArray();
+
+				signatures.Add(signature);
+			}
+
+			return new SignatureHelp
+			{
+				Signatures = signatures.ToArray()
+			};
 		}
 
 		public string GetText()
