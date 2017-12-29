@@ -47,6 +47,8 @@ namespace LanguageServer.UI
 			Build ();
 			PopulateMessagingComboBox ();
 
+			customMessageTextEntry.Text = viewModel.CustomText;
+
 			clearLoggingTextButton.Clicked += ClearLoggingTextButtonClicked;
 			sendLogMessageButton.Clicked += SendLogMessageButtonClicked;
 			showMessageButton.Clicked += ShowMessageButtonClicked;
@@ -55,6 +57,7 @@ namespace LanguageServer.UI
 			addDiagnosticButton.Clicked += AddDiagnosticButtonClicked;
 			clearDiagnosticsButton.Clicked += ClearDiagnosticsButtonClicked;
 			viewModel.Tags.CollectionChanged += TagsCollectionChanged;
+			customMessageTextEntry.Changed += CustomMessageTextEntryChanged;
 
 			OnDiagnosticTagsChanged ();
 		}
@@ -155,6 +158,11 @@ namespace LanguageServer.UI
 				diagnosticWidgets.Add (widget);
 				diagnosticWidgetsVBox.PackStart (widget);
 			}
+		}
+
+		void CustomMessageTextEntryChanged (object sender, EventArgs e)
+		{
+			viewModel.CustomText = customMessageTextEntry.Text;
 		}
 	}
 }

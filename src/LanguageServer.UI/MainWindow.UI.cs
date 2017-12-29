@@ -45,6 +45,7 @@ namespace LanguageServer.UI
 		Button addDiagnosticButton;
 		Button clearDiagnosticsButton;
 		VBox diagnosticWidgetsVBox;
+		TextEntry customMessageTextEntry;
 
 		void Build ()
 		{
@@ -59,13 +60,24 @@ namespace LanguageServer.UI
 			AddDiagnosticsTab ();
 			AddMessagingTab ();
 			//AddSettingsTab ();
-			//AddCustomTab ();
+			AddCustomTab ();
 		}
 
 		void AddCustomTab ()
 		{
-			var customVBox = new VBox ();
-			notebook.Add (customVBox, "Custom");
+			var mainVBox = new VBox ();
+			mainVBox.Margin = 10;
+			notebook.Add (mainVBox, "Custom");
+
+			var customHBox = new HBox ();
+			mainVBox.PackStart (customHBox, false);
+
+			var label = new Label ();
+			label.Text = "Custom Text:";
+			customHBox.PackStart (label);
+
+			customMessageTextEntry = new TextEntry ();
+			customHBox.PackStart (customMessageTextEntry, true);
 		}
 
 		void AddSettingsTab ()
