@@ -6,4 +6,19 @@
 	<Extension path="/MonoDevelop/Ide/Composition">
 		<Assembly file="MonoDevelop.MockLanguageExtension.dll" />
 	</Extension>
+
+	<Extension path="/MonoDevelop/Ide/Commands">
+		<Category id="MockLanguageServer" _name="Mock Language Server">
+			<Command
+				id="MonoDevelop.MockLanguageExtension.Commands.SendCustomMessage"
+				_label="Send Custom Message"
+				defaultHandler="MockLanguageExtension.SendCustomMessageHandler" />
+		</Category>
+	</Extension>
+
+	<Extension path="/MonoDevelop/Ide/MainMenu">
+		<ItemSet id="MockLanguageServer" _label="_Language Server" insertbefore="Help">
+			<CommandItem id="MonoDevelop.MockLanguageExtension.Commands.SendCustomMessage" />
+		</ItemSet>
+	</Extension>
 </ExtensionModel>
