@@ -218,5 +218,43 @@ namespace MonoDevelop.LanguageServer.Client
 			WordAtPosition word = Editor.GetWordAtPosition (Editor.CaretLine, Editor.CaretColumn);
 			return word.IsEmpty;
 		}
+
+		public override Task<ParameterHintingResult> HandleParameterCompletionAsync (
+			CodeCompletionContext completionContext,
+			char completionChar,
+			CancellationToken token = default (CancellationToken))
+		{
+			if (ShouldTriggerParameterCompletion (completionChar)) {
+				try {
+					return GetParameterCompletionAsync (completionContext, token);
+				} catch (Exception ex) {
+					LanguageClientLoggingService.LogError ("HandleParameterCompletionAsync error.", ex);
+				}
+			}
+			return base.HandleParameterCompletionAsync (completionContext, completionChar, token);
+		}
+
+		bool ShouldTriggerParameterCompletion (char completionChar)
+		{
+			return session.IsSignatureHelpTriggerCharacter (completionChar);
+		}
+
+		async Task<ParameterHintingResult> GetParameterCompletionAsync (
+			CodeCompletionContext completionContext,
+			CancellationToken token)
+		{
+			SignatureHelp signatureHelp = await session.GetSignatureHelp (fileName, completionContext, token);
+
+			if (signatureHelp == null || !signatureHelp.Signatures.Any ()) {
+				return ParameterHintingResult.Empty;
+			}
+
+			var parameterDataItems = signatureHelp
+				.Signatures
+				.Select (signature => new LanguageClientParameterHintingData (signature) as ParameterHintingData)
+				.ToList ();
+
+			return new ParameterHintingResult (parameterDataItems, completionContext.TriggerOffset);
+		}
 	}
 }

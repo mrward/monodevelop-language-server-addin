@@ -74,6 +74,7 @@
     <Compile Include="MonoDevelop.LanguageServer.Client\TextEditorWords.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\IReadonlyTextDocumentExtensions.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\WordAtPosition.cs" />
+    <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientParameterHintingData.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\MonoDevelop.LanguageServer.Client.addin.xml" />

@@ -32,5 +32,6 @@ namespace MonoDevelop.LanguageServer.Client
 	static class ProtocolMethods
 	{
 		public const string TextDocumentHover = "textDocument/hover";
+		public const string TextDocumentSignatureHelper = "textDocument/signatureHelp";
 	}
 }

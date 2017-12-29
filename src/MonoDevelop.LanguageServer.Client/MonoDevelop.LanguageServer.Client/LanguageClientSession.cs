@@ -380,6 +380,37 @@ namespace MonoDevelop.LanguageServer.Client
 			get { return documentSyncKind != TextDocumentSyncKind.None; }
 		}
 
+		public bool IsSignatureHelpTriggerCharacter (char character)
+		{
+			string[] triggerCharacters = ServerCapabilities?.SignatureHelpProvider?.TriggerCharacters;
+
+			if (triggerCharacters != null) {
+				string triggerCharacterToMatch = character.ToString ();
+				return triggerCharacters.Any (c => c == triggerCharacterToMatch);
+			}
+
+			return false;
+		}
+
+		public Task<SignatureHelp> GetSignatureHelp (
+			FilePath fileName,
+			CodeCompletionContext completionContext,
+			CancellationToken token)
+		{
+			if (!IsStarted) {
+				return Task.FromResult (new SignatureHelp ());
+			}
+
+			Log ("Sending '{0}'. File: '{1}'", ProtocolMethods.TextDocumentSignatureHelper, fileName);
+
+			var position = CreateTextDocumentPosition (fileName, completionContext);
+
+			return jsonRpc.InvokeWithParameterObjectAsync<SignatureHelp> (
+				ProtocolMethods.TextDocumentSignatureHelper,
+				position,
+				token);
+		}
+
 		void Log (string format, object arg0)
 		{
 			string message = string.Format (format, arg0);
