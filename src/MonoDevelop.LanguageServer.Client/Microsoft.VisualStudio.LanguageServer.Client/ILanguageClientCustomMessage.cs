@@ -1,5 +1,5 @@
 ﻿//
-// AsyncEventHandler.cs
+// ILanguageClientCustomMessage.cs
 //
 // Author:
 //       Matt Ward <matt.ward@microsoft.com>
@@ -24,11 +24,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
 using System.Threading.Tasks;
+using StreamJsonRpc;
 
-namespace Microsoft.VisualStudio.Threading
+namespace Microsoft.VisualStudio.LanguageServer.Client
 {
-	public delegate Task AsyncEventHandler (object sender, EventArgs args);
-	public delegate Task AsyncEventHandler<T> (object sender, T args);
+	public interface ILanguageClientCustomMessage
+	{
+		object CustomMessageTarget { get; }
+		object MiddleLayer { get; }
+
+		Task AttachForCustomMessageAsync (JsonRpc rpc);
+	}
 }

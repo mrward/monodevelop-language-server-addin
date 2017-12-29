@@ -125,6 +125,18 @@ namespace MonoDevelop.LanguageServer.Client
 
 			var target = new LanguageClientTarget (this);
 			jsonRpc = new JsonRpc (connection.Writer, connection.Reader, target);
+
+			var customClient = client as ILanguageClientCustomMessage;
+			if (customClient != null) {
+				Log ("Adding LanguageClientCustomMessage.");
+
+				if (customClient.CustomMessageTarget != null) {
+					jsonRpc.AddLocalRpcTarget (customClient.CustomMessageTarget);
+				}
+
+				await customClient.AttachForCustomMessageAsync (jsonRpc);
+			}
+
 			jsonRpc.StartListening ();
 			jsonRpc.JsonSerializer.NullValueHandling = NullValueHandling.Ignore;
 

@@ -48,6 +48,9 @@
       <LogicalName>MonoDevelop.PowerShell.addin.xml</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="StreamJsonRpc" Version="1.2.8" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <MonoDevelop>

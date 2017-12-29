@@ -12,7 +12,7 @@
 using Microsoft.VisualStudio.LanguageServer.Client;
 using Microsoft.VisualStudio.Threading;
 using Microsoft.VisualStudio.Utilities;
-//using StreamJsonRpc;
+using StreamJsonRpc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -25,7 +25,7 @@ namespace MockLanguageExtension
 {
 	[ContentType("foo")]
 	[Export(typeof(ILanguageClient))]
-	public class FooLanguageClient : ILanguageClient //, ILanguageClientCustomMessage
+	public class FooLanguageClient : ILanguageClient, ILanguageClientCustomMessage
 	{
 		internal const string UiContextGuidString = "DE885E15-D44E-40B1-A370-45372EFC23AA";
 
@@ -48,11 +48,11 @@ namespace MockLanguageExtension
 			set;
 		}
 
-		//internal JsonRpc Rpc
-		//{
-		//	get;
-		//	set;
-		//}
+		internal JsonRpc Rpc
+		{
+			get;
+			set;
+		}
 
 		public string Name => "Foo Language Extension";
 
@@ -96,22 +96,12 @@ namespace MockLanguageExtension
 			return Task.FromResult(connection);
 		}
 
-		//public async Task AttachForCustomMessageAsync(JsonRpc rpc)
-		//{
-		//	this.Rpc = rpc;
+		public Task AttachForCustomMessageAsync(JsonRpc rpc)
+		{
+			Rpc = rpc;
 
-		//	await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
-		//	// Sets the UI context so the custom command will be available.
-		//	var monitorSelection = ServiceProvider.GlobalProvider.GetService(typeof(IVsMonitorSelection)) as IVsMonitorSelection;
-		//	if (monitorSelection != null)
-		//	{
-		//		if (monitorSelection.GetCmdUIContextCookie(ref this.uiContextGuid, out uint cookie) == VSConstants.S_OK)
-		//		{
-		//			monitorSelection.SetCmdUIContext(cookie, 1);
-		//		}
-		//	}
-		//}
+			return Task.FromResult (0);
+		}
 
 		public async Task OnLoadedAsync()
 		{

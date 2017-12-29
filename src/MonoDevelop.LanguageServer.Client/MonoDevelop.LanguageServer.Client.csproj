@@ -41,8 +41,6 @@
     <Compile Include="Microsoft.VisualStudio.LanguageServer.Client\CodeRemoteContentDefinition.cs" />
     <Compile Include="Microsoft.VisualStudio.LanguageServer.Client\ILanguageClient.cs" />
     <Compile Include="Microsoft.VisualStudio.LanguageServer.Client\Connection.cs" />
-    <Compile Include="Microsoft.VisualStudio.Threading\AsyncEventHandler.cs" />
-    <Compile Include="Microsoft.VisualStudio.Threading\TplExtensions.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientTextEditorExtension.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientProvider.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientServices.cs" />
@@ -75,6 +73,7 @@
     <Compile Include="MonoDevelop.LanguageServer.Client\IReadonlyTextDocumentExtensions.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\WordAtPosition.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientParameterHintingData.cs" />
+    <Compile Include="Microsoft.VisualStudio.LanguageServer.Client\ILanguageClientCustomMessage.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\MonoDevelop.LanguageServer.Client.addin.xml" />
