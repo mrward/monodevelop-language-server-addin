@@ -37,7 +37,7 @@ namespace MonoDevelop.LanguageServer.Client
 		{
 			this.session = session;
 			CompletionItem = item;
-			CompletionText = item.InsertText;
+			CompletionText = item.InsertText ?? item?.TextEdit?.NewText;
 
 			Icon = item.GetIcon ();
 		}
@@ -51,7 +51,7 @@ namespace MonoDevelop.LanguageServer.Client
 		/// than to support it as VSCode does.
 		/// </summary>
 		public override string DisplayText {
-			get { return CompletionItem.InsertText; }
+			get { return CompletionText; }
 			set { base.DisplayText = value; }
 		}
 
