@@ -405,12 +405,28 @@ namespace MonoDevelop.LanguageServer.Client
 		{
 			string[] triggerCharacters = ServerCapabilities?.SignatureHelpProvider?.TriggerCharacters;
 
+			return IsTriggerCharacter (character, triggerCharacters);
+		}
+
+		static bool IsTriggerCharacter (char character, string[] triggerCharacters)
+		{
 			if (triggerCharacters != null) {
 				string triggerCharacterToMatch = character.ToString ();
 				return triggerCharacters.Any (c => c == triggerCharacterToMatch);
 			}
 
 			return false;
+		}
+
+		public bool IsCompletionTriggerCharacter (char? character)
+		{
+			if (!character.HasValue) {
+				return false;
+			}
+
+			string[] triggerCharacters = ServerCapabilities?.CompletionProvider?.TriggerCharacters;
+
+			return IsTriggerCharacter (character.Value, triggerCharacters);
 		}
 
 		public Task<SignatureHelp> GetSignatureHelp (

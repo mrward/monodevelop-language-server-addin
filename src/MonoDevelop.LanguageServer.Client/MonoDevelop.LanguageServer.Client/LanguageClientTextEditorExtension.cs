@@ -141,25 +141,37 @@ namespace MonoDevelop.LanguageServer.Client
 			return null;
 		}
 
-		static bool ShouldTriggerCompletion (
+		bool ShouldTriggerCompletion (
 			WordAtPosition word,
 			CodeCompletionContext completionContext,
 			CompletionTriggerInfo triggerInfo)
 		{
 			switch (triggerInfo.CompletionTriggerReason) {
 				case CompletionTriggerReason.CharTyped:
-				case CompletionTriggerReason.BackspaceOrDeleteCommand:
 					return ShouldTriggerCompletionOnCharTyped (word, completionContext, triggerInfo);
+				case CompletionTriggerReason.BackspaceOrDeleteCommand:
+					return ShouldTriggerCompletionAtPosition (word, completionContext);
 				default:
 					// Always trigger when Ctrl+Space typed.
 					return true;
 			}
 		}
 
-		static bool ShouldTriggerCompletionOnCharTyped (
+		bool ShouldTriggerCompletionOnCharTyped (
 			WordAtPosition word,
 			CodeCompletionContext completionContext,
 			CompletionTriggerInfo triggerInfo)
+		{
+			if (session.IsCompletionTriggerCharacter (triggerInfo.TriggerCharacter)) {
+				return true;
+			}
+
+			return ShouldTriggerCompletionAtPosition (word, completionContext);
+		}
+
+		static bool ShouldTriggerCompletionAtPosition (
+			WordAtPosition word,
+			CodeCompletionContext completionContext)
 		{
 			if (word.IsEmpty) {
 				// No word near caret - do not trigger code completion.
