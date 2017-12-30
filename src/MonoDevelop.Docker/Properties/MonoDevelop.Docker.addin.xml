@@ -1,0 +1,9 @@
+<ExtensionModel>
+	<Runtime>
+		<Import assembly="MonoDevelop.Docker.LanguageServer.Client.dll" />
+	</Runtime>
+
+	<Extension path="/MonoDevelop/Ide/Composition">
+		<Assembly file="MonoDevelop.Docker.LanguageServer.Client.dll" />
+	</Extension>
+</ExtensionModel>

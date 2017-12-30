@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LanguageServer.UI", "Langua
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoDevelop.LanguageServer.Client.Tests", "MonoDevelop.LanguageServer.Client.Tests\MonoDevelop.LanguageServer.Client.Tests.csproj", "{4791142B-32E0-48A9-B3CC-B81A483AE0DA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoDevelop.Docker", "MonoDevelop.Docker\MonoDevelop.Docker.csproj", "{450068F4-6036-45D1-8711-6ED6E768716C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{4791142B-32E0-48A9-B3CC-B81A483AE0DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4791142B-32E0-48A9-B3CC-B81A483AE0DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4791142B-32E0-48A9-B3CC-B81A483AE0DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{450068F4-6036-45D1-8711-6ED6E768716C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{450068F4-6036-45D1-8711-6ED6E768716C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{450068F4-6036-45D1-8711-6ED6E768716C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{450068F4-6036-45D1-8711-6ED6E768716C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{738B3D86-F59E-4E15-A890-155A6DCACB9F} = {3D98DFCB-2F89-40FF-8120-6051F80202D0}
