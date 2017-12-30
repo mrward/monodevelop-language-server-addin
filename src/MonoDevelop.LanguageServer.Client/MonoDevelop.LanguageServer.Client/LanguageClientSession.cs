@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -143,13 +144,28 @@ namespace MonoDevelop.LanguageServer.Client
 
 			Log ("Sending '{0}' message.", Methods.Initialize);
 
-			var message = new InitializeParams ();
+			var message = CreateInitializeParams (client);
+
 			var result = await jsonRpc.InvokeWithParameterObjectAsync<InitializeResult> (Methods.Initialize, message);
 
 			Log ("Initialized.", Id);
 
 			ServerCapabilities = result.Capabilities;
 			OnServerCapabilitiesChanged ();
+		}
+
+		static InitializeParams CreateInitializeParams (ILanguageClient client)
+		{
+			int processId = 0;
+			using (Process process = Process.GetCurrentProcess ()) {
+				processId = process.Id;
+			}
+
+			return new InitializeParams {
+				Capabilities = new ClientCapabilities (),
+				InitializationOptions = client.InitializationOptions,
+				ProcessId = processId
+			};
 		}
 
 		void RemoveEventHandlers ()
