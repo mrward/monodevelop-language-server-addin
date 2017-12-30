@@ -32,6 +32,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.LanguageServer.Client;
+using Microsoft.VisualStudio.LanguageServer.Protocol;
 using Microsoft.VisualStudio.Threading;
 using Microsoft.VisualStudio.Utilities;
 
@@ -56,18 +57,23 @@ namespace MonoDevelop.TypeScript
 		#pragma warning restore CS0067
 
 		/// <summary>
-		/// In the 'bin' directory at the GitHub repository root run:
+		/// Uses https://github.com/sourcegraph/javascript-typescript-langserver
 		/// 
-		/// 'npm install typescript-language-server'
+		/// git clone this repository so it sits alongside the monodevelop-language-server-addin
+		/// directory.
 		/// 
-		/// to install the TypeScript language server.
+		/// Build the language server using:
+		/// 
+		/// npm install
+		/// npm run build
 		/// </summary>
 		public Task<Connection> ActivateAsync (CancellationToken token)
 		{
 			string currentDirectory = Path.GetDirectoryName (GetType ().Assembly.Location);
+
 			string typeScriptLanguageServerDirectory = Path.Combine (
 				currentDirectory,
-				"node_modules/typescript-language-server/lib");
+				"../../javascript-typescript-langserver/lib/");
 
 			if (!Directory.Exists (typeScriptLanguageServerDirectory)) {
 				throw new Exception (string.Format ("TypeScript language server not found at '{0}'.", typeScriptLanguageServerDirectory));
@@ -75,9 +81,8 @@ namespace MonoDevelop.TypeScript
 
 			string logFile = Path.Combine (currentDirectory, "tsserver.log");
 
-			string script = Path.Combine (typeScriptLanguageServerDirectory, "cli.js");
-			string tsserverPath = Path.Combine (typeScriptLanguageServerDirectory, "../node_modules/typescript/bin/tsserver");
-			string arguments = string.Format ("\"{0}\" --stdio --tsserver-path \"{1}\" --tsserver-log-verbosity normal --tsserver-log-file \"{2}\"", script, tsserverPath, logFile);
+			string script = Path.Combine (typeScriptLanguageServerDirectory, "language-server-stdio");
+			string arguments = string.Format ("\"{0}\" --trace --logfile \"{1}\"", script, logFile);
 
 			var info = new ProcessStartInfo {
 				FileName = "node",
