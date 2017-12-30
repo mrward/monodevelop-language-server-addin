@@ -127,6 +127,8 @@ namespace MonoDevelop.LanguageServer.Client
 			var target = new LanguageClientTarget (this);
 			jsonRpc = new JsonRpc (connection.Writer, connection.Reader, target);
 
+			jsonRpc.Disconnected += JsonRpcDisconnected;
+
 			var customClient = client as ILanguageClientCustomMessage;
 			if (customClient != null) {
 				Log ("Adding LanguageClientCustomMessage.");
@@ -160,8 +162,11 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 
 			try {
-				jsonRpc?.Dispose ();
-				jsonRpc = null;
+				if (jsonRpc != null) {
+					jsonRpc.Disconnected -= JsonRpcDisconnected;
+					jsonRpc.Dispose ();
+					jsonRpc = null;
+				}
 			} catch (IOException ex) {
 				// Ignore.
 				LanguageClientLoggingService.LogError ("JsonRpc.Dispose error.", ex);
@@ -413,6 +418,20 @@ namespace MonoDevelop.LanguageServer.Client
 				token);
 		}
 
+		void JsonRpcDisconnected (object sender, JsonRpcDisconnectedEventArgs e)
+		{
+			if (e.Exception != null) {
+				Log ("JsonRpc disconnection error. Reason: {0}, Description: {1}, Error: {2}",
+					e.Reason,
+					e.Description,
+					e.Exception);
+			} else {
+				Log ("JsonRpc disconnection. Reason: {0}, Description: {1}",
+					e.Reason,
+					e.Description);
+			}
+		}
+
 		void Log (string format, object arg0)
 		{
 			string message = string.Format (format, arg0);
@@ -422,6 +441,12 @@ namespace MonoDevelop.LanguageServer.Client
 		void Log (string format, object arg0, object arg1)
 		{
 			string message = string.Format (format, arg0, arg1);
+			Log (message);
+		}
+
+		void Log (string format, object arg0, object arg1, object arg2)
+		{
+			string message = string.Format (format, arg0, arg1, arg2);
 			Log (message);
 		}
 
