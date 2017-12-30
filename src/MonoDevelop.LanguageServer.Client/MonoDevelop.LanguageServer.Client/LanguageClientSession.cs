@@ -189,7 +189,7 @@ namespace MonoDevelop.LanguageServer.Client
 			var message = new DidOpenTextDocumentParams {
 				TextDocument = new TextDocumentItem {
 					LanguageId = LanguageIdentifiers.GetLanguageIdentifier (document.FileName),
-					Uri = document.FileName,
+					Uri = document.FileName.ToUri (),
 					Text = document.Text
 				}
 			};
@@ -212,9 +212,7 @@ namespace MonoDevelop.LanguageServer.Client
 			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentDidClose, fileName);
 
 			var message = new DidCloseTextDocumentParams {
-				TextDocument = new TextDocumentIdentifier {
-					Uri = fileName
-				}
+				TextDocument = TextDocumentIdentifierFactory.Create (fileName)
 			};
 
 			return jsonRpc.NotifyWithParameterObjectAsync (Methods.TextDocumentDidClose, message);
@@ -278,9 +276,7 @@ namespace MonoDevelop.LanguageServer.Client
 					Character = column,
 					Line = line
 				},
-				TextDocument = new TextDocumentIdentifier {
-					Uri = fileName
-				}
+				TextDocument = TextDocumentIdentifierFactory.Create (fileName)
 			};
 		}
 
@@ -294,9 +290,7 @@ namespace MonoDevelop.LanguageServer.Client
 				Context = new ReferenceContext {
 					IncludeDeclaration = true
 				},
-				TextDocument = new TextDocumentIdentifier {
-					Uri = fileName
-				},
+				TextDocument = TextDocumentIdentifierFactory.Create (fileName),
 				Position = position
 			};
 
@@ -315,9 +309,7 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 
 			var message = new TextDocumentPositionParams {
-				TextDocument = new TextDocumentIdentifier {
-					Uri = fileName
-				},
+				TextDocument = TextDocumentIdentifierFactory.Create (fileName),
 				Position = position
 			};
 
@@ -361,10 +353,7 @@ namespace MonoDevelop.LanguageServer.Client
 			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentDidChange, fileName);
 
 			var message = new DidChangeTextDocumentParams {
-				TextDocument = new VersionedTextDocumentIdentifier {
-					Uri = fileName,
-					Version = version
-				},
+				TextDocument = TextDocumentIdentifierFactory.Create (fileName, version),
 				ContentChanges = e.CreateTextDocumentContentChangeEvents (editor, IsDocumentSyncFull)
 					.ToArray ()
 			};

@@ -82,7 +82,7 @@ namespace MonoDevelop.LanguageServer.Client
 
 		void OnDiagnostics (object sender, DiagnosticsEventArgs e)
 		{
-			if (e.Uri == null || !(fileName == e.Uri)) {
+			if (e.Uri == null || !(fileName.ToUri () == e.Uri)) {
 				return;
 			}
 
