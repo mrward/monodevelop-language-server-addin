@@ -38,7 +38,7 @@ namespace MonoDevelop.LanguageServer.Client
 	[Export]
 	class LanguageClientProvider
 	{
-		IFileExtensionRegistryService fileExtensionRegistry;
+		IFileExtensionRegistryService2 fileExtensionRegistry;
 		List<ILanguageClient> clients;
 
 		Dictionary<string, ILanguageClient> contentTypeMappings =
@@ -46,7 +46,7 @@ namespace MonoDevelop.LanguageServer.Client
 
 		[ImportingConstructor]
 		public LanguageClientProvider (
-			[Import] IFileExtensionRegistryService fileExtensionRegistry,
+			[Import] IFileExtensionRegistryService2 fileExtensionRegistry,
 			[ImportMany (typeof (ILanguageClient))] IEnumerable<ILanguageClient> clients)
 		{
 			this.fileExtensionRegistry = fileExtensionRegistry;
@@ -79,7 +79,7 @@ namespace MonoDevelop.LanguageServer.Client
 
 		public ILanguageClient GetLanguageClient (FilePath fileName)
 		{
-			IContentType contentType = fileExtensionRegistry.GetContentTypeForExtension (fileName.Extension);
+			IContentType contentType = fileExtensionRegistry.GetContentTypeForFileNameOrExtension (fileName.FileName);
 			if (contentType.IsUnknown ()) {
 				return null;
 			}
