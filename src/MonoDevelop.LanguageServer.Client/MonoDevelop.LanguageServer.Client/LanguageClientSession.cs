@@ -76,8 +76,9 @@ namespace MonoDevelop.LanguageServer.Client
 		{
 			Log ("Call OnLoadedAsync.");
 
-			client.OnLoadedAsync ()
-				.LogFault ();
+			Task.Run (async () => {
+				await client.OnLoadedAsync ();
+			}).LogFault ();
 		}
 
 		public async Task Stop ()
