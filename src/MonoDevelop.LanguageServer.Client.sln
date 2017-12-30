@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoDevelop.Yaml", "MonoDev
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoDevelop.Java", "MonoDevelop.Java\MonoDevelop.Java.csproj", "{47D079AA-CE2E-42B1-986D-C63D0B345839}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoDevelop.TypeScript", "MonoDevelop.TypeScript\MonoDevelop.TypeScript.csproj", "{DDEE8647-95EA-4F16-9CF9-A403D3913F05}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,10 @@ Global
 		{47D079AA-CE2E-42B1-986D-C63D0B345839}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47D079AA-CE2E-42B1-986D-C63D0B345839}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47D079AA-CE2E-42B1-986D-C63D0B345839}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDEE8647-95EA-4F16-9CF9-A403D3913F05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDEE8647-95EA-4F16-9CF9-A403D3913F05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDEE8647-95EA-4F16-9CF9-A403D3913F05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDEE8647-95EA-4F16-9CF9-A403D3913F05}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{738B3D86-F59E-4E15-A890-155A6DCACB9F} = {3D98DFCB-2F89-40FF-8120-6051F80202D0}
