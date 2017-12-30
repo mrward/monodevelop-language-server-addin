@@ -104,7 +104,7 @@ namespace MonoDevelop.LanguageServer.Client
 			} else {
 				Runtime.RunInMainThread (() => {
 					AddOpenDocumentsToSession (session);
-				}).Wait ();
+				}).LogFault ();
 			}
 		}
 
@@ -173,8 +173,11 @@ namespace MonoDevelop.LanguageServer.Client
 			try {
 				LanguageClientLoggingService.Log ("Shutting down language client[{0}]", session.Id);
 
-				await session.Stop ();
+				session.Started -= SessionStarted;
+
 				sessions.Remove (session.Id);
+
+				await session.Stop ();
 
 				LanguageClientLoggingService.Log ("Language client[{0}] shutdown.", session.Id);
 			} catch (Exception ex) {

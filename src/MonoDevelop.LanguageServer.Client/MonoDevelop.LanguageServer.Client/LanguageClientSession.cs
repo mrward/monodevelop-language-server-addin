@@ -83,16 +83,14 @@ namespace MonoDevelop.LanguageServer.Client
 
 		public async Task Stop ()
 		{
-			if (!IsStarted) {
-				return;
-			}
-
 			try {
-				Log ("Sending '{0}' message.", Methods.Shutdown);
-				await jsonRpc.InvokeAsync (Methods.Shutdown);
+				if (IsStarted) {
+					Log ("Sending '{0}' message.", Methods.Shutdown);
+					await jsonRpc.InvokeAsync (Methods.Shutdown);
 
-				Log ("Sending '{0}' message.", Methods.Exit);
-				await jsonRpc.InvokeAsync (Methods.Exit);
+					Log ("Sending '{0}' message.", Methods.Exit);
+					await jsonRpc.InvokeAsync (Methods.Exit);
+				}
 			} catch (Exception ex) {
 				Log ("Stop error: {0}", ex);
 			} finally {
