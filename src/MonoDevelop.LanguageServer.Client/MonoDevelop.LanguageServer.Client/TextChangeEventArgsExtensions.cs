@@ -56,7 +56,14 @@ namespace MonoDevelop.LanguageServer.Client
 			int endOffset = textChange.Offset + textChange.RemovalLength;
 
 			var startLocation = editor.OffsetToLocation (startOffset);
-			var endLocation = editor.OffsetToLocation (endOffset);
+
+			DocumentLocation endLocation;
+
+			if (textChange.RemovalLength == 0) {
+				endLocation = editor.OffsetToLocation (endOffset);
+			} else {
+				endLocation = GetEndLocationAfterRemoval (startLocation, textChange);
+			}
 
 			return new TextDocumentContentChangeEvent {
 				Range = new Range {
@@ -75,6 +82,22 @@ namespace MonoDevelop.LanguageServer.Client
 				Text = editor.Text,
 				RangeLength = editor.Text.Length
 			};
+		}
+
+		static DocumentLocation GetEndLocationAfterRemoval (DocumentLocation startLocation, TextChange textChange)
+		{
+			var document = TextEditorFactory.CreateNewReadonlyDocument (textChange.RemovedText, "a.txt");
+			if (document.LineCount > 1) {
+				int line = startLocation.Line + document.LineCount - 1;
+
+				IDocumentLine lastLine = document.GetLine (document.LineCount);
+				int column = lastLine.LengthIncludingDelimiter + 1;
+
+				return new DocumentLocation (line, column);
+			} else {
+				int column = startLocation.Column + textChange.RemovalLength;
+				return new DocumentLocation (startLocation.Line, column);
+			}
 		}
 	}
 }

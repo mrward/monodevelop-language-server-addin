@@ -157,10 +157,13 @@ namespace MonoDevelop.LanguageServer.Client.Tests
 		[TestCase ("ac", "b", 1, 1, "ab", "b", 1, "0,1", "0,2")]
 		[TestCase ("ac", "b", 0, 1, "bc", "b", 1, "0,0", "0,1")]
 		[TestCase ("abc", "d", 0, 2, "dc", "d", 2, "0,0", "0,2")]
-		//[TestCase ("abc", "", 0, 2, "c", "", 2, "0,0", "0,2")]
+		[TestCase ("abc", "", 0, 2, "c", "", 2, "0,0", "0,2")]
 		[TestCase ("ac", "", 0, 1, "c", "", 1, "0,0", "0,1")]
-		//[TestCase ("ac", "", 1, 1, "a", "", 1, "0,1", "0,2")]
+		[TestCase ("ac", "", 1, 1, "a", "", 1, "0,1", "0,2")]
 		[TestCase ("abc\ndef", "e", 4, 1, "abc\neef", "e", 1, "1,0", "1,1")]
+		[TestCase ("abc\ndef", "", 3, 1, "abcdef", "", 1, "0,3", "1,0")]
+		[TestCase ("abc\n", "", 3, 1, "abc", "", 1, "0,3", "1,0")]
+		[TestCase ("abc\r\n", "", 3, 2, "abc", "", 2, "0,3", "1,0")]
 		public void ReplaceText_IncrementalChangeEvent (
 			string text,
 			string replaceText,
