@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoDevelop.LanguageServer.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoDevelop.Docker", "MonoDevelop.Docker\MonoDevelop.Docker.csproj", "{450068F4-6036-45D1-8711-6ED6E768716C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoDevelop.Sql", "MonoDevelop.Sql\MonoDevelop.Sql.csproj", "{8B9F4961-3882-49AA-ABB2-A82ED3721F22}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{450068F4-6036-45D1-8711-6ED6E768716C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{450068F4-6036-45D1-8711-6ED6E768716C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{450068F4-6036-45D1-8711-6ED6E768716C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B9F4961-3882-49AA-ABB2-A82ED3721F22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B9F4961-3882-49AA-ABB2-A82ED3721F22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B9F4961-3882-49AA-ABB2-A82ED3721F22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B9F4961-3882-49AA-ABB2-A82ED3721F22}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{738B3D86-F59E-4E15-A890-155A6DCACB9F} = {3D98DFCB-2F89-40FF-8120-6051F80202D0}
