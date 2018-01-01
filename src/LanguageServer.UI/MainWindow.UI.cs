@@ -46,6 +46,7 @@ namespace LanguageServer.UI
 		Button clearDiagnosticsButton;
 		VBox diagnosticWidgetsVBox;
 		TextEntry customMessageTextEntry;
+		RichTextView settingsTextView;
 
 		void Build ()
 		{
@@ -59,7 +60,7 @@ namespace LanguageServer.UI
 			AddLoggingTab ();
 			AddDiagnosticsTab ();
 			AddMessagingTab ();
-			//AddSettingsTab ();
+			AddSettingsTab ();
 			AddCustomTab ();
 		}
 
@@ -84,6 +85,10 @@ namespace LanguageServer.UI
 		{
 			var settingsVBox = new VBox ();
 			notebook.Add (settingsVBox, "Settings");
+
+			settingsTextView = new RichTextView ();
+			settingsTextView.ReadOnly = true;
+			settingsVBox.PackStart (settingsTextView, true, true);
 		}
 
 		void AddMessagingTab ()

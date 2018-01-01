@@ -94,7 +94,7 @@ namespace LanguageServer
 		[JsonRpcMethod(Methods.WorkspaceDidChangeConfiguration)]
 		public void OnDidChangeConfiguration(JToken arg)
 		{
-			LoggingService.Log(Methods.WorkspaceDidChangeConfiguration, arg);
+			Log(Methods.WorkspaceDidChangeConfiguration, arg);
 
 			var parameter = arg.ToObject<DidChangeConfigurationParams>();
 			this.server.SendSettings(parameter);

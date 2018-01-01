@@ -114,6 +114,8 @@ namespace LanguageServer.UI
 		{
 			if (e.PropertyName == nameof (viewModel.ResponseText)) {
 				responseTextEntry.Text = viewModel.ResponseText;
+			} else if (e.PropertyName == nameof (viewModel.CurrentSettings)) {
+				settingsTextView.LoadText (viewModel.CurrentSettings ?? string.Empty, TextFormat.Plain);
 			}
 		}
 
