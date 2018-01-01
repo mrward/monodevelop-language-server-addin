@@ -152,6 +152,8 @@ namespace MonoDevelop.LanguageServer.Client
 
 			ServerCapabilities = result.Capabilities;
 			OnServerCapabilitiesChanged ();
+
+			await SendConfigurationSettings ();
 		}
 
 		static InitializeParams CreateInitializeParams (ILanguageClient client)
@@ -166,6 +168,24 @@ namespace MonoDevelop.LanguageServer.Client
 				InitializationOptions = client.InitializationOptions,
 				ProcessId = processId
 			};
+		}
+
+		async Task SendConfigurationSettings ()
+		{
+			var settings = LanguageClientConfigurationSettingsProvider.GetSettings (client.ConfigurationSections);
+			if (settings == null) {
+				return;
+			}
+
+			Log ("Sending '{0}' message.", Methods.WorkspaceDidChangeConfiguration);
+
+			var message = new DidChangeConfigurationParams {
+				Settings = settings
+			};
+
+			await jsonRpc.NotifyAsync (Methods.WorkspaceDidChangeConfiguration, message);
+
+			Log ("Configuration sent.", Id);
 		}
 
 		void RemoveEventHandlers ()
