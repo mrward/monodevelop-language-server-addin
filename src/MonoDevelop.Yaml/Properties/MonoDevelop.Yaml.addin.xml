@@ -1,0 +1,9 @@
+<ExtensionModel>
+	<Runtime>
+		<Import assembly="MonoDevelop.Yaml.LanguageServer.Client.dll" />
+	</Runtime>
+
+	<Extension path="/MonoDevelop/Ide/Composition">
+		<Assembly file="MonoDevelop.Yaml.LanguageServer.Client.dll" />
+	</Extension>
+</ExtensionModel>

@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoDevelop.Docker", "MonoD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoDevelop.Sql", "MonoDevelop.Sql\MonoDevelop.Sql.csproj", "{8B9F4961-3882-49AA-ABB2-A82ED3721F22}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoDevelop.Yaml", "MonoDevelop.Yaml\MonoDevelop.Yaml.csproj", "{467E3110-B9E4-4B58-AB6C-723BDD9AC01F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{8B9F4961-3882-49AA-ABB2-A82ED3721F22}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B9F4961-3882-49AA-ABB2-A82ED3721F22}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B9F4961-3882-49AA-ABB2-A82ED3721F22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{467E3110-B9E4-4B58-AB6C-723BDD9AC01F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{467E3110-B9E4-4B58-AB6C-723BDD9AC01F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{467E3110-B9E4-4B58-AB6C-723BDD9AC01F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{467E3110-B9E4-4B58-AB6C-723BDD9AC01F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{738B3D86-F59E-4E15-A890-155A6DCACB9F} = {3D98DFCB-2F89-40FF-8120-6051F80202D0}
