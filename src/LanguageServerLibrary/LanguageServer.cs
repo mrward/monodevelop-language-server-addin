@@ -373,12 +373,19 @@ namespace LanguageServer
 			this.CurrentSettings = parameter.Settings.ToString();
 			this.NotifyPropertyChanged(nameof(CurrentSettings));
 
-			JToken parsedSettings = JToken.Parse(this.CurrentSettings);
-			int newMaxProblems = parsedSettings.Children().First().Values<int>("maxNumberOfProblems").First();
-			if (this.maxProblems != newMaxProblems)
+			try
 			{
-				this.maxProblems = newMaxProblems;
-				this.SendDiagnostics();
+				JToken parsedSettings = JToken.Parse(this.CurrentSettings);
+				int newMaxProblems = parsedSettings.Children().First().Values<int>("maxNumberOfProblems").First();
+				if (this.maxProblems != newMaxProblems)
+				{
+					this.maxProblems = newMaxProblems;
+					this.SendDiagnostics();
+				}
+			}
+			catch (Exception ex)
+			{
+				LoggingService.Log("Error reading settings: " + ex.Message);
 			}
 		}
 
