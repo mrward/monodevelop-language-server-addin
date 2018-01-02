@@ -35,16 +35,17 @@ namespace MonoDevelop.LanguageServer.Client.Tests
 		[Test]
 		public void GetSettings_OneSettingFromDifferentSection ()
 		{
-			string json = "{ \"a.Value\": true, \"b.Value\": false }";
+			string json = "{ \"a.Value-a\": true, \"b.Value-b\": false }";
 
 			var sections = new [] { "a" };
 			var settings = LanguageClientConfigurationSettingsProvider.GetSettings (sections, json);
 
-			JToken token = null;
-			bool result = settings.TryGetValue ("b.Value", out token);
-			var value = settings.GetValue ("a.Value") as JValue;
+			var aObject = settings.GetValue ("a") as JObject;
+			var bObject = settings.GetValue ("b");
 
-			Assert.IsFalse (result);
+			var value = aObject.GetValue ("Value-a") as JValue;
+
+			Assert.IsNull (bObject);
 			Assert.AreEqual (true, value.Value);
 		}
 
@@ -83,8 +84,10 @@ namespace MonoDevelop.LanguageServer.Client.Tests
 				sections,
 				json);
 
-			var value1 = settings.GetValue ("Test.Value1") as JValue;
-			var value2 = settings.GetValue ("Test.Value2") as JValue;
+			var obj = settings.GetValue ("Test") as JObject;
+
+			var value1 = obj.GetValue ("Value1") as JValue;
+			var value2 = obj.GetValue ("Value2") as JValue;
 
 			Assert.AreEqual (true, value1.Value);
 			Assert.AreEqual ("changed", value2.Value);

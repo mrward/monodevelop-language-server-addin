@@ -91,11 +91,38 @@ namespace MonoDevelop.LanguageServer.Client
 				};
 				defaultSettings.Merge (settings, mergeSettings);
 
-				return defaultSettings;
+				return defaultSettings.GroupByParentSection (configurationSections);
 			} else if (hasSettings) {
-				return settings;
-			} else {
-				return defaultSettings;
+				return settings.GroupByParentSection (configurationSections);
+			} else if (defaultSettings != null) {
+				return defaultSettings.GroupByParentSection (configurationSections);
+			}
+
+			return null;
+		}
+
+		static JObject GroupByParentSection (this JObject settings, IEnumerable<string> configurationSections)
+		{
+			var sectionProperties = configurationSections
+				.Select (section => new JProperty (section, new JObject ()))
+				.ToList ();
+
+			foreach (JProperty prop in settings.Properties ().ToList ()) {
+				AddToParentSection (prop, sectionProperties);
+			}
+
+			return new JObject (sectionProperties);
+		}
+
+		static void AddToParentSection (JProperty prop, List<JProperty> sections)
+		{
+			foreach (JProperty section in sections) {
+				if (prop.Name.StartsWith (section.Name + ".", StringComparison.OrdinalIgnoreCase)) {
+					string newPropertyName = prop.Name.Substring (section.Name.Length + 1);
+					var newProperty = new JProperty (newPropertyName, prop.Value);
+					var jobject = (JObject)section.First;
+					jobject.Add (newProperty);
+				}
 			}
 		}
 
