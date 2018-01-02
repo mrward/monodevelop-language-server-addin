@@ -50,6 +50,9 @@
     <EmbeddedResource Include="Properties\MonoDevelop.Yaml.addin.xml">
       <LogicalName>MonoDevelop.Yaml.addin.xml</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\VSWorkspaceSettings.json">
+      <LogicalName>VSWorkspaceSettings.json</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
