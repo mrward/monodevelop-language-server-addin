@@ -58,5 +58,36 @@ namespace MonoDevelop.LanguageServer.Client.Tests
 
 			Assert.IsNull (settings);
 		}
+
+		[Test]
+		public void GetDefaultSettingsFromResources_VSWorkspaceJsonFileIsEmbeddedAsResource ()
+		{
+			var settings = LanguageClientConfigurationSettingsProvider.GetDefaultSettingsFromResources (GetType ());
+
+			var value1 = settings.GetValue ("Test.Value1") as JValue;
+			var value2 = settings.GetValue ("Test.Value2") as JValue;
+
+			Assert.AreEqual (true, value1.Value);
+			Assert.AreEqual ("abc", value2.Value);
+		}
+
+		[Test]
+		public void GetSettings_UseEmbeddedResourceAsDefault_UserDefinedJsonOverridesSomeValues ()
+		{
+			string json = "{ \"Test.Value2\": \"changed\" }";
+
+			var sections = new [] { "Test" };
+
+			var settings = LanguageClientConfigurationSettingsProvider.GetSettings (
+				GetType (),
+				sections,
+				json);
+
+			var value1 = settings.GetValue ("Test.Value1") as JValue;
+			var value2 = settings.GetValue ("Test.Value2") as JValue;
+
+			Assert.AreEqual (true, value1.Value);
+			Assert.AreEqual ("changed", value2.Value);
+		}
 	}
 }

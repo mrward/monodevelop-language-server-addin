@@ -172,7 +172,10 @@ namespace MonoDevelop.LanguageServer.Client
 
 		async Task SendConfigurationSettings ()
 		{
-			var settings = LanguageClientConfigurationSettingsProvider.GetSettings (client.ConfigurationSections);
+			var settings = LanguageClientConfigurationSettingsProvider.GetSettings (
+				client.ConfigurationSections,
+				client.GetType ());
+
 			if (settings == null) {
 				return;
 			}

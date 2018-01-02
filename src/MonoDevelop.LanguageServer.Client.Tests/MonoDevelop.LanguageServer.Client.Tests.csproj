@@ -53,6 +53,11 @@
       <Name>MonoDevelop.LanguageServer.Client</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="MonoDevelop.LanguageServer.Client.Tests\VSWorkspaceSettings.json">
+      <LogicalName>VSWorkspaceSettings.json</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <MonoDevelop>

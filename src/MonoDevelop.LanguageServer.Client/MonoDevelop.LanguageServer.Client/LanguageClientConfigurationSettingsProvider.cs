@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using MonoDevelop.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -36,7 +37,9 @@ namespace MonoDevelop.LanguageServer.Client
 {
 	static class LanguageClientConfigurationSettingsProvider
 	{
-		public static JObject GetSettings (IEnumerable<string> configurationSections)
+		public static readonly string VSWorkspaceJsonFileName = "VSWorkspaceSettings.json";
+
+		public static JObject GetSettings (IEnumerable<string> configurationSections, Type type)
 		{
 			if (!AnySections (configurationSections)) {
 				return null;
@@ -49,7 +52,7 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 
 			string json = File.ReadAllText (settingsFile);
-			return GetSettings (configurationSections, json);
+			return GetSettings (type, configurationSections, json);
 		}
 
 		public static JObject GetSettings (IEnumerable<string> configurationSections, string json)
@@ -58,6 +61,14 @@ namespace MonoDevelop.LanguageServer.Client
 				return null;
 			}
 
+			return GetSettings (configurationSections, json, null);
+		}
+
+		static JObject GetSettings (
+			IEnumerable<string> configurationSections,
+			string json,
+			JObject defaultSettings)
+		{
 			JObject settings = ReadJson (json);
 
 			var sectionsList = configurationSections
@@ -74,11 +85,18 @@ namespace MonoDevelop.LanguageServer.Client
 				}
 			}
 
-			if (hasSettings) {
-				return settings;
-			}
+			if (hasSettings && defaultSettings != null) {
+				var mergeSettings = new JsonMergeSettings {
+					MergeArrayHandling = MergeArrayHandling.Merge
+				};
+				defaultSettings.Merge (settings, mergeSettings);
 
-			return null;
+				return defaultSettings;
+			} else if (hasSettings) {
+				return settings;
+			} else {
+				return defaultSettings;
+			}
 		}
 
 		static bool IncludedInSection (string name, IEnumerable<string> sections)
@@ -95,16 +113,60 @@ namespace MonoDevelop.LanguageServer.Client
 
 		static FilePath GetDefaultSettingsFile ()
 		{
-			return UserProfile.Current.ConfigDir.Combine ("VSWorkspaceSettings.json");
+			return UserProfile.Current.ConfigDir.Combine (VSWorkspaceJsonFileName);
 		}
 
 		static JObject ReadJson (string json)
 		{
 			using (var stringReader = new StringReader (json)) {
-				using (var reader = new JsonTextReader (stringReader)) {
-					return (JObject)JToken.ReadFrom (reader);
-				}
+				return ReadJson (stringReader);
 			}
+		}
+
+		static JObject ReadJson (Stream stream)
+		{
+			using (var streamReader = new StreamReader (stream)) {
+				return ReadJson (streamReader);
+			}
+		}
+
+		static JObject ReadJson (TextReader textReader)
+		{
+			using (var reader = new JsonTextReader (textReader)) {
+				return (JObject)JToken.ReadFrom (reader);
+			}
+		}
+
+		public static JObject GetDefaultSettingsFromResources (Type type)
+		{
+			return GetDefaultSettingsFromResources (type.Assembly);
+		}
+
+		public static JObject GetSettings (Type type, IEnumerable<string> configurationSections, string json)
+		{
+			if (!AnySections (configurationSections)) {
+				return null;
+			}
+
+			JObject defaultSettings = GetDefaultSettingsFromResources (type);
+
+			return GetSettings (configurationSections, json, defaultSettings);
+		}
+
+		public static JObject GetDefaultSettingsFromResources (Assembly assembly)
+		{
+			if (!VSWorkspaceJsonFileResourceExists (assembly)) {
+				return null;
+			}
+
+			return ReadJson (assembly.GetManifestResourceStream (VSWorkspaceJsonFileName));
+		}
+
+		static bool VSWorkspaceJsonFileResourceExists (Assembly assembly)
+		{
+			return assembly
+				.GetManifestResourceNames ()
+				.Any (name => VSWorkspaceJsonFileName.Equals (name, StringComparison.OrdinalIgnoreCase));
 		}
 	}
 }
