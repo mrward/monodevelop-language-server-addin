@@ -186,7 +186,7 @@ namespace MonoDevelop.LanguageServer.Client
 				Settings = settings
 			};
 
-			await jsonRpc.NotifyAsync (Methods.WorkspaceDidChangeConfiguration, message);
+			await jsonRpc.NotifyWithParameterObjectAsync (Methods.WorkspaceDidChangeConfiguration, message);
 
 			Log ("Configuration sent.", Id);
 		}
