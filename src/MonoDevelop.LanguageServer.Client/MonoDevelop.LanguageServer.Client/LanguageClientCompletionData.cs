@@ -39,6 +39,10 @@ namespace MonoDevelop.LanguageServer.Client
 			CompletionItem = item;
 			CompletionText = item.InsertText ?? item?.TextEdit?.NewText;
 
+			if (CompletionText == null) {
+				CompletionText = item.Label;
+			}
+
 			Icon = item.GetIcon ();
 		}
 
