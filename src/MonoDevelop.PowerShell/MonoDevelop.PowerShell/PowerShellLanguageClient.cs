@@ -52,7 +52,9 @@ namespace MonoDevelop.PowerShell
 	{
 		public string Name => "PowerShell Language Extension";
 
-		public IEnumerable<string> ConfigurationSections => null;
+		public IEnumerable<string> ConfigurationSections {
+			get { yield return "powershell"; }
+		}
 
 		public object InitializationOptions => null;
 
