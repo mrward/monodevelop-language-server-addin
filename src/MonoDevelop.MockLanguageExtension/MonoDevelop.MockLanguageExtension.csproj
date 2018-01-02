@@ -42,6 +42,9 @@
     <EmbeddedResource Include="Properties\MonoDevelop.MockLanguageExtension.addin.xml">
       <LogicalName>MonoDevelop.PowerShell.addin.xml</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\VSWorkspaceSettings.json">
+      <LogicalName>VSWorkspaceSettings.json</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MonoDevelop.LanguageServer.Client\MonoDevelop.LanguageServer.Client.csproj">
