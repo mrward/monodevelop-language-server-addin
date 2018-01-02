@@ -38,7 +38,7 @@ using Microsoft.VisualStudio.Utilities;
 
 namespace MonoDevelop.PowerShell
 {
-	[ContentType ("sql")]
+	[ContentType ("mssql")]
 	[Export (typeof (ILanguageClient))]
 	class SqlLanguageClient : ILanguageClient
 	{
