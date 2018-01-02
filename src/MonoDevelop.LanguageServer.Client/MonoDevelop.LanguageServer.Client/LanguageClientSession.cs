@@ -38,6 +38,7 @@ using MonoDevelop.Ide.CodeCompletion;
 using MonoDevelop.Ide.Editor;
 using MonoDevelop.Ide.Gui;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using StreamJsonRpc;
 
 namespace MonoDevelop.LanguageServer.Client
@@ -266,19 +267,42 @@ namespace MonoDevelop.LanguageServer.Client
 			DiagnosticsPublished?.Invoke (this, new DiagnosticsEventArgs (diagnostic));
 		}
 
-		Task<CompletionItem[]> GetCompletionItems (
+		async Task<CompletionList> GetCompletionItems (
 			FilePath fileName,
 			CodeCompletionContext completionContext,
 			CancellationToken token)
 		{
 			if (!IsStarted) {
-				return Task.FromResult<CompletionItem[]> (null);
+				return null;
 			}
 
 			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentCompletion, fileName);
 
 			var message = CreateTextDocumentPosition (fileName, completionContext);
-			return jsonRpc.InvokeWithParameterObjectAsync<CompletionItem[]> (Methods.TextDocumentCompletion, message, token);
+
+			var result = await jsonRpc.InvokeWithParameterObjectAsync<object> (Methods.TextDocumentCompletion, message, token);
+
+			return ConvertToCompletionList (result);
+		}
+
+		/// <summary>
+		/// textDocument/completion can return one of the following:
+		/// CompletionList | CompletionItem[] | null
+		/// </summary>
+		CompletionList ConvertToCompletionList (object result)
+		{
+			if (result is JArray arrayResult) {
+				return new CompletionList {
+					IsIncomplete = false,
+					Items = arrayResult.ToObject<CompletionItem[]> (jsonRpc.JsonSerializer)
+				};
+			}
+
+			if (result is JObject obj) {
+				return obj.ToObject<CompletionList> (jsonRpc.JsonSerializer);
+			}
+
+			return null;
 		}
 
 		public async Task<CompletionDataList> GetCompletionList (
@@ -286,12 +310,14 @@ namespace MonoDevelop.LanguageServer.Client
 			CodeCompletionContext completionContext,
 			CancellationToken token)
 		{
-			var items = await GetCompletionItems (fileName, completionContext, token);
+			var completionList = await GetCompletionItems (fileName, completionContext, token);
 
-			var completionList = new CompletionDataList ();
-			completionList.AddRange (this, items);
+			var completionDataList = new CompletionDataList ();
+			if (completionList?.Items != null) {
+				completionDataList.AddRange (this, completionList.Items);
+			}
 
-			return completionList;
+			return completionDataList;
 		}
 
 		static TextDocumentPositionParams CreateTextDocumentPosition (FilePath fileName, CodeCompletionContext completionContext)
