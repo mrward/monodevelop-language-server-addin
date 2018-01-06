@@ -1,6 +1,6 @@
 ﻿{
     "yaml.schemas": {
-        "http://json.schemastore.org/composer": "/*",
-        "kubernetes": "test.yaml"
+        "kubernetes": "/test.yaml",
+        "https://raw.githubusercontent.com/docker/compose/master/compose/config/config_schema_v3.5.json": "/docker-compose*.yml"
     }
 }
