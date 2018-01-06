@@ -79,7 +79,12 @@ namespace MonoDevelop.LanguageServer.Client
 
 		public ILanguageClient GetLanguageClient (FilePath fileName)
 		{
-			IContentType contentType = fileExtensionRegistry.GetContentTypeForFileNameOrExtension (fileName.FileName);
+			IContentType contentType = GetContentType (fileName);
+			return GetLanguageClient (contentType);
+		}
+
+		public ILanguageClient GetLanguageClient (IContentType contentType)
+		{
 			if (contentType.IsUnknown ()) {
 				return null;
 			}
@@ -89,6 +94,11 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 
 			return null;
+		}
+
+		public IContentType GetContentType (FilePath fileName)
+		{
+			return fileExtensionRegistry.GetContentTypeForFileNameOrExtension (fileName.FileName);
 		}
 
 		public void LogClientsFound ()

@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.LanguageServer.Client;
+using Microsoft.VisualStudio.Utilities;
 using MonoDevelop.Core;
 using MonoDevelop.Ide;
 using MonoDevelop.Ide.Gui;
@@ -86,9 +87,10 @@ namespace MonoDevelop.LanguageServer.Client
 
 		LanguageClientSession CreateSession (FilePath fileName)
 		{
-			ILanguageClient client = LanguageClientServices.ClientProvider.GetLanguageClient (fileName);
+			IContentType contentType = LanguageClientServices.ClientProvider.GetContentType (fileName);
+			ILanguageClient client = LanguageClientServices.ClientProvider.GetLanguageClient (contentType);
 
-			var session = new LanguageClientSession (client, fileName.Extension);
+			var session = new LanguageClientSession (client, contentType.TypeName);
 			session.Started += SessionStarted;
 			session.Start ();
 

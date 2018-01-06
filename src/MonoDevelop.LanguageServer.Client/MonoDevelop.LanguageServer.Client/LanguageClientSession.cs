@@ -32,6 +32,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.LanguageServer.Client;
 using Microsoft.VisualStudio.LanguageServer.Protocol;
+using Microsoft.VisualStudio.Utilities;
 using MonoDevelop.Core;
 using MonoDevelop.Core.Text;
 using MonoDevelop.Ide.CodeCompletion;
@@ -47,20 +48,20 @@ namespace MonoDevelop.LanguageServer.Client
 	{
 		ILanguageClient client;
 		JsonRpc jsonRpc;
-		string fileExtension;
+		string contentTypeName;
 		CancellationToken cancellationToken = CancellationToken.None;
 		TextDocumentSyncKind documentSyncKind = TextDocumentSyncKind.None;
 
-		public LanguageClientSession (ILanguageClient client, string fileExtension)
+		public LanguageClientSession (ILanguageClient client, string contentTypeName)
 		{
 			this.client = client;
-			this.fileExtension = fileExtension;
+			this.contentTypeName = contentTypeName;
 
 			client.StartAsync += OnStartAsync;
 		}
 
 		public string Id {
-			get { return fileExtension; }
+			get { return contentTypeName; }
 		}
 
 		public ServerCapabilities ServerCapabilities { get; private set; }
@@ -213,7 +214,8 @@ namespace MonoDevelop.LanguageServer.Client
 
 		public bool IsSupportedDocument (Document document)
 		{
-			return document.FileName.HasExtension (fileExtension);
+			IContentType contentType = LanguageClientServices.ClientProvider.GetContentType (document.FileName);
+			return contentType.TypeName == contentTypeName;
 		}
 
 		public void OpenDocument (Document document)
