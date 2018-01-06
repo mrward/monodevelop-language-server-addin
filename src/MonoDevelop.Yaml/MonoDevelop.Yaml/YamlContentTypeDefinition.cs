@@ -42,7 +42,12 @@ namespace MonoDevelop.Docker
 		[Export]
 		[FileExtension (".yaml")]
 		[ContentType ("yaml")]
-		internal static FileExtensionToContentTypeDefinition fileDefinition;
+		internal static FileExtensionToContentTypeDefinition fileDefinition1;
+
+		[Export]
+		[FileExtension (".yml")]
+		[ContentType ("yaml")]
+		internal static FileExtensionToContentTypeDefinition fileDefinition2;
 	}
 
 	#pragma warning restore CS0649
