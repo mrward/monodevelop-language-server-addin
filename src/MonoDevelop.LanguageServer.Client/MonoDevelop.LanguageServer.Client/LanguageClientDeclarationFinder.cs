@@ -67,7 +67,7 @@ namespace MonoDevelop.LanguageServer.Client
 						ShowMultipleDeclarations (locations);
 					}
 				}
-			} catch (TaskCanceledException) {
+			} catch (OperationCanceledException) {
 				LanguageClientLoggingService.Log ("Go to declaration canceled.");
 				if (monitor != null) {
 					monitor.ReportGoToDeclarationCanceled ();

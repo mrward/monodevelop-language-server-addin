@@ -63,7 +63,7 @@ namespace MonoDevelop.LanguageServer.Client
 						monitor.ReportResults (references);
 					}
 				}
-			} catch (TaskCanceledException) {
+			} catch (OperationCanceledException) {
 				LanguageClientLoggingService.Log ("Find references was canceled.");
 			} catch (Exception ex) {
 				LanguageClientLoggingService.LogError ("FindReferences error.", ex);
@@ -91,7 +91,7 @@ namespace MonoDevelop.LanguageServer.Client
 						editor.StartTextEditorRename (references);
 					}
 				}
-			} catch (TaskCanceledException) {
+			} catch (OperationCanceledException) {
 				LanguageClientLoggingService.Log ("Rename was canceled.");
 			} catch (Exception ex) {
 				LanguageClientLoggingService.LogError ("RenameOccurrences error.", ex);

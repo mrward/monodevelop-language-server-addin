@@ -132,7 +132,7 @@ namespace MonoDevelop.LanguageServer.Client
 				}
 
 				return completionList;
-			} catch (TaskCanceledException) {
+			} catch (OperationCanceledException) {
 				// Ignore.
 			} catch (Exception ex) {
 				LanguageClientLoggingService.LogError ("HandleCodeCompletionAsync error.", ex);
