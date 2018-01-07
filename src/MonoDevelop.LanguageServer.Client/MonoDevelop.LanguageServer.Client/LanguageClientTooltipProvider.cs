@@ -50,6 +50,8 @@ namespace MonoDevelop.LanguageServer.Client
 					Hover result = await session.Hover (ctx.Name, location, token);
 					return CreateTooltipItem (editor, result);
 				}
+			} catch (OperationCanceledException) {
+				// Ignore.
 			} catch (Exception ex) {
 				LanguageClientLoggingService.LogError ("TooltipProvider error.", ex);
 			}
