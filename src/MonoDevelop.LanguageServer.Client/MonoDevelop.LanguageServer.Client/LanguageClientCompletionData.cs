@@ -48,14 +48,8 @@ namespace MonoDevelop.LanguageServer.Client
 
 		public CompletionItem CompletionItem { get; private set; }
 
-		/// <summary>
-		/// Returns InsertText instead of Label so parameters are handled (e.g. -path).
-		/// VSCode shows only the parameter name without the '-'. It is simpler to
-		/// show the '-' as part of the text in the code completion list in MonoDevelop
-		/// than to support it as VSCode does.
-		/// </summary>
 		public override string DisplayText {
-			get { return CompletionText; }
+			get { return CompletionItem.Label ?? CompletionText; }
 			set { base.DisplayText = value; }
 		}
 
