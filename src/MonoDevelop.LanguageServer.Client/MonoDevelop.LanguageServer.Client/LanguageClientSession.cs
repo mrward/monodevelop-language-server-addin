@@ -64,6 +64,8 @@ namespace MonoDevelop.LanguageServer.Client
 			get { return contentTypeName; }
 		}
 
+		public FilePath RootPath { get; set; }
+
 		public ServerCapabilities ServerCapabilities { get; private set; }
 		public bool IsStarted { get; private set; }
 
@@ -146,7 +148,7 @@ namespace MonoDevelop.LanguageServer.Client
 
 			Log ("Sending '{0}' message.", Methods.Initialize);
 
-			var message = CreateInitializeParams (client);
+			var message = CreateInitializeParams (client, RootPath);
 
 			var result = await jsonRpc.InvokeWithParameterObjectAsync<InitializeResult> (Methods.Initialize, message);
 
@@ -158,7 +160,7 @@ namespace MonoDevelop.LanguageServer.Client
 			await SendConfigurationSettings ();
 		}
 
-		static InitializeParams CreateInitializeParams (ILanguageClient client)
+		static InitializeParams CreateInitializeParams (ILanguageClient client, FilePath rootPath)
 		{
 			int processId = 0;
 			using (Process process = Process.GetCurrentProcess ()) {
@@ -166,6 +168,8 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 
 			return new InitializeParams {
+				RootPath = rootPath,
+				RootUri = rootPath.ToUri (),
 				Capabilities = new ClientCapabilities (),
 				InitializationOptions = client.InitializationOptions,
 				ProcessId = processId

@@ -33,6 +33,10 @@ namespace MonoDevelop.LanguageServer.Client
 	{
 		public static string ToUri (this FilePath filePath)
 		{
+			if (filePath.IsNull) {
+				return null;
+			}
+
 			var uri = new Uri (filePath);
 			return uri.AbsoluteUri;
 		}

@@ -91,6 +91,7 @@ namespace MonoDevelop.LanguageServer.Client
 			ILanguageClient client = LanguageClientServices.ClientProvider.GetLanguageClient (contentType);
 
 			var session = new LanguageClientSession (client, contentType.TypeName);
+			session.RootPath = fileName.ParentDirectory;
 			session.Started += SessionStarted;
 			session.Start ();
 
