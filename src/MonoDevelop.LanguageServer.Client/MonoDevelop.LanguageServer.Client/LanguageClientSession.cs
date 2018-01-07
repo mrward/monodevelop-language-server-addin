@@ -392,9 +392,15 @@ namespace MonoDevelop.LanguageServer.Client
 				token);
 		}
 
+		public bool IsHoverProvider {
+			get {
+				return ServerCapabilities?.HoverProvider == true;
+			}
+		}
+
 		public Task<Hover> Hover (FilePath fileName, DocumentLocation location, CancellationToken token)
 		{
-			if (!IsStarted) {
+			if (!IsStarted || !IsHoverProvider) {
 				return Task.FromResult (new Hover ());
 			}
 
