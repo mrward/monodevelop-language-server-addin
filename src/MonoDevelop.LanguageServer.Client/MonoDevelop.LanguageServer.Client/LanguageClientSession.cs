@@ -400,7 +400,12 @@ namespace MonoDevelop.LanguageServer.Client
 
 		public Task<Hover> Hover (FilePath fileName, DocumentLocation location, CancellationToken token)
 		{
-			if (!IsStarted || !IsHoverProvider) {
+			if (!IsStarted) {
+				return Task.FromResult (new Hover ());
+			}
+
+			if (!IsHoverProvider) {
+				Log ("Hover is not supported by server for '{0}'. File: '{1}'", ProtocolMethods.TextDocumentHover, fileName);
 				return Task.FromResult (new Hover ());
 			}
 

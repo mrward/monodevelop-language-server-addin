@@ -45,7 +45,7 @@ namespace MonoDevelop.LanguageServer.Client
 			try {
 				LanguageClientSession session = LanguageClientServices.Workspace.GetSession (editor.FileName, false);
 
-				if (session != null && session.IsHoverProvider) {
+				if (session != null) {
 					DocumentLocation location = editor.OffsetToLocation (offset);
 					Hover result = await session.Hover (ctx.Name, location, token);
 					return CreateTooltipItem (editor, result);
