@@ -1,10 +1,10 @@
 ﻿//
-// LanguageClientServices.cs
+// LanguageClientStartupHandler.cs
 //
 // Author:
 //       Matt Ward <matt.ward@microsoft.com>
 //
-// Copyright (c) 2017 Microsoft
+// Copyright (c) 2018 Microsoft
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,51 +24,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
-using MonoDevelop.Core;
-using MonoDevelop.Ide.Composition;
+using MonoDevelop.Components.Commands;
 
 namespace MonoDevelop.LanguageServer.Client
 {
-	static class LanguageClientServices
+	class LanguageClientStartupHandler : CommandHandler
 	{
-		static LanguageClientProvider provider;
-		static LanguageClientWorkspace workspace;
-
-		static void Initialize ()
+		protected override void Run ()
 		{
-			provider = CompositionManager.GetExportedValue<LanguageClientProvider> ();
-			provider.Initialize ();
-			provider.LogClientsFound ();
-
-			workspace = new LanguageClientWorkspace ();
-			workspace.Initialize ();
-		}
-
-		internal static void EnsureInitialized ()
-		{
-			if (provider != null)
-				return;
-
-			try {
-				Initialize ();
-			} catch (Exception ex) {
-				LanguageClientLoggingService.LogError ("Unable to initialize LanguageServerServices.", ex);
-			}
-		}
-
-		public static LanguageClientProvider ClientProvider {
-			get {
-				EnsureInitialized ();
-				return provider;
-			}
-		}
-
-		public static LanguageClientWorkspace Workspace {
-			get {
-				EnsureInitialized ();
-				return workspace;
-			}
+			// Initialize the language services in a startup handler since the MEF composition
+			// manager seems to take a long time. Running the initialization when opening a file
+			// the first time causes a long delay before the file is opened. Doing this
+			// initialization on startup avoids the delay on opening a file.
+			LanguageClientServices.EnsureInitialized ();
 		}
 	}
 }

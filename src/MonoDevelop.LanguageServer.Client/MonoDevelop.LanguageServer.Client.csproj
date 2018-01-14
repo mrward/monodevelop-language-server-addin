@@ -78,6 +78,7 @@
     <Compile Include="MonoDevelop.LanguageServer.Client\TextDocumentIdentifierFactory.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientConfigurationSettingsProvider.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientSystemInformation.cs" />
+    <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientStartupHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\MonoDevelop.LanguageServer.Client.addin.xml" />

@@ -55,4 +55,8 @@
 	<Extension path="/MonoDevelop/Core/SystemInformation">
 		<Class class="MonoDevelop.LanguageServer.Client.LanguageClientSystemInformation" />
 	</Extension>
+
+	<Extension path="/MonoDevelop/Ide/StartupHandlers">
+		<Class class="MonoDevelop.LanguageServer.Client.LanguageClientStartupHandler" />
+	</Extension>
 </ExtensionModel>
