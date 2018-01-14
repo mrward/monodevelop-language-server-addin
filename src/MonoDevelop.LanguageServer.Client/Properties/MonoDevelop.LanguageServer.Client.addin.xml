@@ -51,4 +51,8 @@
 			insertafter="CompileError"
 			class="MonoDevelop.LanguageServer.Client.LanguageClientTooltipProvider" />
 	</Extension>
+
+	<Extension path="/MonoDevelop/Core/SystemInformation">
+		<Class class="MonoDevelop.LanguageServer.Client.LanguageClientSystemInformation" />
+	</Extension>
 </ExtensionModel>
