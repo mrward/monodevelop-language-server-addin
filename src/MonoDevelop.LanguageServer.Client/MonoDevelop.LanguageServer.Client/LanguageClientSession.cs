@@ -333,6 +333,31 @@ namespace MonoDevelop.LanguageServer.Client
 			return completionDataList;
 		}
 
+		public bool IsCompletionResolveProvider {
+			get {
+				return ServerCapabilities?.CompletionProvider?.ResolveProvider == true;
+			}
+		}
+
+		public Task<CompletionItem> ResolveCompletionItem (CompletionItem completionItem, CancellationToken token)
+		{
+			if (!IsStarted) {
+				return Task.FromResult<CompletionItem> (null);
+			}
+
+			if (!IsCompletionResolveProvider) {
+				Log ("Resolve completions is not supported by server for '{0}'.", Methods.TextDocumentCompletionResolve);
+				return Task.FromResult<CompletionItem> (null);
+			}
+
+			Log ("Sending '{0}' for '{1}'.", Methods.TextDocumentCompletionResolve, completionItem.Label);
+
+			return jsonRpc.InvokeWithParameterObjectAsync<CompletionItem> (
+				Methods.TextDocumentCompletionResolve,
+				completionItem,
+				token);
+		}
+
 		static TextDocumentPositionParams CreateTextDocumentPosition (FilePath fileName, CodeCompletionContext completionContext)
 		{
 			return CreateTextDocumentPosition (

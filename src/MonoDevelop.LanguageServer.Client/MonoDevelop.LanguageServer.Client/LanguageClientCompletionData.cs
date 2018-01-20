@@ -24,6 +24,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.LanguageServer.Protocol;
 using MonoDevelop.Ide.CodeCompletion;
 
@@ -32,6 +35,7 @@ namespace MonoDevelop.LanguageServer.Client
 	class LanguageClientCompletionData : CompletionData
 	{
 		LanguageClientSession session;
+		bool resolved;
 
 		public LanguageClientCompletionData (LanguageClientSession session, CompletionItem item)
 		{
@@ -62,7 +66,47 @@ namespace MonoDevelop.LanguageServer.Client
 
 		string GetDescription ()
 		{
-			return CompletionItem.Detail ?? string.Empty;
+			string description = CompletionItem.Detail;
+
+			if (CompletionItem.Documentation != null) {
+				if (description == null) {
+					description = CompletionItem.Documentation;
+				} else {
+					description += Environment.NewLine + CompletionItem.Documentation;
+				}
+			}
+
+			return description ?? string.Empty;
+		}
+
+		public override Task<TooltipInformation> CreateTooltipInformation (
+			bool smartWrap,
+			CancellationToken cancelToken)
+		{
+			if (!session.IsCompletionResolveProvider || resolved) {
+				return base.CreateTooltipInformation (smartWrap, cancelToken);
+			}
+
+			try {
+				return CreateTooltipWithResolvedCompletionItem (smartWrap, cancelToken);
+			} catch (TaskCanceledException) {
+				// Ignore.
+				return base.CreateTooltipInformation (smartWrap, cancelToken);
+			} catch (Exception ex) {
+				LanguageClientLoggingService.LogError ("Unable to resolve completion item.", ex);
+				return base.CreateTooltipInformation (smartWrap, cancelToken);
+			}
+		}
+
+		async Task<TooltipInformation> CreateTooltipWithResolvedCompletionItem (bool smartWrap, CancellationToken token)
+		{
+			var resolvedCompletionItem = await session.ResolveCompletionItem (CompletionItem, token);
+			if (resolvedCompletionItem != null) {
+				CompletionItem = resolvedCompletionItem;
+				resolved = true;
+			}
+
+			return await base.CreateTooltipInformation (smartWrap, token);
 		}
 	}
 }
