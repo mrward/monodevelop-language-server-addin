@@ -185,6 +185,17 @@ namespace MonoDevelop.LanguageServer.Client
 			return true;
 		}
 
+		[CommandUpdateHandler (RefactoryCommands.FindReferences)]
+		[CommandUpdateHandler (EditCommands.Rename)]
+		void EnableFindReferences (CommandInfo info)
+		{
+			if (session.IsReferencesProvider) {
+				EnableCommandsWhenWordAtCaretPosition (info);
+			} else {
+				info.Enabled = false;
+			}
+		}
+
 		[CommandHandler (RefactoryCommands.FindReferences)]
 		void FindReferences ()
 		{
@@ -227,8 +238,6 @@ namespace MonoDevelop.LanguageServer.Client
 			finder.OpenDeclaration (fileName, Editor.CaretLocation).Ignore ();
 		}
 
-		[CommandUpdateHandler (RefactoryCommands.FindReferences)]
-		[CommandUpdateHandler (EditCommands.Rename)]
 		void EnableCommandsWhenWordAtCaretPosition (CommandInfo info)
 		{
 			info.Enabled = !IsWordAtCurrentCaretPosition ();

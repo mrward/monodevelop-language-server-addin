@@ -351,10 +351,21 @@ namespace MonoDevelop.LanguageServer.Client
 			};
 		}
 
+		public bool IsReferencesProvider {
+			get {
+				return ServerCapabilities?.ReferencesProvider == true;
+			}
+		}
+
 		public Task<Location[]> GetReferences (FilePath fileName, Position position, CancellationToken token)
 		{
 			if (!IsStarted) {
 				return Task.FromResult (new Location[0]);
+			}
+
+			if (!IsReferencesProvider) {
+				Log ("Get references is not supported by server for '{0}'. File: '{1}'", Methods.TextDocumentReferences, fileName);
+				return Task.FromResult (new Location [0]);
 			}
 
 			var message = new ReferenceParams {
