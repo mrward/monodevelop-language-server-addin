@@ -117,6 +117,10 @@ namespace MonoDevelop.LanguageServer.Client
 				return null;
 			}
 
+			if (!session.IsCompletionProvider) {
+				return null;
+			}
+
 			try {
 				WordAtPosition word = Editor.GetWordAtPosition (completionContext);
 
@@ -266,6 +270,10 @@ namespace MonoDevelop.LanguageServer.Client
 
 		bool ShouldTriggerParameterCompletion (char completionChar)
 		{
+			if (!session.IsSignatureHelpProvider) {
+				return false;
+			}
+
 			return session.IsSignatureHelpTriggerCharacter (completionChar);
 		}
 

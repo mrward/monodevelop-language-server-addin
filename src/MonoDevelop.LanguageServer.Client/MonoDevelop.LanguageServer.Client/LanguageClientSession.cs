@@ -278,6 +278,11 @@ namespace MonoDevelop.LanguageServer.Client
 				return null;
 			}
 
+			if (!IsCompletionProvider) {
+				Log ("Get completion list is not supported by server for '{0}'. File: '{1}'", Methods.TextDocumentCompletion, fileName);
+				return null;
+			}
+
 			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentCompletion, fileName);
 
 			var message = CreateTextDocumentPosition (fileName, completionContext);
@@ -305,6 +310,12 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 
 			return null;
+		}
+
+		public bool IsCompletionProvider {
+			get {
+				return ServerCapabilities?.CompletionProvider != null;
+			}
 		}
 
 		public async Task<CompletionDataList> GetCompletionList (
@@ -485,6 +496,12 @@ namespace MonoDevelop.LanguageServer.Client
 			get { return documentSyncKind != TextDocumentSyncKind.None; }
 		}
 
+		public bool IsSignatureHelpProvider {
+			get {
+				return ServerCapabilities?.SignatureHelpProvider != null;
+			}
+		}
+
 		public bool IsSignatureHelpTriggerCharacter (char character)
 		{
 			string[] triggerCharacters = ServerCapabilities?.SignatureHelpProvider?.TriggerCharacters;
@@ -520,6 +537,10 @@ namespace MonoDevelop.LanguageServer.Client
 		{
 			if (!IsStarted) {
 				return Task.FromResult (new SignatureHelp ());
+			}
+
+			if (!IsSignatureHelpProvider) {
+				Log ("Signature help is not supported by server for '{0}'. File: '{1}'", ProtocolMethods.TextDocumentSignatureHelper, fileName);
 			}
 
 			Log ("Sending '{0}'. File: '{1}'", ProtocolMethods.TextDocumentSignatureHelper, fileName);
