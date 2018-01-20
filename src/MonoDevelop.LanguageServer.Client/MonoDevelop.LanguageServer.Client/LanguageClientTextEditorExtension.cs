@@ -210,6 +210,16 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 		}
 
+		[CommandUpdateHandler (RefactoryCommands.GotoDeclaration)]
+		void EnableGoToDeclaration (CommandInfo info)
+		{
+			if (session.IsDefinitionProvider) {
+				EnableCommandsWhenWordAtCaretPosition (info);
+			} else {
+				info.Enabled = false;
+			}
+		}
+
 		[CommandHandler (RefactoryCommands.GotoDeclaration)]
 		void GoToDeclaration ()
 		{
@@ -219,7 +229,6 @@ namespace MonoDevelop.LanguageServer.Client
 
 		[CommandUpdateHandler (RefactoryCommands.FindReferences)]
 		[CommandUpdateHandler (EditCommands.Rename)]
-		[CommandUpdateHandler (RefactoryCommands.GotoDeclaration)]
 		void EnableCommandsWhenWordAtCaretPosition (CommandInfo info)
 		{
 			info.Enabled = !IsWordAtCurrentCaretPosition ();

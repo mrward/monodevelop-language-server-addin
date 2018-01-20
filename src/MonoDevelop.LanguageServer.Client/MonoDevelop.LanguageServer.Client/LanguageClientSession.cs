@@ -373,9 +373,20 @@ namespace MonoDevelop.LanguageServer.Client
 				token);
 		}
 
+		public bool IsDefinitionProvider {
+			get {
+				return ServerCapabilities?.DefinitionProvider == true;
+			}
+		}
+
 		public Task<Location[]> FindDefinitions (FilePath fileName, Position position, CancellationToken token)
 		{
 			if (!IsStarted) {
+				return Task.FromResult (new Location [0]);
+			}
+
+			if (!IsDefinitionProvider) {
+				Log ("Find definitions is not supported by server for '{0}'. File: '{1}'", Methods.TextDocumentDefinition, fileName);
 				return Task.FromResult (new Location [0]);
 			}
 
