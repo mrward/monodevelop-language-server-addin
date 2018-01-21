@@ -78,7 +78,7 @@ namespace MonoDevelop.LanguageServer.Client
 			if (!sessions.TryGetValue (fileName.Extension, out LanguageClientSession session)) {
 				if (createNewSession) {
 					session = CreateSession (fileName);
-					sessions [fileName.Extension] = session;
+					sessions [session.Id] = session;
 				}
 			}
 
