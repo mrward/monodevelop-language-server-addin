@@ -27,8 +27,8 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.LanguageServer.Protocol;
 using MonoDevelop.Ide.Editor;
-using System.Linq;
 
 namespace MonoDevelop.LanguageServer.Client
 {
@@ -46,13 +46,22 @@ namespace MonoDevelop.LanguageServer.Client
 		public async Task FormatDocument (CancellationToken token = default (CancellationToken))
 		{
 			try {
-				var edits = await session.FormatDocument (editor.FileName, editor.Options, token);
+				var edits = await FormatDocumentInternal (token);
 				editor.ApplyEdits (edits);
 			} catch (OperationCanceledException) {
 				// Ignore.
 			} catch (Exception ex) {
 				LanguageClientLoggingService.LogError ("Format document error.", ex);
 			}
+		}
+
+		Task<TextEdit[]> FormatDocumentInternal (CancellationToken token)
+		{
+			if (editor.IsSomethingSelected) {
+				return session.FormatDocumentRange (editor, token);
+			}
+
+			return session.FormatDocument (editor, token);
 		}
 	}
 }

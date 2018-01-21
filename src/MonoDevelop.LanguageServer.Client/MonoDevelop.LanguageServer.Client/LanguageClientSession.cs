@@ -591,34 +591,60 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 		}
 
-		public Task<TextEdit[]> FormatDocument (
-			FilePath fileName,
-			ITextEditorOptions options,
-			CancellationToken token)
+		public Task<TextEdit[]> FormatDocument (TextEditor editor, CancellationToken token)
 		{
 			if (!IsStarted) {
 				return Task.FromResult<TextEdit[]> (null);
 			}
 
 			if (!IsDocumentFormattingProvider) {
-				Log ("Document formatting is not supported by server for '{0}'. File: '{1}'", ProtocolMethods.TextDocumentSignatureHelper, fileName);
+				Log ("Document formatting is not supported by server for '{0}'. File: '{1}'", Methods.TextDocumentFormatting, editor.FileName);
 				return Task.FromResult<TextEdit[]> (null);
 			}
 
-			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentFormatting, fileName);
+			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentFormatting, editor.FileName);
 
 			var message = new DocumentFormattingParams {
-				TextDocument = new TextDocumentIdentifier {
-					Uri = fileName.ToUri ()
-				},
+				TextDocument = TextDocumentIdentifierFactory.Create (editor.FileName),
 				Options = new FormattingOptions {
-					InsertSpaces = options.TabsToSpaces,
-					TabSize = options.TabSize
+					InsertSpaces = editor.Options.TabsToSpaces,
+					TabSize = editor.Options.TabSize
 				}
 			};
 
 			return jsonRpc.InvokeWithParameterObjectAsync<TextEdit[]> (
 				Methods.TextDocumentFormatting,
+				message,
+				token);
+		}
+
+		public Task<TextEdit[]> FormatDocumentRange (TextEditor editor, CancellationToken token)
+		{
+			if (!IsStarted) {
+				return Task.FromResult<TextEdit[]> (null);
+			}
+
+			if (!IsDocumentFormattingProvider) {
+				Log ("Document formatting is not supported by server for '{0}'. File: '{1}'", Methods.TextDocumentRangeFormatting, editor.FileName);
+				return Task.FromResult<TextEdit[]> (null);
+			}
+
+			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentRangeFormatting, editor.FileName);
+
+			var message = new DocumentRangeFormattingParams {
+				TextDocument = TextDocumentIdentifierFactory.Create (editor.FileName),
+				Options = new FormattingOptions {
+					InsertSpaces = editor.Options.TabsToSpaces,
+					TabSize = editor.Options.TabSize
+				},
+				Range = new Range {
+					Start = editor.SelectionRegion.Begin.CreatePosition (),
+					End = editor.SelectionRegion.End.CreatePosition ()
+				}
+			};
+
+			return jsonRpc.InvokeWithParameterObjectAsync<TextEdit[]> (
+				Methods.TextDocumentRangeFormatting,
 				message,
 				token);
 		}
