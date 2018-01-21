@@ -566,6 +566,7 @@ namespace MonoDevelop.LanguageServer.Client
 
 			if (!IsSignatureHelpProvider) {
 				Log ("Signature help is not supported by server for '{0}'. File: '{1}'", ProtocolMethods.TextDocumentSignatureHelper, fileName);
+				return Task.FromResult (new SignatureHelp ());
 			}
 
 			Log ("Sending '{0}'. File: '{1}'", ProtocolMethods.TextDocumentSignatureHelper, fileName);
