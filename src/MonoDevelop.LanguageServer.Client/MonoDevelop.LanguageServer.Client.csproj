@@ -79,6 +79,7 @@
     <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientConfigurationSettingsProvider.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientSystemInformation.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientStartupHandler.cs" />
+    <Compile Include="MonoDevelop.LanguageServer.Client\DocumentFormatter.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\MonoDevelop.LanguageServer.Client.addin.xml" />

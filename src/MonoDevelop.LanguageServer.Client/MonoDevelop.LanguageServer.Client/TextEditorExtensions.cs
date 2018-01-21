@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.LanguageServer.Protocol;
@@ -96,6 +97,35 @@ namespace MonoDevelop.LanguageServer.Client
 			int endOffset = editor.PositionToOffset (location.Range.End);
 			var provider = new FileProvider (new FilePath (location.Uri), null, startOffset, endOffset);
 			return new SearchResult (provider, startOffset, endOffset - startOffset);
+		}
+
+		public static void ApplyEdits (this TextEditor editor, IEnumerable<TextEdit> edits)
+		{
+			Runtime.AssertMainThread ();
+
+			if (edits == null || !edits.Any ()) {
+				return;
+			}
+
+			var changes = edits
+				.Select (edit => ToCodeAnalysisTextChange (editor, edit))
+				.ToArray ();
+
+			editor.ApplyTextChanges (changes);
+		}
+
+		static Microsoft.CodeAnalysis.Text.TextChange ToCodeAnalysisTextChange (TextEditor editor, TextEdit edit)
+		{
+			var segment = editor.GetTextSegment (edit.Range);
+
+			if (segment.IsInvalid) {
+				throw new ArgumentException (string.Format ("Invalid TextEdit.Range."));
+			}
+
+			return new Microsoft.CodeAnalysis.Text.TextChange (
+				new Microsoft.CodeAnalysis.Text.TextSpan (segment.Offset, segment.Length),
+				edit.NewText
+			);
 		}
 	}
 }

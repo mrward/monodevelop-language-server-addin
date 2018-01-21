@@ -579,6 +579,50 @@ namespace MonoDevelop.LanguageServer.Client
 				token);
 		}
 
+		public bool IsDocumentFormattingProvider {
+			get {
+				return ServerCapabilities?.DocumentFormattingProvider == true;
+			}
+		}
+
+		public bool IsDocumentRangeFormattingProvider {
+			get {
+				return ServerCapabilities?.DocumentRangeFormattingProvider == true;
+			}
+		}
+
+		public Task<TextEdit[]> FormatDocument (
+			FilePath fileName,
+			ITextEditorOptions options,
+			CancellationToken token)
+		{
+			if (!IsStarted) {
+				return Task.FromResult<TextEdit[]> (null);
+			}
+
+			if (!IsDocumentFormattingProvider) {
+				Log ("Document formatting is not supported by server for '{0}'. File: '{1}'", ProtocolMethods.TextDocumentSignatureHelper, fileName);
+				return Task.FromResult<TextEdit[]> (null);
+			}
+
+			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentFormatting, fileName);
+
+			var message = new DocumentFormattingParams {
+				TextDocument = new TextDocumentIdentifier {
+					Uri = fileName.ToUri ()
+				},
+				Options = new FormattingOptions {
+					InsertSpaces = options.TabsToSpaces,
+					TabSize = options.TabSize
+				}
+			};
+
+			return jsonRpc.InvokeWithParameterObjectAsync<TextEdit[]> (
+				Methods.TextDocumentFormatting,
+				message,
+				token);
+		}
+
 		void JsonRpcDisconnected (object sender, JsonRpcDisconnectedEventArgs e)
 		{
 			if (e.Exception != null) {

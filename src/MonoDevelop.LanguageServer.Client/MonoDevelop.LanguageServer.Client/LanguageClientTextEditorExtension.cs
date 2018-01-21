@@ -34,6 +34,7 @@ using MonoDevelop.Components.Commands;
 using MonoDevelop.Core;
 using MonoDevelop.Core.Text;
 using MonoDevelop.Ide.CodeCompletion;
+using MonoDevelop.Ide.CodeFormatting;
 using MonoDevelop.Ide.Commands;
 using MonoDevelop.Ide.Editor;
 using MonoDevelop.Ide.Editor.Extension;
@@ -293,6 +294,23 @@ namespace MonoDevelop.LanguageServer.Client
 				.ToList ();
 
 			return new ParameterHintingResult (parameterDataItems, completionContext.TriggerOffset);
+		}
+
+		[CommandUpdateHandler (CodeFormattingCommands.FormatBuffer)]
+		void EnableFormatDocument (CommandInfo info)
+		{
+			if (Editor.IsSomethingSelected && session.IsDocumentRangeFormattingProvider) {
+				info.Text = GettextCatalog.GetString ("_Format Selection");
+			} else {
+				info.Enabled = session.IsDocumentFormattingProvider;
+			}
+		}
+
+		[CommandHandler (CodeFormattingCommands.FormatBuffer)]
+		void FormatDocument ()
+		{
+			var formatter = new DocumentFormatter (Editor, session);
+			formatter.FormatDocument ().Ignore ();
 		}
 	}
 }
