@@ -89,7 +89,7 @@ namespace MonoDevelop.LanguageServer.Client
 
 			try {
 				return CreateTooltipWithResolvedCompletionItem (smartWrap, cancelToken);
-			} catch (TaskCanceledException) {
+			} catch (OperationCanceledException) {
 				// Ignore.
 				return base.CreateTooltipInformation (smartWrap, cancelToken);
 			} catch (Exception ex) {
