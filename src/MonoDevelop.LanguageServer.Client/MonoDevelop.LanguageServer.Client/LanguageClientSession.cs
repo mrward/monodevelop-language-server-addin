@@ -48,20 +48,30 @@ namespace MonoDevelop.LanguageServer.Client
 	{
 		ILanguageClient client;
 		JsonRpc jsonRpc;
-		string contentTypeName;
+		IContentType contentType;
 		CancellationToken cancellationToken = CancellationToken.None;
 		TextDocumentSyncKind documentSyncKind = TextDocumentSyncKind.None;
+		FilePath rootPath;
 
-		public LanguageClientSession (ILanguageClient client, string contentTypeName)
+		public LanguageClientSession (ILanguageClient client, IContentType contentType, FilePath rootPath)
 		{
 			this.client = client;
-			this.contentTypeName = contentTypeName;
+			this.contentType = contentType;
+			this.rootPath = rootPath;
 
 			client.StartAsync += OnStartAsync;
 		}
 
 		public string Id {
-			get { return contentTypeName; }
+			get { return contentType.TypeName; }
+		}
+
+		public IContentType ContentType {
+			get { return contentType; }
+		}
+
+		public FilePath RootPath {
+			get { return rootPath; }
 		}
 
 		public ServerCapabilities ServerCapabilities { get; private set; }
@@ -146,7 +156,7 @@ namespace MonoDevelop.LanguageServer.Client
 
 			Log ("Sending '{0}' message.", Methods.Initialize);
 
-			var message = CreateInitializeParams (client);
+			var message = CreateInitializeParams (client, rootPath);
 
 			var result = await jsonRpc.InvokeWithParameterObjectAsync<InitializeResult> (Methods.Initialize, message);
 
@@ -158,7 +168,7 @@ namespace MonoDevelop.LanguageServer.Client
 			await SendConfigurationSettings ();
 		}
 
-		static InitializeParams CreateInitializeParams (ILanguageClient client)
+		static InitializeParams CreateInitializeParams (ILanguageClient client, FilePath rootPath)
 		{
 			int processId = 0;
 			using (Process process = Process.GetCurrentProcess ()) {
@@ -168,7 +178,9 @@ namespace MonoDevelop.LanguageServer.Client
 			return new InitializeParams {
 				Capabilities = new ClientCapabilities (),
 				InitializationOptions = client.InitializationOptions,
-				ProcessId = processId
+				ProcessId = processId,
+				RootUri = rootPath.ToUri (),
+				RootPath = rootPath.ToString ()
 			};
 		}
 
@@ -214,8 +226,15 @@ namespace MonoDevelop.LanguageServer.Client
 
 		public bool IsSupportedDocument (Document document)
 		{
-			IContentType contentType = LanguageClientServices.ClientProvider.GetContentType (document.FileName);
-			return contentType.TypeName == contentTypeName;
+			if (document.HasProject) {
+				if (rootPath.IsNull || document.Project.ParentSolution.BaseDirectory != rootPath) {
+					return false;
+				}
+			}
+
+			IContentType contentTypeFound = LanguageClientServices.ClientProvider.GetContentType (document.FileName);
+
+			return contentTypeFound.TypeName == contentType.TypeName;
 		}
 
 		public void OpenDocument (Document document)

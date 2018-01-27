@@ -43,7 +43,7 @@ namespace MonoDevelop.LanguageServer.Client
 			CancellationToken token = default (CancellationToken))
 		{
 			try {
-				LanguageClientSession session = LanguageClientServices.Workspace.GetSession (editor.FileName, false);
+				LanguageClientSession session = LanguageClientServices.Workspace.GetSession (ctx, false);
 
 				if (session != null) {
 					DocumentLocation location = editor.OffsetToLocation (offset);

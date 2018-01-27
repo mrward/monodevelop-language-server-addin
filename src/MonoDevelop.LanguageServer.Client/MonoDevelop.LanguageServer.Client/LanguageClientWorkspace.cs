@@ -32,6 +32,7 @@ using Microsoft.VisualStudio.LanguageServer.Client;
 using Microsoft.VisualStudio.Utilities;
 using MonoDevelop.Core;
 using MonoDevelop.Ide;
+using MonoDevelop.Ide.Editor;
 using MonoDevelop.Ide.Gui;
 using MonoDevelop.Projects;
 
@@ -41,6 +42,8 @@ namespace MonoDevelop.LanguageServer.Client
 	{
 		Dictionary<string, LanguageClientSession> sessions =
 			new Dictionary<string, LanguageClientSession> (StringComparer.OrdinalIgnoreCase);
+
+		SolutionLanguageClientSessions solutionSessions = new SolutionLanguageClientSessions ();
 
 		public void Initialize ()
 		{
@@ -66,35 +69,49 @@ namespace MonoDevelop.LanguageServer.Client
 			return LanguageClientServices.ClientProvider.HasLanguageClient (fileName);
 		}
 
-		public LanguageClientSession GetSession (FilePath fileName)
+		public LanguageClientSession GetSession (DocumentContext context)
 		{
 			Runtime.AssertMainThread ();
 
-			return GetSession (fileName, true);
+			return GetSession (context, true);
 		}
 
-		public LanguageClientSession GetSession (FilePath fileName, bool createNewSession)
+		public LanguageClientSession GetSession (DocumentContext context, bool createNewSession)
 		{
-			IContentType contentType = LanguageClientServices.ClientProvider.GetContentType (fileName);
+			IContentType contentType = LanguageClientServices.ClientProvider.GetContentType (context.Name);
 			if (contentType.IsUnknown ()) {
 				throw new InvalidOperationException ("No content type for file.");
 			}
 
-			if (!sessions.TryGetValue (contentType.TypeName, out LanguageClientSession session)) {
+			if (!TryGetSession (contentType, context.Project, out LanguageClientSession session)) {
 				if (createNewSession) {
-					session = CreateSession (contentType);
-					sessions [session.Id] = session;
+					session = CreateSession (contentType, context.Project);
+
+					if (session.RootPath.IsNull) {
+						sessions [session.Id] = session;
+					} else {
+						solutionSessions.AddSession (session);
+					}
 				}
 			}
 
 			return session;
 		}
 
-		LanguageClientSession CreateSession (IContentType contentType)
+		bool TryGetSession (IContentType contentType, Project project, out LanguageClientSession session)
+		{
+			if (project?.ParentSolution != null) {
+				return solutionSessions.TryGetSession (contentType, project, out session);
+			}
+
+			return sessions.TryGetValue (contentType.TypeName, out session);
+		}
+
+		LanguageClientSession CreateSession (IContentType contentType, Project project)
 		{
 			ILanguageClient client = LanguageClientServices.ClientProvider.GetLanguageClient (contentType);
 
-			var session = new LanguageClientSession (client, contentType.TypeName);
+			var session = new LanguageClientSession (client, contentType, project.SafeGetParentSolutionBaseDirectory ());
 			session.Started += SessionStarted;
 			session.Start ();
 
@@ -145,7 +162,7 @@ namespace MonoDevelop.LanguageServer.Client
 		void LanguageClientDocumentOpened (Document document)
 		{
 			try {
-				LanguageClientSession currentSession = GetSession (document.FileName);
+				LanguageClientSession currentSession = GetSession (document);
 				currentSession.OpenDocument (document);
 			} catch (Exception ex) {
 				LanguageClientLoggingService.LogError ("Error opening document.", ex);
@@ -161,7 +178,7 @@ namespace MonoDevelop.LanguageServer.Client
 
 		void LanguageClientDocumentClosed (Document document)
 		{
-			LanguageClientSession currentSession = GetSession (document.FileName, false);
+			LanguageClientSession currentSession = GetSession (document, false);
 
 			if (currentSession == null) {
 				return;
@@ -181,7 +198,11 @@ namespace MonoDevelop.LanguageServer.Client
 
 				session.Started -= SessionStarted;
 
-				sessions.Remove (session.Id);
+				if (session.RootPath.IsNull) {
+					sessions.Remove (session.Id);
+				} else {
+					solutionSessions.RemoveSession (session);
+				}
 
 				await session.Stop ();
 
@@ -198,15 +219,19 @@ namespace MonoDevelop.LanguageServer.Client
 
 		async Task ShutdownAllSessions ()
 		{
-			foreach (LanguageClientSession session in sessions.Values.ToArray ()) {
+			await ShutdownAllSessions (solutionSessions.GetAllSessions ());
+			solutionSessions.Clear ();
+		}
+
+		async Task ShutdownAllSessions (IEnumerable<LanguageClientSession> sessionsToShutdown)
+		{
+			foreach (var session in sessionsToShutdown) {
 				try {
 					await ShutdownSession (session);
 				} catch (Exception ex) {
 					LanguageClientLoggingService.LogError ("Shutdown error.", ex);
 				}
 			}
-
-			sessions.Clear ();
 		}
 	}
 }

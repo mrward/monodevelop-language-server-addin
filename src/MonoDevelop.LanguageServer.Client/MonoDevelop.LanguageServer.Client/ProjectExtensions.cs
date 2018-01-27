@@ -1,10 +1,10 @@
 ﻿//
-// FilePathExtensions.cs
+// ProjectExtensions.cs
 //
 // Author:
 //       Matt Ward <matt.ward@microsoft.com>
 //
-// Copyright (c) 2017 Microsoft
+// Copyright (c) 2018 Microsoft
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,21 +24,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
 using MonoDevelop.Core;
+using MonoDevelop.Projects;
 
 namespace MonoDevelop.LanguageServer.Client
 {
-	static class FilePathExtensions
+	static class ProjectExtensions
 	{
-		public static string ToUri (this FilePath filePath)
+		public static FilePath SafeGetParentSolutionBaseDirectory (this Project project)
 		{
-			if (filePath.IsNull) {
-				return null;
+			Solution solution = project?.ParentSolution;
+			if (solution != null) {
+				return solution.BaseDirectory;
 			}
 
-			var uri = new Uri (filePath);
-			return uri.AbsoluteUri;
+			return FilePath.Null;
 		}
 	}
 }
