@@ -52,8 +52,8 @@ namespace MonoDevelop.LanguageServer.Client
 			this TextChange textChange,
 			TextEditor editor)
 		{
-			int startOffset = textChange.Offset;
-			int endOffset = textChange.Offset + textChange.RemovalLength;
+			int startOffset = textChange.NewOffset;
+			int endOffset = startOffset + textChange.RemovalLength;
 
 			var startLocation = editor.OffsetToLocation (startOffset);
 

@@ -187,5 +187,61 @@ namespace MonoDevelop.LanguageServer.Client.Tests
 			AssertPositionsAreEqual (expectedStartPosition, textChange.Range.Start);
 			AssertPositionsAreEqual (expectedEndPosition, textChange.Range.End);
 		}
+
+		[Test]
+		public void FormatDocumentReplacesSpacesAtStartOfTwoLines ()
+		{
+			string text = "  aa\n bb\n";
+
+			CreateTextEditor (text);
+
+			var edits = new [] {
+				new TextEdit {
+					NewText = "",
+					Range = new Range {
+						Start = new Position {
+							Character = 0,
+							Line = 0
+						},
+						End = new Position {
+							Character = 2,
+							Line = 0
+						}
+					}
+				},
+				new TextEdit {
+					NewText = "",
+					Range = new Range {
+						Start = new Position {
+							Character = 0,
+							Line = 1
+						},
+						End = new Position {
+							Character = 1,
+							Line = 1
+						}
+					}
+				}
+			};
+
+			editor.ApplyEdits (edits);
+
+			var textChanges = CreateTextChangeEvents (false).ToArray ();
+
+			Assert.AreEqual ("aa\nbb\n", editor.Text);
+			Assert.AreEqual (2, textChanges.Length);
+			Assert.AreEqual ("", textChanges [0].Text);
+			Assert.AreEqual (2, textChanges [0].RangeLength);
+			Assert.AreEqual (0, textChanges [0].Range.Start.Character);
+			Assert.AreEqual (0, textChanges [0].Range.Start.Line);
+			Assert.AreEqual (2, textChanges [0].Range.End.Character);
+			Assert.AreEqual (0, textChanges [0].Range.End.Line);
+			Assert.AreEqual ("", textChanges [1].Text);
+			Assert.AreEqual (1, textChanges [1].RangeLength);
+			Assert.AreEqual (0, textChanges [1].Range.Start.Character);
+			Assert.AreEqual (1, textChanges [1].Range.Start.Line);
+			Assert.AreEqual (1, textChanges [1].Range.End.Character);
+			Assert.AreEqual (1, textChanges [1].Range.End.Line);
+		}
 	}
 }
