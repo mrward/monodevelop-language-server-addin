@@ -75,9 +75,14 @@ namespace MonoDevelop.LanguageServer.Client
 
 		public LanguageClientSession GetSession (FilePath fileName, bool createNewSession)
 		{
-			if (!sessions.TryGetValue (fileName.Extension, out LanguageClientSession session)) {
+			IContentType contentType = LanguageClientServices.ClientProvider.GetContentType (fileName);
+			if (contentType.IsUnknown ()) {
+				throw new InvalidOperationException ("No content type for file.");
+			}
+
+			if (!sessions.TryGetValue (contentType.TypeName, out LanguageClientSession session)) {
 				if (createNewSession) {
-					session = CreateSession (fileName);
+					session = CreateSession (contentType);
 					sessions [session.Id] = session;
 				}
 			}
@@ -85,9 +90,8 @@ namespace MonoDevelop.LanguageServer.Client
 			return session;
 		}
 
-		LanguageClientSession CreateSession (FilePath fileName)
+		LanguageClientSession CreateSession (IContentType contentType)
 		{
-			IContentType contentType = LanguageClientServices.ClientProvider.GetContentType (fileName);
 			ILanguageClient client = LanguageClientServices.ClientProvider.GetLanguageClient (contentType);
 
 			var session = new LanguageClientSession (client, contentType.TypeName);
