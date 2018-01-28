@@ -82,6 +82,10 @@
     <Compile Include="MonoDevelop.LanguageServer.Client\DocumentFormatter.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\ProjectExtensions.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\SolutionLanguageClientSessions.cs" />
+    <Compile Include="MonoDevelop.LanguageServer.Client\RenameItemDialog.cs" />
+    <Compile Include="MonoDevelop.LanguageServer.Client\RenameItemDialog.UI.cs">
+      <DependentUpon>RenameItemDialog.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\MonoDevelop.LanguageServer.Client.addin.xml" />

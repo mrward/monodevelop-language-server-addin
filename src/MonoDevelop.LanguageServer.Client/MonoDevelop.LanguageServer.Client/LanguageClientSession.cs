@@ -668,6 +668,37 @@ namespace MonoDevelop.LanguageServer.Client
 				token);
 		}
 
+		public bool IsRenameProvider {
+			get {
+				return ServerCapabilities?.RenameProvider == true;
+			}
+		}
+
+		public Task<WorkspaceEdit> Rename (FilePath fileName, Position position, string newName, CancellationToken token)
+		{
+			if (!IsStarted) {
+				return Task.FromResult<WorkspaceEdit> (null);
+			}
+
+			if (!IsRenameProvider) {
+				Log ("Rename is not supported by server for '{0}'. File: '{1}'", Methods.TextDocumentRename, fileName);
+				return Task.FromResult<WorkspaceEdit> (null);
+			}
+
+			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentRename, fileName);
+
+			var message = new RenameParams {
+				TextDocument = TextDocumentIdentifierFactory.Create (fileName),
+				NewName = newName,
+				Position = position
+			};
+
+			return jsonRpc.InvokeWithParameterObjectAsync<WorkspaceEdit> (
+				Methods.TextDocumentRename,
+				message,
+				token);
+		}
+
 		void JsonRpcDisconnected (object sender, JsonRpcDisconnectedEventArgs e)
 		{
 			if (e.Exception != null) {

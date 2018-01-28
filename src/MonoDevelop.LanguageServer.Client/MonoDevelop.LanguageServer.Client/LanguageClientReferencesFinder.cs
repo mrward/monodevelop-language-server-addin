@@ -97,5 +97,49 @@ namespace MonoDevelop.LanguageServer.Client
 				LanguageClientLoggingService.LogError ("RenameOccurrences error.", ex);
 			}
 		}
+
+		public async Task Rename (FilePath fileName, DocumentLocation location, string newName)
+		{
+			try {
+				using (var monitor = LanguageClientProgressMonitors.GetSearchProgressMonitorForRename ()) {
+					WorkspaceEdit edit = await session.Rename (
+						fileName,
+						location.CreatePosition (),
+						newName,
+						monitor.CancellationToken);
+
+					if (edit?.Changes == null) {
+						monitor.ReportNothingToRename ();
+					} else {
+						ApplyChanges (edit);
+					}
+				}
+			} catch (OperationCanceledException) {
+				LanguageClientLoggingService.Log ("Rename was canceled.");
+			} catch (Exception ex) {
+				LanguageClientLoggingService.LogError ("Rename error.", ex);
+			}
+		}
+
+		void ApplyChanges (WorkspaceEdit edit)
+		{
+			foreach (var item in edit.Changes) {
+				TextEditor currentEditor = GetTextEditor (item.Key);
+				if (currentEditor != null) {
+					currentEditor.ApplyEdits (item.Value);
+				} else {
+					LanguageClientLoggingService.Log ("Unable to find text editor for file: '{0}'", item.Key);
+				}
+			}
+		}
+
+		TextEditor GetTextEditor (string fileName)
+		{
+			if (editor.FileName == fileName) {
+				return editor;
+			}
+
+			return null;
+		}
 	}
 }

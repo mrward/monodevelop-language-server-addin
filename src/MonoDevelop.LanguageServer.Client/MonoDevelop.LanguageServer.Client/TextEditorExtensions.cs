@@ -127,5 +127,10 @@ namespace MonoDevelop.LanguageServer.Client
 				edit.NewText
 			);
 		}
+
+		public static WordAtPosition GetWordAtCaret (this TextEditor editor)
+		{
+			return editor.GetWordAtPosition (editor.CaretLine, editor.CaretColumn);
+		}
 	}
 }

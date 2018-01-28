@@ -1,10 +1,10 @@
 ﻿//
-// ProgressMonitorExtensions..cs
+// RenameItemDialog.cs
 //
 // Author:
 //       Matt Ward <matt.ward@microsoft.com>
 //
-// Copyright (c) 2017 Microsoft
+// Copyright (c) 2018 Microsoft
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,30 +23,53 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using MonoDevelop.Core;
+
+using System;
+using MonoDevelop.Ide;
+using Xwt;
 
 namespace MonoDevelop.LanguageServer.Client
 {
-	public static class ProgressMonitorExtensions_
+	partial class RenameItemDialog
 	{
-		public static void ReportGoToDeclarationCanceled (this ProgressMonitor monitor)
+		string originalItemName;
+
+		public RenameItemDialog (string itemName)
 		{
-			monitor.ReportWarning (GettextCatalog.GetString ("Go to declaration operation was canceled."));
+			Build ();
+
+			NewName = itemName;
+			originalItemName = itemName;
+			newNameTextEntry.Changed += NewNameTextEntryChanged;
+			newNameTextEntry.Activated += NewNameTextEntryActivated;
 		}
 
-		public static void ReportNoDeclarationFound (this ProgressMonitor monitor)
-		{
-			monitor.ReportSuccess (GettextCatalog.GetString ("No declaration found."));
+		public string NewName {
+			get { return newNameTextEntry.Text; }
+			private set { newNameTextEntry.Text = value; }
 		}
 
-		public static void ReportNoReferencesFound (this ProgressMonitor monitor)
+		public Command ShowWithParent ()
 		{
-			monitor.ReportSuccess (GettextCatalog.GetString ("No references found."));
+			WindowFrame parent = Toolkit.CurrentEngine.WrapWindow (IdeApp.Workbench.RootWindow);
+			return Run (parent);
 		}
 
-		public static void ReportNothingToRename (this ProgressMonitor monitor)
+		void NewNameTextEntryChanged (object sender, EventArgs e)
 		{
-			monitor.ReportSuccess (GettextCatalog.GetString ("Nothing to rename."));
+			okButton.Sensitive = IsNewNameValid ();
+		}
+
+		bool IsNewNameValid ()
+		{
+			return (NewName.Length > 0) && (NewName != originalItemName);
+		}
+
+		void NewNameTextEntryActivated (object sender, EventArgs e)
+		{
+			if (IsNewNameValid ()) {
+				Respond (Command.Ok);
+			}
 		}
 	}
 }

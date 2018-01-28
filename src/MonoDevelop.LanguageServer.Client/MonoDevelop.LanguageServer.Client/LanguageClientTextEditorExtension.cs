@@ -194,7 +194,7 @@ namespace MonoDevelop.LanguageServer.Client
 		[CommandUpdateHandler (EditCommands.Rename)]
 		void EnableFindReferences (CommandInfo info)
 		{
-			if (session.IsReferencesProvider) {
+			if (session.IsReferencesProvider || session.IsRenameProvider) {
 				EnableCommandsWhenWordAtCaretPosition (info);
 			} else {
 				info.Enabled = false;
@@ -212,7 +212,32 @@ namespace MonoDevelop.LanguageServer.Client
 		void Rename ()
 		{
 			var renamer = new LanguageClientReferencesFinder (Editor, session);
-			renamer.RenameOccurrences (fileName, Editor.CaretLocation).Ignore ();
+
+			if (session.IsRenameProvider) {
+				string newName = PromptForNewNameForRename ();
+				if (newName != null) {
+					renamer.Rename (fileName, Editor.CaretLocation, newName).Ignore ();
+				}
+			} else {
+				renamer.RenameOccurrences (fileName, Editor.CaretLocation).Ignore ();
+			}
+		}
+
+		string PromptForNewNameForRename ()
+		{
+			WordAtPosition word = Editor.GetWordAtCaret ();
+			if (word.IsEmpty || word.IsInvalid) {
+				return null;
+			}
+
+			using (var dialog = new RenameItemDialog (word.Text)) {
+				var result = dialog.ShowWithParent ();
+				if ((result == Xwt.Command.Ok) && (dialog.NewName != word.Text)) {
+					return dialog.NewName;
+				}
+			}
+
+			return null;
 		}
 
 		void TextChanged (object sender, TextChangeEventArgs e)
@@ -250,7 +275,7 @@ namespace MonoDevelop.LanguageServer.Client
 
 		bool IsWordAtCurrentCaretPosition ()
 		{
-			WordAtPosition word = Editor.GetWordAtPosition (Editor.CaretLine, Editor.CaretColumn);
+			WordAtPosition word = Editor.GetWordAtCaret ();
 			return word.IsEmpty;
 		}
 

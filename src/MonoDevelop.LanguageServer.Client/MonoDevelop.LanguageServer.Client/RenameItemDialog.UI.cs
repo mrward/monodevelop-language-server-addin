@@ -1,10 +1,10 @@
 ﻿//
-// ProgressMonitorExtensions..cs
+// RenameItemDialog.UI.cs
 //
 // Author:
 //       Matt Ward <matt.ward@microsoft.com>
 //
-// Copyright (c) 2017 Microsoft
+// Copyright (c) 2018 Microsoft
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,30 +23,38 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
+using Xwt;
 using MonoDevelop.Core;
 
 namespace MonoDevelop.LanguageServer.Client
 {
-	public static class ProgressMonitorExtensions_
+	partial class RenameItemDialog : Dialog
 	{
-		public static void ReportGoToDeclarationCanceled (this ProgressMonitor monitor)
-		{
-			monitor.ReportWarning (GettextCatalog.GetString ("Go to declaration operation was canceled."));
-		}
+		TextEntry newNameTextEntry;
+		DialogButton okButton;
 
-		public static void ReportNoDeclarationFound (this ProgressMonitor monitor)
+		void Build ()
 		{
-			monitor.ReportSuccess (GettextCatalog.GetString ("No declaration found."));
-		}
+			Title = GettextCatalog.GetString ("Rename");
 
-		public static void ReportNoReferencesFound (this ProgressMonitor monitor)
-		{
-			monitor.ReportSuccess (GettextCatalog.GetString ("No references found."));
-		}
+			var mainHBox = new HBox ();
 
-		public static void ReportNothingToRename (this ProgressMonitor monitor)
-		{
-			monitor.ReportSuccess (GettextCatalog.GetString ("Nothing to rename."));
+			var label = new Label ();
+			label.Text = GettextCatalog.GetString ("New name:");
+			mainHBox.PackStart (label);
+
+			newNameTextEntry = new TextEntry ();
+			mainHBox.PackStart (newNameTextEntry);
+
+			Content = mainHBox;
+
+			var cancelButton = new DialogButton (Command.Cancel);
+			Buttons.Add (cancelButton);
+
+			okButton = new DialogButton (Command.Ok);
+			okButton.Sensitive = false;
+			Buttons.Add (okButton);
 		}
 	}
 }
