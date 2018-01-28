@@ -82,7 +82,7 @@ namespace MonoDevelop.LanguageServer.Client
 					Location[] locations = await session.GetReferences (
 						fileName,
 						location.CreatePosition (),
-						CancellationToken.None);
+						monitor.CancellationToken);
 
 					if (locations == null) {
 						monitor.ReportNoReferencesFound ();
