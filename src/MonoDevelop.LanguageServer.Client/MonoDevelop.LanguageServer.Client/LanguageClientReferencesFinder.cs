@@ -31,6 +31,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.LanguageServer.Protocol;
 using MonoDevelop.Core;
+using MonoDevelop.Ide;
 using MonoDevelop.Ide.Editor;
 using MonoDevelop.Ide.FindInFiles;
 
@@ -124,22 +125,17 @@ namespace MonoDevelop.LanguageServer.Client
 		void ApplyChanges (WorkspaceEdit edit)
 		{
 			foreach (var item in edit.Changes) {
-				TextEditor currentEditor = GetTextEditor (item.Key);
-				if (currentEditor != null) {
-					currentEditor.ApplyEdits (item.Value);
+				bool open = false;
+				ITextDocument document = TextFileProvider.Instance.GetTextEditorData (item.Key, out open);
+				if (document != null) {
+					document.ApplyEdits (item.Value);
+					if (!open) {
+						document.Save ();
+					}
 				} else {
 					LanguageClientLoggingService.Log ("Unable to find text editor for file: '{0}'", item.Key);
 				}
 			}
-		}
-
-		TextEditor GetTextEditor (string fileName)
-		{
-			if (editor.FileName == fileName) {
-				return editor;
-			}
-
-			return null;
 		}
 	}
 }
