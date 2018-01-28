@@ -38,7 +38,10 @@ namespace MonoDevelop.LanguageServer.Client
 		{
 			Title = GettextCatalog.GetString ("Rename");
 
+			var mainVBox = new VBox ();
+
 			var mainHBox = new HBox ();
+			mainVBox.PackStart (mainHBox);
 
 			var label = new Label ();
 			label.Text = GettextCatalog.GetString ("New name:");
@@ -47,7 +50,7 @@ namespace MonoDevelop.LanguageServer.Client
 			newNameTextEntry = new TextEntry ();
 			mainHBox.PackStart (newNameTextEntry);
 
-			Content = mainHBox;
+			Content = mainVBox;
 
 			var cancelButton = new DialogButton (Command.Cancel);
 			Buttons.Add (cancelButton);
