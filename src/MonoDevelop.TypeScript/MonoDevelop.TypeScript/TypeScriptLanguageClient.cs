@@ -82,7 +82,7 @@ namespace MonoDevelop.TypeScript
 			string logFile = Path.Combine (currentDirectory, "tsserver.log");
 
 			string script = Path.Combine (typeScriptLanguageServerDirectory, "language-server-stdio");
-			string arguments = string.Format ("\"{0}\" --trace --logfile \"{1}\"", script, logFile);
+			string arguments = string.Format ("--inspect=18304 \"{0}\" --trace --logfile \"{1}\"", script, logFile);
 
 			var info = new ProcessStartInfo {
 				FileName = "node",
