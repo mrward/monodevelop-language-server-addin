@@ -106,11 +106,14 @@ namespace MonoDevelop.LanguageServer.Client.Tests
 			Assert.AreEqual ("ab", editor.Text);
 		}
 
-		[TestCase ("a|c", "b", "abc", 3)]
-		[TestCase ("|bc", "a", "abc", 3)]
-		[TestCase ("ab|", "c", "abc", 3)]
-		[TestCase ("a|c", "bb", "abbc", 4)]
-		[TestCase ("a|c", "b\r\nb", "ab\r\nbc", 6)]
+		/// <summary>
+		/// Range should not be defined. RangeLength should not be non-zero.
+		/// </summary>
+		[TestCase ("a|c", "b", "abc", 0)]
+		[TestCase ("|bc", "a", "abc", 0)]
+		[TestCase ("ab|", "c", "abc", 0)]
+		[TestCase ("a|c", "bb", "abbc", 0)]
+		[TestCase ("a|c", "b\r\nb", "ab\r\nbc", 0)]
 		public void InsertText_FullContentChangeEvent (
 			string text,
 			string insertText,
@@ -125,6 +128,7 @@ namespace MonoDevelop.LanguageServer.Client.Tests
 
 			Assert.AreEqual (expectedTextChangeText, textChange.Text);
 			Assert.AreEqual (expectedRangeLength, textChange.RangeLength);
+			Assert.IsNull (textChange.Range);
 		}
 
 		[TestCase ("a|c", "b", "abc", "b", 0, "0,1", "0,1")]

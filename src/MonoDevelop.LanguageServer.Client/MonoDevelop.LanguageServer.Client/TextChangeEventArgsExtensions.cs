@@ -79,8 +79,7 @@ namespace MonoDevelop.LanguageServer.Client
 			TextEditor editor)
 		{
 			yield return new TextDocumentContentChangeEvent {
-				Text = editor.Text,
-				RangeLength = editor.Text.Length
+				Text = editor.Text
 			};
 		}
 
