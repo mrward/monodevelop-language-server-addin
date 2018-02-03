@@ -62,7 +62,7 @@ namespace MonoDevelop.LanguageServer.Client
 			this IReadonlyTextDocument document,
 			CodeCompletionContext context)
 		{
-			return document.GetWordAtPosition (context.TriggerLine, context.TriggerLineOffset);
+			return document.GetWordAtPosition (context.TriggerLine, context.TriggerLineOffset + 1);
 		}
 	}
 }
