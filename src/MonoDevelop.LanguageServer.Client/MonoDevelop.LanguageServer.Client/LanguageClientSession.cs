@@ -99,18 +99,29 @@ namespace MonoDevelop.LanguageServer.Client
 		{
 			try {
 				if (IsStarted) {
+					IsStarted = false;
+					RemoveEventHandlers ();
+
 					Log ("Sending '{0}' message.", Methods.Shutdown);
 					await jsonRpc.InvokeAsync (Methods.Shutdown);
 
 					Log ("Sending '{0}' message.", Methods.Exit);
-					await jsonRpc.InvokeAsync (Methods.Exit);
+					bool success = await jsonRpc.InvokeAsyncWithTimeout (Methods.Exit, 1000);
+					if (!success) {
+						Log ("Timed out sending '{0}' message.", Methods.Exit);
+					}
 				}
 			} catch (Exception ex) {
 				Log ("Stop error: {0}", ex);
 			} finally {
-				IsStarted = false;
-				RemoveEventHandlers ();
+				Dispose ();
 			}
+		}
+
+		static async Task<bool> WaitWithTimeout (Task task, int timeout)
+		{
+			Task result = await Task.WhenAny (task, Task.Delay (timeout));
+			return result == task;
 		}
 
 		async Task OnStartAsync (object sender, EventArgs e)
@@ -213,9 +224,15 @@ namespace MonoDevelop.LanguageServer.Client
 				client = null;
 			}
 
+			if (jsonRpc != null) {
+				jsonRpc.Disconnected -= JsonRpcDisconnected;
+			}
+		}
+
+		void Dispose ()
+		{
 			try {
 				if (jsonRpc != null) {
-					jsonRpc.Disconnected -= JsonRpcDisconnected;
 					jsonRpc.Dispose ();
 					jsonRpc = null;
 				}
