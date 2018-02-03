@@ -47,6 +47,7 @@ namespace MonoDevelop.LanguageServer.Client
 	class LanguageClientSession
 	{
 		ILanguageClient client;
+		Connection connection;
 		JsonRpc jsonRpc;
 		IContentType contentType;
 		CancellationToken cancellationToken = CancellationToken.None;
@@ -127,7 +128,7 @@ namespace MonoDevelop.LanguageServer.Client
 		{
 			Log ("Call ActivateAsync.");
 
-			Connection connection = await client.ActivateAsync (CancellationToken.None);
+			connection = await client.ActivateAsync (CancellationToken.None);
 
 			if (connection == null) {
 				throw new ApplicationException ("No connection returned from ActivateAsync.");
@@ -217,6 +218,10 @@ namespace MonoDevelop.LanguageServer.Client
 					jsonRpc.Disconnected -= JsonRpcDisconnected;
 					jsonRpc.Dispose ();
 					jsonRpc = null;
+				}
+				if (connection != null) {
+					connection.Dispose ();
+					connection = null;
 				}
 			} catch (IOException ex) {
 				// Ignore.
