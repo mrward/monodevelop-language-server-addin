@@ -39,6 +39,9 @@ namespace LanguageServer
 			capabilities.CompletionProvider.TriggerCharacters = new string[] { ",", "." };
 			capabilities.SignatureHelpProvider = new SignatureHelpOptions ();
 			capabilities.SignatureHelpProvider.TriggerCharacters = new string [] { "(" };
+			capabilities.DefinitionProvider = true;
+			capabilities.ReferencesProvider = true;
+			capabilities.HoverProvider = true;
 
 			var result = new InitializeResult();
 			result.Capabilities = capabilities;
