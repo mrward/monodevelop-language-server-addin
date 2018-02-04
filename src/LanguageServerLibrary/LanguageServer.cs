@@ -28,6 +28,7 @@ namespace LanguageServer
 		private readonly ManualResetEvent disconnectEvent = new ManualResetEvent(false);
 		private Dictionary<string, DiagnosticSeverity> diagnostics;
 		private TextDocumentItem textDocument = null;
+		private List<TextDocumentItem> textDocuments = new List<TextDocumentItem>();
 
 		private int counter = 100;
 
@@ -64,7 +65,18 @@ namespace LanguageServer
 		{
 			this.textDocument = messageParams.TextDocument;
 
+			lock (textDocuments) {
+				textDocuments.Add (messageParams.TextDocument);
+			}
+
 			SendDiagnostics();
+		}
+
+		public void OnTextDocumentClosed(DidCloseTextDocumentParams messageParams)
+		{
+			lock (textDocuments) {
+				textDocuments.RemoveAll (document => document.Uri == messageParams.TextDocument.Uri);
+			}
 		}
 
 		public void SetDiagnostics(Dictionary<string, DiagnosticSeverity> diagnostics)
@@ -180,13 +192,15 @@ namespace LanguageServer
 
 		public Location[] FindReferences(ReferenceParams parameter)
 		{
-			if (textDocument?.Uri != parameter.TextDocument.Uri)
+			TextDocumentItem currentTextDocument = FindDocument(parameter.TextDocument);
+
+			if (currentTextDocument == null)
 			{
-				Log(string.Format("FindReferences: TextDocument.Uri does not match."));
+				Log(string.Format("FindReferences: TextDocument.Uri does not match any document."));
 				return null;
 			}
 
-			string[] lines = textDocument.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+			string[] lines = currentTextDocument.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
 
 			string item = GetReferenceItem(lines, parameter.Position);
 			if (string.IsNullOrEmpty(item))
@@ -195,17 +209,41 @@ namespace LanguageServer
 				return null;
 			}
 
-			Log(string.Format("FindReferences: Searching for '{0}'", item));
+			Log(string.Format("FindReferences: Searching for '{0}' in '{1}'", item, currentTextDocument.Uri));
 
-			var locations = new List<Location>();
+			var locations = FindReferences(item, currentTextDocument.Uri, lines).ToList();
 
+			if (textDocuments.Count > 1) {
+				lock (textDocuments) {
+					foreach (var document in textDocuments.Where (doc => doc != currentTextDocument)) {
+						Log(string.Format("FindReferences: Searching for '{0}' in '{1}'", item, document.Uri));
+
+						lines = document.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+						var otherLocations = FindReferences(item, document.Uri, lines);
+						locations.AddRange(otherLocations);
+					}
+				}
+			}
+
+			return locations.ToArray();
+		}
+
+		TextDocumentItem FindDocument (TextDocumentIdentifier documentToFind)
+		{
+			lock (textDocuments) {
+				return textDocuments.FirstOrDefault (document => document.Uri == documentToFind.Uri);
+			}
+		}
+
+		static IEnumerable<Location> FindReferences(string item, string uri, string[] lines)
+		{
 			for (int i = 0; i < lines.Length; ++i)
 			{
 				string line = lines[i];
 				int index = line.IndexOf(item, StringComparison.Ordinal);
 				if (index >=0)
 				{
-					var location = new Location
+					yield return new Location
 					{
 						Range = new Range
 						{
@@ -220,13 +258,10 @@ namespace LanguageServer
 								Line = i
 							}
 						},
-						Uri = textDocument.Uri
+						Uri = uri
 					};
-					locations.Add(location);
 				}
 			}
-
-			return locations.ToArray();
 		}
 
 		public Location[] GoToDefinition(TextDocumentPositionParams parameter)

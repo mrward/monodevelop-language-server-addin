@@ -64,6 +64,9 @@ namespace LanguageServer
 		public void OnTextDocumentClosed(JToken arg)
 		{
 			Log(Methods.TextDocumentDidClose, arg);
+
+			var parameter = arg.ToObject<DidCloseTextDocumentParams>();
+			server.OnTextDocumentClosed(parameter);
 		}
 
 		[JsonRpcMethod(Methods.TextDocumentDidChange)]
