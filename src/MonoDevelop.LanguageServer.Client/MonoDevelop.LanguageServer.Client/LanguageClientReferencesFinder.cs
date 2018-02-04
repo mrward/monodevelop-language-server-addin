@@ -60,7 +60,10 @@ namespace MonoDevelop.LanguageServer.Client
 					if (locations == null) {
 						monitor.ReportResults (Enumerable.Empty<SearchResult> ());
 					} else {
-						List<SearchResult> references = locations.Select (CreateSearchResult).ToList ();
+						List<SearchResult> references = locations
+							.Select (CreateSearchResult)
+							.Where (result => result != null)
+							.ToList ();
 						monitor.ReportResults (references);
 					}
 				}
@@ -73,7 +76,16 @@ namespace MonoDevelop.LanguageServer.Client
 
 		SearchResult CreateSearchResult (Location location)
 		{
-			return editor.CreateSearchResult (location);
+			bool open = false;
+			ITextDocument document = TextFileProvider.Instance.GetTextEditorData (location.Uri, out open);
+
+			if (document != null) {
+				return document.CreateSearchResult (location);
+			}
+
+			LoggingService.LogError ("Unable to find document for search result: '{0}'", location.Uri);
+
+			return null;
 		}
 
 		public async Task RenameOccurrences (FilePath fileName, DocumentLocation location)

@@ -31,6 +31,7 @@ using Microsoft.VisualStudio.LanguageServer.Protocol;
 using MonoDevelop.Core;
 using MonoDevelop.Core.Text;
 using MonoDevelop.Ide.Editor;
+using MonoDevelop.Ide.FindInFiles;
 
 namespace MonoDevelop.LanguageServer.Client
 {
@@ -81,6 +82,14 @@ namespace MonoDevelop.LanguageServer.Client
 				new Microsoft.CodeAnalysis.Text.TextSpan (segment.Offset, segment.Length),
 				edit.NewText
 			);
+		}
+
+		public static SearchResult CreateSearchResult (this ITextDocument document, Location location)
+		{
+			int startOffset = document.PositionToOffset (location.Range.Start);
+			int endOffset = document.PositionToOffset (location.Range.End);
+			var provider = new FileProvider (new FilePath (location.Uri), null, startOffset, endOffset);
+			return new SearchResult (provider, startOffset, endOffset - startOffset);
 		}
 	}
 }
