@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.LanguageServer.Protocol;
 using MonoDevelop.Core;
@@ -60,10 +59,7 @@ namespace MonoDevelop.LanguageServer.Client
 					if (locations == null) {
 						monitor.ReportResults (Enumerable.Empty<SearchResult> ());
 					} else {
-						List<SearchResult> references = locations
-							.Select (CreateSearchResult)
-							.Where (result => result != null)
-							.ToList ();
+						List<SearchResult> references = ToSearchResults (locations).ToList ();
 						monitor.ReportResults (references);
 					}
 				}
@@ -74,10 +70,16 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 		}
 
+		IEnumerable<SearchResult> ToSearchResults (IEnumerable<Location> locations)
+		{
+			return locations
+				.Select (CreateSearchResult)
+				.Where (result => result != null);
+		}
+
 		SearchResult CreateSearchResult (Location location)
 		{
-			bool open = false;
-			ITextDocument document = TextFileProvider.Instance.GetTextEditorData (location.Uri, out open);
+			ITextDocument document = TextFileProvider.Instance.GetTextEditorData (location.Uri);
 
 			if (document != null) {
 				return document.CreateSearchResult (location);
@@ -99,9 +101,19 @@ namespace MonoDevelop.LanguageServer.Client
 
 					if (locations == null) {
 						monitor.ReportNoReferencesFound ();
-					} else {
-						List<SearchResult> references = locations.Select (CreateSearchResult).ToList ();
+						return;
+					}
+
+					List<SearchResult> references = ToSearchResults (locations).ToList ();
+					if (!references.Any ()) {
+						monitor.ReportNoReferencesFound ();
+					} else if (AllSearchResultsExistInCurrentEditor (references)) {
 						editor.StartTextEditorRename (references);
+					} else {
+						// Multiple files - cannot use text editor edit links.
+						string oldName = GetSearchResultItemText (references [0]);
+						string newName = RenameItemDialog.PromptForNewName (oldName);
+						ApplyChanges (locations, newName);
 					}
 				}
 			} catch (OperationCanceledException) {
@@ -109,6 +121,17 @@ namespace MonoDevelop.LanguageServer.Client
 			} catch (Exception ex) {
 				LanguageClientLoggingService.LogError ("RenameOccurrences error.", ex);
 			}
+		}
+
+		bool AllSearchResultsExistInCurrentEditor (IEnumerable<SearchResult> results)
+		{
+			return results.All (result => result.FileName == editor.FileName);
+		}
+
+		static string GetSearchResultItemText (SearchResult result)
+		{
+			ITextDocument document = TextFileProvider.Instance.GetTextEditorData (result.FileName);
+			return document.GetTextAt (result.Offset, result.Length);
 		}
 
 		public async Task Rename (FilePath fileName, DocumentLocation location, string newName)
@@ -134,19 +157,35 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 		}
 
-		void ApplyChanges (WorkspaceEdit edit)
+		static void ApplyChanges (WorkspaceEdit edit)
 		{
-			foreach (var item in edit.Changes) {
-				bool open = false;
-				ITextDocument document = TextFileProvider.Instance.GetTextEditorData (item.Key, out open);
-				if (document != null) {
-					document.ApplyEdits (item.Value);
-					if (!open) {
-						document.Save ();
-					}
-				} else {
-					LanguageClientLoggingService.Log ("Unable to find text editor for file: '{0}'", item.Key);
+			foreach (KeyValuePair<string, TextEdit[]> item in edit.Changes) {
+				ApplyChanges (item.Key, item.Value);
+			}
+		}
+
+		static void ApplyChanges (string fileName, IEnumerable<TextEdit> edits)
+		{
+			bool open = false;
+			ITextDocument document = TextFileProvider.Instance.GetTextEditorData (fileName, out open);
+			if (document != null) {
+				document.ApplyEdits (edits);
+				if (!open) {
+					document.Save ();
 				}
+			} else {
+				LanguageClientLoggingService.Log ("Unable to find text editor for file: '{0}'", fileName);
+			}
+		}
+
+		void ApplyChanges (IEnumerable<Location> locations, string newText)
+		{
+			foreach (IGrouping<string, Location> groupedByFileName in locations.GroupBy (location => location.Uri)) {
+				var edits = groupedByFileName.Select (location => new TextEdit {
+					NewText = newText,
+					Range = location.Range
+				});
+				ApplyChanges (groupedByFileName.Key, edits);
 			}
 		}
 	}

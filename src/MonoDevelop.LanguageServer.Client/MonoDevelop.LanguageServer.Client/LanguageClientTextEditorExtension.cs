@@ -230,14 +230,7 @@ namespace MonoDevelop.LanguageServer.Client
 				return null;
 			}
 
-			using (var dialog = new RenameItemDialog (word.Text)) {
-				var result = dialog.ShowWithParent ();
-				if ((result == Xwt.Command.Ok) && (dialog.NewName != word.Text)) {
-					return dialog.NewName;
-				}
-			}
-
-			return null;
+			return RenameItemDialog.PromptForNewName (word.Text);
 		}
 
 		void TextChanged (object sender, TextChangeEventArgs e)

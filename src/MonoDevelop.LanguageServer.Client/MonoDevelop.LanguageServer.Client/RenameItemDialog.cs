@@ -71,5 +71,17 @@ namespace MonoDevelop.LanguageServer.Client
 				Respond (Command.Ok);
 			}
 		}
+
+		public static string PromptForNewName (string text)
+		{
+			using (var dialog = new RenameItemDialog (text)) {
+				var result = dialog.ShowWithParent ();
+				if ((result == Xwt.Command.Ok) && (dialog.NewName != text)) {
+					return dialog.NewName;
+				}
+			}
+
+			return null;
+		}
 	}
 }
