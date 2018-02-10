@@ -80,7 +80,7 @@ namespace MonoDevelop.LanguageServer.Client
 		{
 			IContentType contentType = LanguageClientServices.ClientProvider.GetContentType (context.Name);
 			if (contentType.IsUnknown ()) {
-				throw new InvalidOperationException ("No content type for file.");
+				return null;
 			}
 
 			if (!TryGetSession (contentType, context.Project, out LanguageClientSession session)) {
