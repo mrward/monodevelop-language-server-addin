@@ -37,6 +37,7 @@
     <Compile Include="FooLanguageClient.cs" />
     <Compile Include="FooContentTypeDefinition.cs" />
     <Compile Include="SendCustomMessageHandler.cs" />
+    <Compile Include="MiddleLayerProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\MonoDevelop.MockLanguageExtension.addin.xml">

@@ -68,7 +68,7 @@ namespace MockLanguageExtension
 
 		public IEnumerable<string> FilesToWatch => null;
 
-		public object MiddleLayer => null;
+		public object MiddleLayer => new MiddleLayerProvider ();
 
 		public object CustomMessageTarget => null;
 
