@@ -88,6 +88,8 @@
     </Compile>
     <Compile Include="MonoDevelop.LanguageServer.Client\ITextDocumentExtensions.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\JsonRpcExtensions.cs" />
+    <Compile Include="Microsoft.VisualStudio.LanguageServer.Client\ILanguageClientCompletionProvider.cs" />
+    <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientCompletionProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\MonoDevelop.LanguageServer.Client.addin.xml" />

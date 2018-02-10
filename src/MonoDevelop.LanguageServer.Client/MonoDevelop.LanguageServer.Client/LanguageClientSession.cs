@@ -54,6 +54,8 @@ namespace MonoDevelop.LanguageServer.Client
 		TextDocumentSyncKind documentSyncKind = TextDocumentSyncKind.None;
 		FilePath rootPath;
 
+		LanguageClientCompletionProvider completionProvider;
+
 		public LanguageClientSession (ILanguageClient client, IContentType contentType, FilePath rootPath)
 		{
 			this.client = client;
@@ -152,6 +154,8 @@ namespace MonoDevelop.LanguageServer.Client
 
 			jsonRpc.Disconnected += JsonRpcDisconnected;
 
+			InitializeCustomClientProviders ();
+
 			var customClient = client as ILanguageClientCustomMessage;
 			if (customClient != null) {
 				Log ("Adding LanguageClientCustomMessage.");
@@ -178,6 +182,14 @@ namespace MonoDevelop.LanguageServer.Client
 			OnServerCapabilitiesChanged ();
 
 			await SendConfigurationSettings ();
+		}
+
+		void InitializeCustomClientProviders ()
+		{
+			var customClient = client as ILanguageClientCustomMessage;
+			var customCompletionProvider = customClient?.MiddleLayer as ILanguageClientCompletionProvider;
+
+			completionProvider = new LanguageClientCompletionProvider (jsonRpc, customCompletionProvider);
 		}
 
 		static InitializeParams CreateInitializeParams (ILanguageClient client, FilePath rootPath)
@@ -328,7 +340,7 @@ namespace MonoDevelop.LanguageServer.Client
 
 			var message = CreateTextDocumentPosition (fileName, completionContext);
 
-			var result = await jsonRpc.InvokeWithParameterObjectAsync<object> (Methods.TextDocumentCompletion, message, token);
+			var result = await completionProvider.RequestCompletions (message, token);
 
 			return ConvertToCompletionList (result);
 		}
@@ -393,10 +405,7 @@ namespace MonoDevelop.LanguageServer.Client
 
 			Log ("Sending '{0}' for '{1}'.", Methods.TextDocumentCompletionResolve, completionItem.Label);
 
-			return jsonRpc.InvokeWithParameterObjectAsync<CompletionItem> (
-				Methods.TextDocumentCompletionResolve,
-				completionItem,
-				token);
+			return completionProvider.ResolveCompletion (completionItem, token);
 		}
 
 		static TextDocumentPositionParams CreateTextDocumentPosition (FilePath fileName, CodeCompletionContext completionContext)
