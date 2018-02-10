@@ -362,6 +362,17 @@ namespace MonoDevelop.LanguageServer.Client
 				return obj.ToObject<CompletionList> (jsonRpc.JsonSerializer);
 			}
 
+			if (result is CompletionItem[] items) {
+				return new CompletionList {
+					IsIncomplete = false,
+					Items = items
+				};
+			}
+
+			if (result is CompletionList completionList) {
+				return completionList;
+			}
+
 			return null;
 		}
 
