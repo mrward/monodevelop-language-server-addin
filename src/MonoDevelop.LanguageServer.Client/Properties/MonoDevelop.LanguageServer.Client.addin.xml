@@ -18,7 +18,7 @@
 	</Extension>
 
 	<Extension path="/MonoDevelop/SourceEditor2/ContextMenu/Editor">
-		<Condition id="FileHasLanguageClient" fileExtensions=".ps1,.psm1,.psd1">
+		<Condition id="FileHasLanguageClient">
 			<CommandItem
 				id="MonoDevelop.Refactoring.RefactoryCommands.FindReferences"
 				insertafter="MonoDevelop.SourceEditor.SourceEditorCommands.MarkerOperations"
