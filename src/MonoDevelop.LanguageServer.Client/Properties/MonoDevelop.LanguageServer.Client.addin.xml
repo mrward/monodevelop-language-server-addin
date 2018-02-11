@@ -17,8 +17,24 @@
 			class="MonoDevelop.LanguageServer.Client.LanguageClientTextEditorExtension" />
 	</Extension>
 
+	<Extension path="/MonoDevelop/Ide/Commands">
+		<Command
+			id="MonoDevelop.LanguageServer.Client.Commands.QuickFixMenu"
+			_label="Quick Fix"
+			type="array"
+			defaultHandler="MonoDevelop.LanguageServer.Client.LanguageClientQuickFixMenuHandler" />
+	</Extension>
+
 	<Extension path="/MonoDevelop/SourceEditor2/ContextMenu/Editor">
 		<Condition id="FileHasLanguageClient">
+			<ItemSet
+				id="MonoDevelop.LanguageServer.Client.QuickFixMenu"
+				_label="Quick Fix"
+				autohide="true"
+				insertafter="MonoDevelop.SourceEditor.SourceEditorCommands.MarkerOperations"
+				insertbefore="MonoDevelop.Debugger.DebugCommands.ExpressionEvaluator">
+				<CommandItem id="MonoDevelop.LanguageServer.Client.Commands.QuickFixMenu" />
+			</ItemSet>
 			<CommandItem
 				id="MonoDevelop.Refactoring.RefactoryCommands.FindReferences"
 				insertafter="MonoDevelop.SourceEditor.SourceEditorCommands.MarkerOperations"

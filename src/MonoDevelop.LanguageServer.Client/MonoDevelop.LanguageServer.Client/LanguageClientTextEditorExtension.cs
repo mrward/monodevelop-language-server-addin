@@ -330,5 +330,9 @@ namespace MonoDevelop.LanguageServer.Client
 			var formatter = new DocumentFormatter (Editor, session);
 			formatter.FormatDocument ().Ignore ();
 		}
+
+		internal bool IsCodeActionProvider {
+			get { return session.IsCodeActionProvider; }
+		}
 	}
 }

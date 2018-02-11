@@ -741,6 +741,12 @@ namespace MonoDevelop.LanguageServer.Client
 				token);
 		}
 
+		public bool IsCodeActionProvider {
+			get {
+				return ServerCapabilities?.CodeActionProvider == true;
+			}
+		}
+
 		void JsonRpcDisconnected (object sender, JsonRpcDisconnectedEventArgs e)
 		{
 			if (e.Exception != null) {
