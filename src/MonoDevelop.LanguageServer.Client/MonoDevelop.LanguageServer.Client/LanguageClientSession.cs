@@ -747,6 +747,37 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 		}
 
+		public Task<Command[]> GetCodeActions (
+			FilePath fileName,
+			Range range,
+			Diagnostic[] diagnostics,
+			CancellationToken token)
+		{
+			if (!IsStarted) {
+				return Task.FromResult<Command[]> (null);
+			}
+
+			if (!IsCodeActionProvider) {
+				Log ("Code actions are not supported by server for '{0}'. File: '{1}'", Methods.TextDocumentCodeAction, fileName);
+				return Task.FromResult<Command[]> (null);
+			}
+
+			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentCodeAction, fileName);
+
+			var message = new CodeActionParams {
+				TextDocument = TextDocumentIdentifierFactory.Create (fileName),
+				Context = new CodeActionContext {
+					Diagnostics = diagnostics
+				},
+				Range = range
+			};
+
+			return jsonRpc.InvokeWithParameterObjectAsync<Command[]> (
+				Methods.TextDocumentCodeAction,
+				message,
+				token);
+		}
+
 		void JsonRpcDisconnected (object sender, JsonRpcDisconnectedEventArgs e)
 		{
 			if (e.Exception != null) {

@@ -27,6 +27,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using LanguageServerProtocol = Microsoft.VisualStudio.LanguageServer.Protocol;
 using MonoDevelop.Components.Commands;
 using MonoDevelop.Core;
 using MonoDevelop.Ide;
@@ -57,16 +58,36 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 
 			try {
-				AddCommand (info, GettextCatalog.GetString ("Loading..."));
-				await Task.Delay (1000);
-				info.Clear ();
-				AddNoFixesAvailableCommand (info);
+				await AddQuickFixCommands (info, languageClient, cancelToken);
 			} catch (OperationCanceledException) {
 				// Ignore.
-			} catch (Exception e) {
-				LoggingService.LogError ("Error while creating quick fix menu.", e); 
+			} catch (Exception ex) {
+				LoggingService.LogError ("Error creating quick fix menu.", ex); 
 				info.Clear ();
 				AddNoFixesAvailableCommand (info);
+			}
+		}
+
+		async Task AddQuickFixCommands (CommandArrayInfo info, LanguageClientTextEditorExtension languageClient, CancellationToken token)
+		{
+			AddCommand (info, GettextCatalog.GetString ("Loading..."));
+
+			var commands = await languageClient.GetCodeActions (token);
+
+			AddCommands (info, commands);
+		}
+
+		void AddCommands (CommandArrayInfo info, LanguageServerProtocol.Command[] commands)
+		{
+			info.Clear ();
+
+			if (commands == null || commands.Length == 0) {
+				AddNoFixesAvailableCommand (info);
+				return;
+			}
+
+			foreach (var command in commands) {
+				AddCommand (info, command.Title);
 			}
 		}
 

@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using LanguageServerProtocol = Microsoft.VisualStudio.LanguageServer.Protocol;
 using Microsoft.VisualStudio.LanguageServer.Protocol;
 using MonoDevelop.Components.Commands;
 using MonoDevelop.Core;
@@ -49,6 +50,7 @@ namespace MonoDevelop.LanguageServer.Client
 		FilePath fileName;
 		List<IErrorMarker> errorMarkers = new List<IErrorMarker> ();
 		int documentVersion;
+		Diagnostic[] currentDiagnostics;
 
 		public override bool IsValidInContext (DocumentContext context)
 		{
@@ -86,6 +88,8 @@ namespace MonoDevelop.LanguageServer.Client
 			if (e.Uri == null || !(fileName.ToUri () == e.Uri)) {
 				return;
 			}
+
+			currentDiagnostics = e.Diagnostics;
 
 			Runtime.RunInMainThread (() => {
 				ShowDiagnostics (e.Diagnostics);
@@ -333,6 +337,19 @@ namespace MonoDevelop.LanguageServer.Client
 
 		internal bool IsCodeActionProvider {
 			get { return session.IsCodeActionProvider; }
+		}
+
+		internal async Task<LanguageServerProtocol.Command[]> GetCodeActions (CancellationToken token)
+		{
+			try {
+				Range range = Editor.GetCodeActionRange ();
+				return await session.GetCodeActions (Editor.FileName, range, currentDiagnostics, token);
+			} catch (OperationCanceledException) {
+				// Ignore.
+			} catch (Exception ex) {
+				LanguageClientLoggingService.LogError ("GetCodeActions error.", ex);
+			}
+			return null;
 		}
 	}
 }

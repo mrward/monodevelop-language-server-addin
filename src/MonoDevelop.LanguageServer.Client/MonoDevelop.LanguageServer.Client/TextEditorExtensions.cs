@@ -26,6 +26,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.VisualStudio.LanguageServer.Protocol;
 using MonoDevelop.Core.Text;
 using MonoDevelop.Ide.Editor;
 using MonoDevelop.Ide.FindInFiles;
@@ -73,6 +74,40 @@ namespace MonoDevelop.LanguageServer.Client
 		public static WordAtPosition GetWordAtCaret (this TextEditor editor)
 		{
 			return editor.GetWordAtPosition (editor.CaretLine, editor.CaretColumn);
+		}
+
+		/// <summary>
+		/// Gets the current selection or the word at the caret.
+		/// </summary>
+		public static Range GetCodeActionRange (this TextEditor editor)
+		{
+			if (editor.IsSomethingSelected) {
+				return new Range {
+					Start = editor.SelectionRegion.Begin.CreatePosition (),
+					End = editor.SelectionRegion.End.CreatePosition ()
+				};
+			}
+
+			// Use the word at the caret.
+			WordAtPosition wordAtPosition = editor.GetWordAtCaret ();
+			if (!wordAtPosition.IsInvalid) {
+				return new Range {
+					Start = new Position {
+						Character = wordAtPosition.StartColumn - 1,
+						Line = editor.CaretLine - 1
+					},
+					End = new Position {
+						Character = wordAtPosition.EndColumn - 1,
+						Line = editor.CaretLine - 1
+					}
+				};
+			}
+
+			// Just use the caret position as the range.
+			return new Range {
+				Start = editor.CaretLocation.CreatePosition (),
+				End = editor.CaretLocation.CreatePosition ()
+			};
 		}
 	}
 }
