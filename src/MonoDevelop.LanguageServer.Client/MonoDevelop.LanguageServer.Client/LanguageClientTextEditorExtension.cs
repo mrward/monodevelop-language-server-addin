@@ -343,13 +343,51 @@ namespace MonoDevelop.LanguageServer.Client
 		{
 			try {
 				Range range = Editor.GetCodeActionRange ();
-				return await session.GetCodeActions (Editor.FileName, range, currentDiagnostics, token);
+				Diagnostic[] diagnostics = GetDiagnostics (range);
+				return await session.GetCodeActions (Editor.FileName, range, diagnostics, token);
 			} catch (OperationCanceledException) {
 				// Ignore.
 			} catch (Exception ex) {
 				LanguageClientLoggingService.LogError ("GetCodeActions error.", ex);
 			}
 			return null;
+		}
+
+		Diagnostic[] GetDiagnostics (Range range)
+		{
+			if (currentDiagnostics == null) {
+				return null;
+			}
+
+			return currentDiagnostics
+				.Where (diagnostic => OverlappingRange (range, diagnostic.Range))
+				.ToArray ();
+		}
+
+		static bool OverlappingRange (Range range1, Range range2)
+		{
+			if (IsInside (range1, range2.Start) || IsInside (range1, range2.End)) {
+				return true;
+			} else if (IsInside (range2, range1.Start) || IsInside (range2, range1.End)) {
+				return true;
+			}
+			return false;
+		}
+
+		static bool IsInside (Range range, Position end)
+		{
+			if (end.Line >= range.Start.Line && end.Line <= range.End.Line) {
+				if (end.Line == range.Start.Line && end.Line == range.End.Line) {
+					return (end.Character >= range.Start.Character) &&
+						(end.Character <= range.End.Character);
+				} else if (end.Line == range.Start.Line) {
+					return end.Character <= range.Start.Character;
+				} else if (end.Line == range.End.Line) {
+					return end.Character <= range.End.Character;
+				}
+				return true;
+			}
+			return false;
 		}
 	}
 }

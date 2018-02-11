@@ -91,6 +91,8 @@
     <Compile Include="Microsoft.VisualStudio.LanguageServer.Client\ILanguageClientCompletionProvider.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientCompletionProvider.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientQuickFixMenuHandler.cs" />
+    <Compile Include="MonoDevelop.LanguageServer.Client\RangeExtensions.cs" />
+    <Compile Include="MonoDevelop.LanguageServer.Client\PositionExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\MonoDevelop.LanguageServer.Client.addin.xml" />

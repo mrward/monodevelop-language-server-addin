@@ -42,6 +42,7 @@
     <Compile Include="MonoDevelop.LanguageServer.Client.Tests\TextChangeEventArgsExtensionsTests.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client.Tests\TextEditorTestBase.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client.Tests\LanguageClientConfigurationSettingsProviderTests.cs" />
+    <Compile Include="MonoDevelop.LanguageServer.Client.Tests\RangeExtensionTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MonoDevelop.Addins.GuiUnit" Version="0.1.1" />
