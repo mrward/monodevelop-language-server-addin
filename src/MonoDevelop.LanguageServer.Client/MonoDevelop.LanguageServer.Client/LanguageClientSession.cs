@@ -778,6 +778,22 @@ namespace MonoDevelop.LanguageServer.Client
 				token);
 		}
 
+		public Task ExecuteCommand (Command command)
+		{
+			if (!IsStarted) {
+				return Task.CompletedTask;
+			}
+
+			Log ("Sending '{0}'.", Methods.WorkspaceExecuteCommand);
+
+			var message = new ExecuteCommandParams {
+				Command = command.CommandIdentifier,
+				Arguments = command.Arguments
+			};
+
+			return jsonRpc.InvokeWithParameterObjectAsync<object> (Methods.WorkspaceExecuteCommand, message);
+		}
+
 		void JsonRpcDisconnected (object sender, JsonRpcDisconnectedEventArgs e)
 		{
 			if (e.Exception != null) {

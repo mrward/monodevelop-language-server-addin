@@ -26,6 +26,7 @@
 
 using System;
 using Microsoft.VisualStudio.LanguageServer.Protocol;
+using MonoDevelop.Core;
 using Newtonsoft.Json.Linq;
 using StreamJsonRpc;
 
@@ -104,6 +105,21 @@ namespace MonoDevelop.LanguageServer.Client
 				session.OnPublishDiagnostics (message);
 			} catch (Exception ex) {
 				LanguageClientLoggingService.LogError ("OnPublishDiagnostics error.", ex);
+			}
+		}
+
+		[JsonRpcMethod (Methods.WorkspaceApplyEdit)]
+		public void OnWorkspaceApplyEdit (JToken arg)
+		{
+			try {
+				Log (Methods.WorkspaceApplyEdit, arg);
+
+				var message = arg.ToObject<ApplyWorkspaceEditParams> ();
+				Runtime.RunInMainThread (() => {
+					WorkspaceEditHandler.ApplyChanges (message.Edit);
+				}).LogFault ();
+			} catch (Exception ex) {
+				LanguageClientLoggingService.LogError ("OnWorkspaceApplyEdit error.", ex);
 			}
 		}
 

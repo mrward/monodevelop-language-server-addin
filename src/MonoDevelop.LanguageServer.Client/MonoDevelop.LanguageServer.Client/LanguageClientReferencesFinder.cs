@@ -113,7 +113,7 @@ namespace MonoDevelop.LanguageServer.Client
 						// Multiple files - cannot use text editor edit links.
 						string oldName = GetSearchResultItemText (references [0]);
 						string newName = RenameItemDialog.PromptForNewName (oldName);
-						ApplyChanges (locations, newName);
+						WorkspaceEditHandler.ApplyChanges (locations, newName);
 					}
 				}
 			} catch (OperationCanceledException) {
@@ -147,45 +147,13 @@ namespace MonoDevelop.LanguageServer.Client
 					if (edit?.Changes == null) {
 						monitor.ReportNothingToRename ();
 					} else {
-						ApplyChanges (edit);
+						WorkspaceEditHandler.ApplyChanges (edit);
 					}
 				}
 			} catch (OperationCanceledException) {
 				LanguageClientLoggingService.Log ("Rename was canceled.");
 			} catch (Exception ex) {
 				LanguageClientLoggingService.LogError ("Rename error.", ex);
-			}
-		}
-
-		static void ApplyChanges (WorkspaceEdit edit)
-		{
-			foreach (KeyValuePair<string, TextEdit[]> item in edit.Changes) {
-				ApplyChanges (item.Key, item.Value);
-			}
-		}
-
-		static void ApplyChanges (string fileName, IEnumerable<TextEdit> edits)
-		{
-			bool open = false;
-			ITextDocument document = TextFileProvider.Instance.GetTextEditorData (fileName, out open);
-			if (document != null) {
-				document.ApplyEdits (edits);
-				if (!open) {
-					document.Save ();
-				}
-			} else {
-				LanguageClientLoggingService.Log ("Unable to find text editor for file: '{0}'", fileName);
-			}
-		}
-
-		void ApplyChanges (IEnumerable<Location> locations, string newText)
-		{
-			foreach (IGrouping<string, Location> groupedByFileName in locations.GroupBy (location => location.Uri)) {
-				var edits = groupedByFileName.Select (location => new TextEdit {
-					NewText = newText,
-					Range = location.Range
-				});
-				ApplyChanges (groupedByFileName.Key, edits);
 			}
 		}
 	}

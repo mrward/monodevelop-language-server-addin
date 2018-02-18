@@ -339,12 +339,17 @@ namespace MonoDevelop.LanguageServer.Client
 			get { return session.IsCodeActionProvider; }
 		}
 
-		internal async Task<LanguageServerProtocol.Command[]> GetCodeActions (CancellationToken token)
+		internal async Task<LanguageClientCodeAction[]> GetCodeActions (CancellationToken token)
 		{
 			try {
 				Range range = Editor.GetCodeActionRange ();
 				Diagnostic[] diagnostics = GetDiagnostics (range);
-				return await session.GetCodeActions (Editor.FileName, range, diagnostics, token);
+				LanguageServerProtocol.Command[] commands = await session.GetCodeActions (Editor.FileName, range, diagnostics, token);
+				if (commands != null) {
+					return commands.Select (command => new LanguageClientCodeAction (session, command))
+						.ToArray ();
+				}
+				return null;
 			} catch (OperationCanceledException) {
 				// Ignore.
 			} catch (Exception ex) {

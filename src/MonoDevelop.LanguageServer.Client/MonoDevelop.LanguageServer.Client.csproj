@@ -93,6 +93,8 @@
     <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientQuickFixMenuHandler.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\RangeExtensions.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\PositionExtensions.cs" />
+    <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientCodeAction.cs" />
+    <Compile Include="MonoDevelop.LanguageServer.Client\WorkspaceEditHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\MonoDevelop.LanguageServer.Client.addin.xml" />

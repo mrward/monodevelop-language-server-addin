@@ -27,7 +27,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using LanguageServerProtocol = Microsoft.VisualStudio.LanguageServer.Protocol;
 using MonoDevelop.Components.Commands;
 using MonoDevelop.Core;
 using MonoDevelop.Ide;
@@ -77,23 +76,27 @@ namespace MonoDevelop.LanguageServer.Client
 			AddCommands (info, commands);
 		}
 
-		void AddCommands (CommandArrayInfo info, LanguageServerProtocol.Command[] commands)
+		void AddCommands (CommandArrayInfo info, LanguageClientCodeAction[] actions)
 		{
 			info.Clear ();
 
-			if (commands == null || commands.Length == 0) {
+			if (actions == null || actions.Length == 0) {
 				AddNoFixesAvailableCommand (info);
 				return;
 			}
 
-			foreach (var command in commands) {
-				AddCommand (info, command.Title);
+			foreach (var action in actions) {
+				AddCommand (info, action.Title, enabled: true, dataItem: action);
 			}
 		}
 
-		static void AddCommand (CommandArrayInfo info, string label)
+		static void AddCommand (
+			CommandArrayInfo info,
+			string label,
+			bool enabled = false,
+			object dataItem = null)
 		{
-			info.Add (CreateCommandInfo (label), null);
+			info.Add (CreateCommandInfo (label, enabled), dataItem);
 		}
 
 		static void AddNoFixesAvailableCommand (CommandArrayInfo info)
@@ -104,6 +107,14 @@ namespace MonoDevelop.LanguageServer.Client
 		static CommandInfo CreateCommandInfo (string label, bool enabled = false, bool isChecked = false)
 		{
 			return new CommandInfo (label, enabled, isChecked);
+		}
+
+		protected override void Run (object dataItem)
+		{
+			var action = dataItem as LanguageClientCodeAction;
+			if (action != null) {
+				action.Run ();
+			}
 		}
 	}
 }
