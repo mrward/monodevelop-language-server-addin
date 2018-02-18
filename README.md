@@ -20,8 +20,8 @@ API for integrating a language client is based on the [Visual Studio Language Se
  - [x] workspace/didChangeConfiguration (Only sent on startup)
  - [ ] workspace/didChangeWatchedFiles
  - [ ] workspace/symbol
- - [ ] workspace/executeCommand
- - [ ] workspace/applyEdit
+ - [x] workspace/executeCommand
+ - [x] workspace/applyEdit
  - [x] textDocument/publishDiagnostics
  - [x] textDocument/didOpen
  - [x] textDocument/didChange (Full and incremental)
@@ -40,7 +40,7 @@ API for integrating a language client is based on the [Visual Studio Language Se
  - [x] textDocument/rangeFormatting
  - [ ] textDocument/onTypeFormatting
  - [x] textDocument/definition
- - [ ] textDocument/codeAction
+ - [x] textDocument/codeAction
  - [ ] textDocument/codeLens
  - [ ] codeLens/resolve
  - [ ] textDocument/documentLink
