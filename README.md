@@ -19,7 +19,7 @@ API for integrating a language client is based on the [Visual Studio Language Se
  - [ ] client/unregisterCapability
  - [x] workspace/didChangeConfiguration (Only sent on startup)
  - [ ] workspace/didChangeWatchedFiles
- - [ ] workspace/symbol
+ - [x] workspace/symbol
  - [x] workspace/executeCommand
  - [x] workspace/applyEdit
  - [x] textDocument/publishDiagnostics
@@ -49,10 +49,10 @@ API for integrating a language client is based on the [Visual Studio Language Se
  
  - [ ] Snippets
 
- - [ ] Middleware
+ - [x] Middleware
    - [x] ILanguageClientCompletionProvider
    - [x] ILanguageClientExecuteCommandProvider
-   - [ ] ILanguageClientWorkspaceSymbolProvider
+   - [x] ILanguageClientWorkspaceSymbolProvider
  - [x] Connection
  - [x] IContentTypeMetadata
  - [x] CodeRemoteContentDefinition
