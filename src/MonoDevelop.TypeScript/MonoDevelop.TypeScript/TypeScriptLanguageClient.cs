@@ -35,12 +35,13 @@ using Microsoft.VisualStudio.LanguageServer.Client;
 using Microsoft.VisualStudio.LanguageServer.Protocol;
 using Microsoft.VisualStudio.Threading;
 using Microsoft.VisualStudio.Utilities;
+using StreamJsonRpc;
 
 namespace MonoDevelop.TypeScript
 {
 	[ContentType ("typescript")]
 	[Export (typeof (ILanguageClient))]
-	class TypeScriptLanguageClient : ILanguageClient
+	class TypeScriptLanguageClient : ILanguageClient, ILanguageClientCustomMessage
 	{
 		public string Name => "TypeScript Language Extension";
 
@@ -49,6 +50,10 @@ namespace MonoDevelop.TypeScript
 		public IEnumerable<string> FilesToWatch => null;
 
 		public object InitializationOptions => null;
+
+		public object CustomMessageTarget => null;
+
+		public object MiddleLayer => new MiddleLayerProvider ();
 
 		public event AsyncEventHandler<EventArgs> StartAsync;
 
@@ -103,6 +108,11 @@ namespace MonoDevelop.TypeScript
 			}
 
 			return Task.FromResult (connection);
+		}
+
+		public Task AttachForCustomMessageAsync (JsonRpc rpc)
+		{
+			return Task.CompletedTask;
 		}
 
 		public Task OnLoadedAsync ()

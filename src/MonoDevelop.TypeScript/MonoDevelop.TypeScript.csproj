@@ -36,6 +36,7 @@
     <Compile Include="Properties\AddinInfo.cs" />
     <Compile Include="MonoDevelop.TypeScript\TypeScriptContentTypeDefinition.cs" />
     <Compile Include="MonoDevelop.TypeScript\TypeScriptLanguageClient.cs" />
+    <Compile Include="MonoDevelop.TypeScript\MiddleLayerProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\MonoDevelop.TypeScript.addin.xml">
