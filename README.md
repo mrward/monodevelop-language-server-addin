@@ -51,7 +51,7 @@ API for integrating a language client is based on the [Visual Studio Language Se
 
  - [ ] Middleware
    - [x] ILanguageClientCompletionProvider
-   - [ ] ILanguageClientExecuteCommandProvider
+   - [x] ILanguageClientExecuteCommandProvider
    - [ ] ILanguageClientWorkspaceSymbolProvider
  - [x] Connection
  - [x] IContentTypeMetadata
