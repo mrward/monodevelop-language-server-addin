@@ -78,6 +78,8 @@ namespace MonoDevelop.LanguageServer.Client
 
 		public LanguageClientSession GetSession (DocumentContext context, bool createNewSession)
 		{
+			Runtime.AssertMainThread ();
+
 			IContentType contentType = LanguageClientServices.ClientProvider.GetContentType (context.Name);
 			if (contentType.IsUnknown ()) {
 				return null;

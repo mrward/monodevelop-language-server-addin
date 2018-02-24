@@ -97,6 +97,8 @@
     <Compile Include="MonoDevelop.LanguageServer.Client\WorkspaceEditHandler.cs" />
     <Compile Include="Microsoft.VisualStudio.LanguageServer.Client\ILanguageClientExecuteCommandProvider.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientExecuteCommandProvider.cs" />
+    <Compile Include="MonoDevelop.LanguageServer.Client\WorkspaceSymbolSearchCategory.cs" />
+    <Compile Include="MonoDevelop.LanguageServer.Client\WorkspaceSymbolSearchResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\MonoDevelop.LanguageServer.Client.addin.xml" />

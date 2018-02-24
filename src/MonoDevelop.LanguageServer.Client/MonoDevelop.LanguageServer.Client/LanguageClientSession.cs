@@ -802,6 +802,35 @@ namespace MonoDevelop.LanguageServer.Client
 			return executeCommandProvider.ExecuteCommand (message);
 		}
 
+		public bool IsWorkspaceSymbolProvider {
+			get {
+				return ServerCapabilities?.WorkspaceSymbolProvider == true;
+			}
+		}
+
+		public Task<SymbolInformation[]> GetWorkspaceSymbols (string query, CancellationToken token)
+		{
+			if (!IsStarted) {
+				return Task.FromResult<SymbolInformation[]> (null);
+			}
+
+			if (!IsWorkspaceSymbolProvider) {
+				Log ("Workspace symbols are not supported by server.", Methods.WorkspaceSymbol);
+				return Task.FromResult<SymbolInformation[]> (null);
+			}
+
+			Log ("Sending '{0}'.", Methods.WorkspaceSymbol);
+
+			var message = new WorkspaceSymbolParams {
+				Query = query
+			};
+
+			return jsonRpc.InvokeWithParameterObjectAsync<SymbolInformation[]> (
+				Methods.WorkspaceSymbol,
+				message,
+				token);
+		}
+
 		void JsonRpcDisconnected (object sender, JsonRpcDisconnectedEventArgs e)
 		{
 			if (e.Exception != null) {
