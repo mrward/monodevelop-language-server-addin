@@ -55,6 +55,7 @@ namespace MonoDevelop.LanguageServer.Client
 		FilePath rootPath;
 
 		LanguageClientCompletionProvider completionProvider;
+		LanguageClientExecuteCommandProvider executeCommandProvider;
 
 		public LanguageClientSession (ILanguageClient client, IContentType contentType, FilePath rootPath)
 		{
@@ -187,9 +188,16 @@ namespace MonoDevelop.LanguageServer.Client
 		void InitializeCustomClientProviders ()
 		{
 			var customClient = client as ILanguageClientCustomMessage;
-			var customCompletionProvider = customClient?.MiddleLayer as ILanguageClientCompletionProvider;
 
-			completionProvider = new LanguageClientCompletionProvider (jsonRpc, customCompletionProvider);
+			completionProvider = new LanguageClientCompletionProvider (
+				jsonRpc,
+				customClient?.MiddleLayer as ILanguageClientCompletionProvider
+			);
+
+			executeCommandProvider = new LanguageClientExecuteCommandProvider (
+				jsonRpc,
+				customClient?.MiddleLayer as ILanguageClientExecuteCommandProvider
+			);
 		}
 
 		static InitializeParams CreateInitializeParams (ILanguageClient client, FilePath rootPath)
@@ -791,7 +799,7 @@ namespace MonoDevelop.LanguageServer.Client
 				Arguments = command.Arguments
 			};
 
-			return jsonRpc.InvokeWithParameterObjectAsync<object> (Methods.WorkspaceExecuteCommand, message);
+			return executeCommandProvider.ExecuteCommand (message);
 		}
 
 		void JsonRpcDisconnected (object sender, JsonRpcDisconnectedEventArgs e)
