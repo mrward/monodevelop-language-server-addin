@@ -36,6 +36,7 @@
     <Compile Include="Properties\AddinInfo.cs" />
     <Compile Include="MonoDevelop.PowerShell\PowerShellContentTypeDefinition.cs" />
     <Compile Include="MonoDevelop.PowerShell\PowerShellLanguageClient.cs" />
+    <Compile Include="MonoDevelop.PowerShell\PowerShellMiddleLayer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MonoDevelop.LanguageServer.Client\MonoDevelop.LanguageServer.Client.csproj">

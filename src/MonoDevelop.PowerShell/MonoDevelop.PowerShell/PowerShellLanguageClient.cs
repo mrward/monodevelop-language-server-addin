@@ -43,12 +43,13 @@ using Microsoft.VisualStudio.Threading;
 using Microsoft.VisualStudio.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using StreamJsonRpc;
 
 namespace MonoDevelop.PowerShell
 {
 	[ContentType ("PowerShell1")]
 	[Export (typeof (ILanguageClient))]
-	class PowerShellLanguageClient : ILanguageClient
+	class PowerShellLanguageClient : ILanguageClient, ILanguageClientCustomMessage
 	{
 		public string Name => "PowerShell Language Extension";
 
@@ -59,6 +60,10 @@ namespace MonoDevelop.PowerShell
 		public object InitializationOptions => null;
 
 		public IEnumerable<string> FilesToWatch => null;
+
+		public object CustomMessageTarget => null;
+
+		public object MiddleLayer => new PowerShellMiddleLayer ();
 
 		public event AsyncEventHandler<EventArgs> StartAsync;
 
@@ -118,6 +123,11 @@ namespace MonoDevelop.PowerShell
 		public async Task OnLoadedAsync ()
 		{
 			await StartAsync?.InvokeAsync (this, EventArgs.Empty);
+		}
+
+		Task ILanguageClientCustomMessage.AttachForCustomMessageAsync (JsonRpc rpc)
+		{
+			return Task.CompletedTask;
 		}
 	}
 }
