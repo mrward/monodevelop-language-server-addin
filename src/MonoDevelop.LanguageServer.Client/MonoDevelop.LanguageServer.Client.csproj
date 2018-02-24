@@ -99,6 +99,8 @@
     <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientExecuteCommandProvider.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\WorkspaceSymbolSearchCategory.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\WorkspaceSymbolSearchResult.cs" />
+    <Compile Include="Microsoft.VisualStudio.LanguageServer.Client\ILanguageClientWorkspaceSymbolProvider.cs" />
+    <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientWorkspaceSymbolProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\MonoDevelop.LanguageServer.Client.addin.xml" />

@@ -56,6 +56,7 @@ namespace MonoDevelop.LanguageServer.Client
 
 		LanguageClientCompletionProvider completionProvider;
 		LanguageClientExecuteCommandProvider executeCommandProvider;
+		LanguageClientWorkspaceSymbolProvider workspaceSymbolProvider;
 
 		public LanguageClientSession (ILanguageClient client, IContentType contentType, FilePath rootPath)
 		{
@@ -197,6 +198,11 @@ namespace MonoDevelop.LanguageServer.Client
 			executeCommandProvider = new LanguageClientExecuteCommandProvider (
 				jsonRpc,
 				customClient?.MiddleLayer as ILanguageClientExecuteCommandProvider
+			);
+
+			workspaceSymbolProvider = new LanguageClientWorkspaceSymbolProvider (
+				jsonRpc,
+				customClient?.MiddleLayer as ILanguageClientWorkspaceSymbolProvider
 			);
 		}
 
@@ -825,10 +831,7 @@ namespace MonoDevelop.LanguageServer.Client
 				Query = query
 			};
 
-			return jsonRpc.InvokeWithParameterObjectAsync<SymbolInformation[]> (
-				Methods.WorkspaceSymbol,
-				message,
-				token);
+			return workspaceSymbolProvider.RequestWorkspaceSymbols (message, token);
 		}
 
 		void JsonRpcDisconnected (object sender, JsonRpcDisconnectedEventArgs e)
