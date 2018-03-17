@@ -107,8 +107,14 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.LanguageServer.Protocol" Version="1.0.71-pre" />
-    <PackageReference Include="Microsoft.VisualStudio.Threading" Version="15.3.20" />
-    <PackageReference Include="Microsoft.VisualStudio.Validation" Version="15.3.15" />
+    <PackageReference Include="Microsoft.VisualStudio.Threading" Version="15.4.4">
+      <ExcludeAssets>runtime</ExcludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Validation" Version="15.3.15">
+      <ExcludeAssets>runtime</ExcludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Newtonsoft.Json" version="10.0.3">
       <ExcludeAssets>runtime</ExcludeAssets>
       <PrivateAssets>all</PrivateAssets>

@@ -35,5 +35,5 @@ using Mono.Addins;
 [assembly:AddinName ("PowerShell Language Server Client")]
 [assembly:AddinDescription ("Uses PowerShell Language Server from VSCode")]
 
-[assembly:AddinDependency ("Core", "7.2")]
-[assembly:AddinDependency ("Ide", "7.2")]
+[assembly:AddinDependency ("Core", "7.4")]
+[assembly:AddinDependency ("Ide", "7.4")]

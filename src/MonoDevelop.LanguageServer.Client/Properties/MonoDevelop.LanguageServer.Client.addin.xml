@@ -2,8 +2,6 @@
 	<Runtime>
 		<Import assembly="MonoDevelop.LanguageServer.Client.dll" />
 		<Import assembly="Microsoft.VisualStudio.LanguageServer.Protocol.Preview.dll" />
-		<Import assembly="Microsoft.VisualStudio.Threading.dll" />
-		<Import assembly="Microsoft.VisualStudio.Validation.dll" />
 		<Import assembly="StreamJsonRpc.dll" />
 	</Runtime>
 

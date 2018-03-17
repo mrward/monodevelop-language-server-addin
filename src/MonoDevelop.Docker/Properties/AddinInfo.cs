@@ -35,5 +35,5 @@ using Mono.Addins;
 [assembly:AddinName ("Docker Language Server Client")]
 [assembly:AddinDescription ("Uses Docker Language Server from https://github.com/rcjsuen/dockerfile-language-server-nodejs")]
 
-[assembly:AddinDependency ("Core", "7.2")]
-[assembly:AddinDependency ("Ide", "7.2")]
+[assembly:AddinDependency ("Core", "7.4")]
+[assembly:AddinDependency ("Ide", "7.4")]

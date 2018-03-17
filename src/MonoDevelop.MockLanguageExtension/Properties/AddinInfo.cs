@@ -35,5 +35,5 @@ using Mono.Addins;
 [assembly:AddinName ("Foo Language Server Client")]
 [assembly:AddinDescription ("Mock language server client")]
 
-[assembly:AddinDependency ("Core", "7.2")]
-[assembly:AddinDependency ("Ide", "7.2")]
+[assembly:AddinDependency ("Core", "7.4")]
+[assembly:AddinDependency ("Ide", "7.4")]

@@ -47,7 +47,7 @@
   <ItemGroup>
     <PackageReference Include="MonoDevelop.Addins.GuiUnit" Version="0.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.LanguageServer.Protocol" Version="1.0.71-pre" />
-    <PackageReference Include="Microsoft.VisualStudio.Threading" Version="15.3.20" />
+    <PackageReference Include="Microsoft.VisualStudio.Threading" Version="15.4.4" />
     <PackageReference Include="Microsoft.VisualStudio.Validation" Version="15.3.15" />
     <PackageReference Include="Newtonsoft.Json" version="10.0.3" />
     <PackageReference Include="StreamJsonRpc" Version="1.2.8" />

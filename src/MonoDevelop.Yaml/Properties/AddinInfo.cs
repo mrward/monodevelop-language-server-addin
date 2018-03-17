@@ -35,5 +35,5 @@ using Mono.Addins;
 [assembly:AddinName ("Yaml Language Server Client")]
 [assembly:AddinDescription ("Uses Yaml language server from https://github.com/redhat-developer/yaml-language-server")]
 
-[assembly:AddinDependency ("Core", "7.2")]
-[assembly:AddinDependency ("Ide", "7.2")]
+[assembly:AddinDependency ("Core", "7.4")]
+[assembly:AddinDependency ("Ide", "7.4")]
