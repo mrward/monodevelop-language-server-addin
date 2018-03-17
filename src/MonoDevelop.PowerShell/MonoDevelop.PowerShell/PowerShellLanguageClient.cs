@@ -92,7 +92,7 @@ namespace MonoDevelop.PowerShell
 
 			var info = new ProcessStartInfo {
 				FileName = @"/usr/local/bin/pwsh",
-				Arguments = $@"-NoProfile -NonInteractive -ExecutionPolicy Bypass -Command "" & '{script}' -EditorServicesVersion '1.5.1' -HostName 'Visual Studio Code Host' -HostProfileId 'Microsoft.VSCode' -HostVersion '1.5.1' -AdditionalModules @('PowerShellEditorServices.VSCode') -BundledModulesPath '{extensionDirectory}/modules' -EnableConsoleRepl -LogLevel 'Diagnostic' -LogPath '{extensionDirectory}/logs/VSEditorServices.log' -SessionDetailsPath '{extensionDirectory}/logs/PSES-VS' -FeatureFlags @()""",
+				Arguments = $@"-NoProfile -NonInteractive -ExecutionPolicy Bypass -Command "" & '{script}' -EditorServicesVersion '1.6.0' -HostName 'Visual Studio Code Host' -HostProfileId 'Microsoft.VSCode' -HostVersion '1.5.1' -AdditionalModules @('PowerShellEditorServices.VSCode') -BundledModulesPath '{extensionDirectory}/modules' -EnableConsoleRepl -LogLevel 'Diagnostic' -LogPath '{extensionDirectory}/logs/VSEditorServices.log' -SessionDetailsPath '{extensionDirectory}/logs/PSES-VS' -FeatureFlags @()""",
 				RedirectStandardInput = true,
 				RedirectStandardOutput = true,
 				UseShellExecute = false,

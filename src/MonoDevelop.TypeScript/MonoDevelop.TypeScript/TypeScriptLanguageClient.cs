@@ -78,7 +78,7 @@ namespace MonoDevelop.TypeScript
 
 			string typeScriptLanguageServerDirectory = Path.Combine (
 				currentDirectory,
-				"../../javascript-typescript-langserver/lib/");
+				"../../../javascript-typescript-langserver/lib/");
 
 			if (!Directory.Exists (typeScriptLanguageServerDirectory)) {
 				throw new Exception (string.Format ("TypeScript language server not found at '{0}'.", typeScriptLanguageServerDirectory));

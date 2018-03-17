@@ -69,7 +69,7 @@ namespace MonoDevelop.Docker
 			string currentDirectory = Path.GetDirectoryName (GetType ().Assembly.Location);
 			string yamlLanguageServerFileName = Path.Combine (
 				currentDirectory,
-				"node_modules/yaml-language-server/out/server/src/server.js");
+				"../node_modules/yaml-language-server/out/server/src/server.js");
 
 			if (!File.Exists (yamlLanguageServerFileName)) {
 				throw new Exception (string.Format ("Yaml language server not found at '{0}'.", yamlLanguageServerFileName));

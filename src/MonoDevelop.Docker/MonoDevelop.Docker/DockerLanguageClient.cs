@@ -65,7 +65,7 @@ namespace MonoDevelop.Docker
 			string currentDirectory = Path.GetDirectoryName (GetType ().Assembly.Location);
 			string dockerLanguageServerFileName = Path.Combine (
 				currentDirectory,
-				"node_modules/dockerfile-language-server-nodejs/bin/docker-langserver");
+				"../node_modules/dockerfile-language-server-nodejs/bin/docker-langserver");
 
 			if (!File.Exists (dockerLanguageServerFileName)) {
 				throw new Exception (string.Format ("Docker language server not found at '{0}'.", dockerLanguageServerFileName));
