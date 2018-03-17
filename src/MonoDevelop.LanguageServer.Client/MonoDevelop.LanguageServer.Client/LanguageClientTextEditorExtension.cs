@@ -310,7 +310,7 @@ namespace MonoDevelop.LanguageServer.Client
 		{
 			SignatureHelp signatureHelp = await session.GetSignatureHelp (fileName, completionContext, token);
 
-			if (signatureHelp == null || !signatureHelp.Signatures.Any ()) {
+			if (signatureHelp?.Signatures == null || !signatureHelp.Signatures.Any ()) {
 				return ParameterHintingResult.Empty;
 			}
 
