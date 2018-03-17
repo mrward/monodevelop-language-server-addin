@@ -39,7 +39,6 @@ namespace MonoDevelop.LanguageServer.Client
 		SignatureInformation signature;
 
 		public LanguageClientParameterHintingData (SignatureInformation signature)
-			: base (null)
 		{
 			this.signature = signature;
 		}

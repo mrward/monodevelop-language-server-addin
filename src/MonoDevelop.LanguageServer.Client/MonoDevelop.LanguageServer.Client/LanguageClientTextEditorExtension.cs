@@ -278,26 +278,30 @@ namespace MonoDevelop.LanguageServer.Client
 
 		public override Task<ParameterHintingResult> HandleParameterCompletionAsync (
 			CodeCompletionContext completionContext,
-			char completionChar,
+			SignatureHelpTriggerInfo triggerInfo,
 			CancellationToken token = default (CancellationToken))
 		{
-			if (ShouldTriggerParameterCompletion (completionChar)) {
+			if (ShouldTriggerParameterCompletion (triggerInfo)) {
 				try {
 					return GetParameterCompletionAsync (completionContext, token);
 				} catch (Exception ex) {
 					LanguageClientLoggingService.LogError ("HandleParameterCompletionAsync error.", ex);
 				}
 			}
-			return base.HandleParameterCompletionAsync (completionContext, completionChar, token);
+			return base.HandleParameterCompletionAsync (completionContext, triggerInfo, token);
 		}
 
-		bool ShouldTriggerParameterCompletion (char completionChar)
+		bool ShouldTriggerParameterCompletion (SignatureHelpTriggerInfo triggerInfo)
 		{
+			if (!triggerInfo.TriggerCharacter.HasValue) {
+				return false;
+			}
+
 			if (!session.IsSignatureHelpProvider) {
 				return false;
 			}
 
-			return session.IsSignatureHelpTriggerCharacter (completionChar);
+			return session.IsSignatureHelpTriggerCharacter (triggerInfo.TriggerCharacter.Value);
 		}
 
 		async Task<ParameterHintingResult> GetParameterCompletionAsync (
@@ -315,7 +319,9 @@ namespace MonoDevelop.LanguageServer.Client
 				.Select (signature => new LanguageClientParameterHintingData (signature) as ParameterHintingData)
 				.ToList ();
 
-			return new ParameterHintingResult (parameterDataItems, completionContext.TriggerOffset);
+			return new ParameterHintingResult (parameterDataItems) {
+				ApplicableSpan = new Microsoft.CodeAnalysis.Text.TextSpan (completionContext.TriggerOffset, 0)
+			};
 		}
 
 		[CommandUpdateHandler (CodeFormattingCommands.FormatBuffer)]
