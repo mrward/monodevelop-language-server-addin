@@ -98,6 +98,10 @@ namespace MonoDevelop.LanguageServer.Client
 
 		public IContentType GetContentType (FilePath fileName)
 		{
+			if (fileName.IsNull) {
+				return null;
+			}
+
 			return fileExtensionRegistry.GetContentTypeForFileNameOrExtension (fileName.FileName);
 		}
 
