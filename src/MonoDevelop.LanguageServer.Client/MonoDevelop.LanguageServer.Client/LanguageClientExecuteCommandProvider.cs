@@ -52,7 +52,7 @@ namespace MonoDevelop.LanguageServer.Client
 
 		Task<object> ExecuteCommandInternal (ExecuteCommandParams executeCommandParams)
 		{
-			return jsonRpc.InvokeWithParameterObjectAsync<object> (Methods.WorkspaceExecuteCommand, executeCommandParams);
+			return jsonRpc.InvokeWithParameterObjectAsync<object> (Methods.WorkspaceExecuteCommandName, executeCommandParams);
 		}
 	}
 }

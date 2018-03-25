@@ -64,7 +64,6 @@
     <Compile Include="MonoDevelop.LanguageServer.Client\DocumentLocationExtensions.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\FileHasLanguageClientCondition.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientTooltipProvider.cs" />
-    <Compile Include="MonoDevelop.LanguageServer.Client\ProtocolMethods.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\TextChangeEventArgsExtensions.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientDeclarationFinder.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientProgressMonitors.cs" />
@@ -101,12 +100,13 @@
     <Compile Include="MonoDevelop.LanguageServer.Client\WorkspaceSymbolSearchResult.cs" />
     <Compile Include="Microsoft.VisualStudio.LanguageServer.Client\ILanguageClientWorkspaceSymbolProvider.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientWorkspaceSymbolProvider.cs" />
+    <Compile Include="MonoDevelop.LanguageServer.Client\UriExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\MonoDevelop.LanguageServer.Client.addin.xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.VisualStudio.LanguageServer.Protocol" Version="1.0.71-pre" />
+    <PackageReference Include="Microsoft.VisualStudio.LanguageServer.Protocol" Version="1.1.6-pre" />
     <PackageReference Include="Microsoft.VisualStudio.Threading" Version="15.4.4">
       <ExcludeAssets>runtime</ExcludeAssets>
       <PrivateAssets>all</PrivateAssets>

@@ -70,9 +70,9 @@ namespace MonoDevelop.LanguageServer.Client
 
 			if (CompletionItem.Documentation != null) {
 				if (description == null) {
-					description = CompletionItem.Documentation;
+					description = CompletionItem.Documentation.Value;
 				} else {
-					description += Environment.NewLine + CompletionItem.Documentation;
+					description += Environment.NewLine + CompletionItem.Documentation.Value;
 				}
 			}
 

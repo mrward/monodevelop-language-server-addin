@@ -93,8 +93,8 @@ namespace MonoDevelop.LanguageServer.Client
 
 		public override string File {
 			get {
-				if (symbolInfo.Location != null) {
-					return symbolInfo.Location.Uri;
+				if (symbolInfo.Location?.Uri != null) {
+					return symbolInfo.Location.Uri.ToString ();
 				}
 				return null;
 			}

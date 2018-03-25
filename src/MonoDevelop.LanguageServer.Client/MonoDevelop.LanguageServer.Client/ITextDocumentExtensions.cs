@@ -88,7 +88,7 @@ namespace MonoDevelop.LanguageServer.Client
 		{
 			int startOffset = document.PositionToOffset (location.Range.Start);
 			int endOffset = document.PositionToOffset (location.Range.End);
-			var provider = new FileProvider (new FilePath (location.Uri), null, startOffset, endOffset);
+			var provider = new FileProvider (location.Uri.ToFilePath (), null, startOffset, endOffset);
 			return new SearchResult (provider, startOffset, endOffset - startOffset);
 		}
 	}

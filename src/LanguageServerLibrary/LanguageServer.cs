@@ -132,12 +132,12 @@ namespace LanguageServer
 				parameter.Diagnostics = parameter.Diagnostics.Take(this.maxProblems).ToArray();
 			}
 
-			Log(Methods.TextDocumentPublishDiagnostics, parameter);
+			Log(Methods.TextDocumentPublishDiagnosticsName, parameter);
 
-			this.rpc.NotifyWithParameterObjectAsync(Methods.TextDocumentPublishDiagnostics, parameter);
+			this.rpc.NotifyWithParameterObjectAsync(Methods.TextDocumentPublishDiagnosticsName, parameter);
 		}
 
-		public void SendDiagnostics(string uri, string text)
+		public void SendDiagnostics(Uri uri, string text)
 		{
 			if (this.diagnostics == null)
 			{
@@ -185,9 +185,9 @@ namespace LanguageServer
 				parameter.Diagnostics = parameter.Diagnostics.Take(this.maxProblems).ToArray();
 			}
 
-			Log(Methods.TextDocumentPublishDiagnostics, parameter);
+			Log(Methods.TextDocumentPublishDiagnosticsName, parameter);
 
-			this.rpc.NotifyWithParameterObjectAsync(Methods.TextDocumentPublishDiagnostics, parameter);
+			this.rpc.NotifyWithParameterObjectAsync(Methods.TextDocumentPublishDiagnosticsName, parameter);
 		}
 
 		public Location[] FindReferences(ReferenceParams parameter)
@@ -235,7 +235,7 @@ namespace LanguageServer
 			}
 		}
 
-		static IEnumerable<Location> FindReferences(string item, string uri, string[] lines)
+		static IEnumerable<Location> FindReferences(string item, Uri uri, string[] lines)
 		{
 			for (int i = 0; i < lines.Length; ++i)
 			{
@@ -370,9 +370,9 @@ namespace LanguageServer
 				MessageType = messageType
 			};
 
-			Log(Methods.WindowLogMessage, parameter);
+			Log(Methods.WindowLogMessageName, parameter);
 
-			this.rpc.NotifyWithParameterObjectAsync(Methods.WindowLogMessage, parameter);
+			this.rpc.NotifyWithParameterObjectAsync(Methods.WindowLogMessageName, parameter);
 		}
 
 		public void ShowMessage(string message, MessageType messageType)
@@ -383,9 +383,9 @@ namespace LanguageServer
 				MessageType = messageType
 			};
 
-			Log(Methods.WindowShowMessage, parameter);
+			Log(Methods.WindowShowMessageName, parameter);
 
-			this.rpc.NotifyWithParameterObjectAsync(Methods.WindowShowMessage, parameter);
+			this.rpc.NotifyWithParameterObjectAsync(Methods.WindowShowMessageName, parameter);
 		}
 
 		public async Task<MessageActionItem> ShowMessageRequestAsync(string message, MessageType messageType, string[] actionItems)
@@ -397,9 +397,9 @@ namespace LanguageServer
 				Actions = actionItems.Select(a => new MessageActionItem { Title = a }).ToArray()
 			};
 
-			Log(Methods.WindowShowMessageRequest, parameter);
+			Log(Methods.WindowShowMessageRequestName, parameter);
 
-			var response = await this.rpc.InvokeWithParameterObjectAsync<JToken>(Methods.WindowShowMessageRequest, parameter);
+			var response = await this.rpc.InvokeWithParameterObjectAsync<JToken>(Methods.WindowShowMessageRequestName, parameter);
 			return response.ToObject<MessageActionItem>();
 		}
 

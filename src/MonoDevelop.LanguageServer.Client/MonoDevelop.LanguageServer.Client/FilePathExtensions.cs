@@ -31,14 +31,13 @@ namespace MonoDevelop.LanguageServer.Client
 {
 	static class FilePathExtensions
 	{
-		public static string ToUri (this FilePath filePath)
+		public static Uri ToUri (this FilePath filePath)
 		{
 			if (filePath.IsNull) {
 				return null;
 			}
 
-			var uri = new Uri (filePath);
-			return uri.AbsoluteUri;
+			return new Uri (filePath);
 		}
 	}
 }

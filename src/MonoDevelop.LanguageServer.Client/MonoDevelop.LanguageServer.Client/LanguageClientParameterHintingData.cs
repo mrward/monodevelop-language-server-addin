@@ -64,7 +64,7 @@ namespace MonoDevelop.LanguageServer.Client
 			CancellationToken cancelToken)
 		{
 			var tooltipInfo = new TooltipInformation ();
-			tooltipInfo.SummaryMarkup = EscapeMarkup (signature.Documentation);
+			tooltipInfo.SummaryMarkup = EscapeMarkup (signature.Documentation?.Value);
 			tooltipInfo.SignatureMarkup = EscapeMarkup (GetSignatureMarkup ());
 			return Task.FromResult (tooltipInfo);
 		}

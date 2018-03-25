@@ -106,13 +106,13 @@ namespace MonoDevelop.LanguageServer.Client
 					IsStarted = false;
 					RemoveEventHandlers ();
 
-					Log ("Sending '{0}' message.", Methods.Shutdown);
-					await jsonRpc.InvokeAsync (Methods.Shutdown);
+					Log ("Sending '{0}' message.", Methods.ShutdownName);
+					await jsonRpc.InvokeAsync (Methods.ShutdownName);
 
-					Log ("Sending '{0}' message.", Methods.Exit);
-					bool success = await jsonRpc.InvokeAsyncWithTimeout (Methods.Exit, 1000);
+					Log ("Sending '{0}' message.", Methods.ExitName);
+					bool success = await jsonRpc.InvokeAsyncWithTimeout (Methods.ExitName, 1000);
 					if (!success) {
-						Log ("Timed out sending '{0}' message.", Methods.Exit);
+						Log ("Timed out sending '{0}' message.", Methods.ExitName);
 					}
 				}
 			} catch (Exception ex) {
@@ -172,11 +172,11 @@ namespace MonoDevelop.LanguageServer.Client
 			jsonRpc.StartListening ();
 			jsonRpc.JsonSerializer.NullValueHandling = NullValueHandling.Ignore;
 
-			Log ("Sending '{0}' message.", Methods.Initialize);
+			Log ("Sending '{0}' message.", Methods.InitializeName);
 
 			var message = CreateInitializeParams (client, rootPath);
 
-			var result = await jsonRpc.InvokeWithParameterObjectAsync<InitializeResult> (Methods.Initialize, message);
+			var result = await jsonRpc.InvokeWithParameterObjectAsync<InitializeResult> (Methods.InitializeName, message);
 
 			Log ("Initialized.", Id);
 
@@ -232,13 +232,13 @@ namespace MonoDevelop.LanguageServer.Client
 				return;
 			}
 
-			Log ("Sending '{0}' message.", Methods.WorkspaceDidChangeConfiguration);
+			Log ("Sending '{0}' message.", Methods.WorkspaceDidChangeConfigurationName);
 
 			var message = new DidChangeConfigurationParams {
 				Settings = settings
 			};
 
-			await jsonRpc.NotifyWithParameterObjectAsync (Methods.WorkspaceDidChangeConfiguration, message);
+			await jsonRpc.NotifyWithParameterObjectAsync (Methods.WorkspaceDidChangeConfigurationName, message);
 
 			Log ("Configuration sent.", Id);
 		}
@@ -297,7 +297,7 @@ namespace MonoDevelop.LanguageServer.Client
 
 		Task SendOpenDocumentMessage (DocumentToOpen document)
 		{
-			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentDidOpen, document.FileName);
+			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentDidOpenName, document.FileName);
 
 			var message = new DidOpenTextDocumentParams {
 				TextDocument = new TextDocumentItem {
@@ -307,7 +307,7 @@ namespace MonoDevelop.LanguageServer.Client
 				}
 			};
 
-			return jsonRpc.NotifyWithParameterObjectAsync (Methods.TextDocumentDidOpen, message);
+			return jsonRpc.NotifyWithParameterObjectAsync (Methods.TextDocumentDidOpenName, message);
 		}
 
 		public void CloseDocument (Document document)
@@ -322,13 +322,13 @@ namespace MonoDevelop.LanguageServer.Client
 
 		Task SendCloseDocumentMessage (FilePath fileName)
 		{
-			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentDidClose, fileName);
+			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentDidCloseName, fileName);
 
 			var message = new DidCloseTextDocumentParams {
 				TextDocument = TextDocumentIdentifierFactory.Create (fileName)
 			};
 
-			return jsonRpc.NotifyWithParameterObjectAsync (Methods.TextDocumentDidClose, message);
+			return jsonRpc.NotifyWithParameterObjectAsync (Methods.TextDocumentDidCloseName, message);
 		}
 
 		public void OnPublishDiagnostics (PublishDiagnosticParams diagnostic)
@@ -346,11 +346,11 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 
 			if (!IsCompletionProvider) {
-				Log ("Get completion list is not supported by server for '{0}'. File: '{1}'", Methods.TextDocumentCompletion, fileName);
+				Log ("Get completion list is not supported by server for '{0}'. File: '{1}'", Methods.TextDocumentCompletionName, fileName);
 				return null;
 			}
 
-			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentCompletion, fileName);
+			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentCompletionName, fileName);
 
 			var message = CreateTextDocumentPosition (fileName, completionContext);
 
@@ -424,11 +424,11 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 
 			if (!IsCompletionResolveProvider) {
-				Log ("Resolve completions is not supported by server for '{0}'.", Methods.TextDocumentCompletionResolve);
+				Log ("Resolve completions is not supported by server for '{0}'.", Methods.TextDocumentCompletionResolveName);
 				return Task.FromResult<CompletionItem> (null);
 			}
 
-			Log ("Sending '{0}' for '{1}'.", Methods.TextDocumentCompletionResolve, completionItem.Label);
+			Log ("Sending '{0}' for '{1}'.", Methods.TextDocumentCompletionResolveName, completionItem.Label);
 
 			return completionProvider.ResolveCompletion (completionItem, token);
 		}
@@ -475,7 +475,7 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 
 			if (!IsReferencesProvider) {
-				Log ("Get references is not supported by server for '{0}'. File: '{1}'", Methods.TextDocumentReferences, fileName);
+				Log ("Get references is not supported by server for '{0}'. File: '{1}'", Methods.TextDocumentReferencesName, fileName);
 				return Task.FromResult (new Location [0]);
 			}
 
@@ -487,10 +487,10 @@ namespace MonoDevelop.LanguageServer.Client
 				Position = position
 			};
 
-			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentReferences, fileName);
+			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentReferencesName, fileName);
 
 			return jsonRpc.InvokeWithParameterObjectAsync<Location[]> (
-				Methods.TextDocumentReferences,
+				Methods.TextDocumentReferencesName,
 				message,
 				token);
 		}
@@ -508,7 +508,7 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 
 			if (!IsDefinitionProvider) {
-				Log ("Find definitions is not supported by server for '{0}'. File: '{1}'", Methods.TextDocumentDefinition, fileName);
+				Log ("Find definitions is not supported by server for '{0}'. File: '{1}'", Methods.TextDocumentDefinitionName, fileName);
 				return Task.FromResult (new Location [0]);
 			}
 
@@ -517,10 +517,10 @@ namespace MonoDevelop.LanguageServer.Client
 				Position = position
 			};
 
-			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentDefinition, fileName);
+			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentDefinitionName, fileName);
 
 			return jsonRpc.InvokeWithParameterObjectAsync<Location[]> (
-				Methods.TextDocumentDefinition,
+				Methods.TextDocumentDefinitionName,
 				message,
 				token);
 		}
@@ -538,16 +538,16 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 
 			if (!IsHoverProvider) {
-				Log ("Hover is not supported by server for '{0}'. File: '{1}'", ProtocolMethods.TextDocumentHover, fileName);
+				Log ("Hover is not supported by server for '{0}'. File: '{1}'", Methods.TextDocumentHoverName, fileName);
 				return Task.FromResult (new Hover ());
 			}
 
-			Log ("Sending '{0}'. File: '{1}'", ProtocolMethods.TextDocumentHover, fileName);
+			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentHoverName, fileName);
 
 			var position = CreateTextDocumentPosition (fileName, location);
 
 			return jsonRpc.InvokeWithParameterObjectAsync<Hover> (
-				ProtocolMethods.TextDocumentHover,
+				Methods.TextDocumentHoverName,
 				position,
 				token);
 		}
@@ -561,11 +561,11 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 
 			if (!IsDocumentSyncSupported) {
-				Log ("Document sync not supported by server for '{0}'. File: '{1}'", Methods.TextDocumentDidChange, fileName);
+				Log ("Document sync not supported by server for '{0}'. File: '{1}'", Methods.TextDocumentDidChangeName, fileName);
 				return Task.FromResult (0);
 			}
 
-			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentDidChange, fileName);
+			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentDidChangeName, fileName);
 
 			var message = new DidChangeTextDocumentParams {
 				TextDocument = TextDocumentIdentifierFactory.Create (fileName, version),
@@ -573,7 +573,7 @@ namespace MonoDevelop.LanguageServer.Client
 					.ToArray ()
 			};
 
-			return jsonRpc.NotifyWithParameterObjectAsync (Methods.TextDocumentDidChange, message);
+			return jsonRpc.NotifyWithParameterObjectAsync (Methods.TextDocumentDidChangeName, message);
 		}
 
 		void OnServerCapabilitiesChanged ()
@@ -640,16 +640,16 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 
 			if (!IsSignatureHelpProvider) {
-				Log ("Signature help is not supported by server for '{0}'. File: '{1}'", ProtocolMethods.TextDocumentSignatureHelper, fileName);
+				Log ("Signature help is not supported by server for '{0}'. File: '{1}'", Methods.TextDocumentSignatureHelpName, fileName);
 				return Task.FromResult (new SignatureHelp ());
 			}
 
-			Log ("Sending '{0}'. File: '{1}'", ProtocolMethods.TextDocumentSignatureHelper, fileName);
+			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentSignatureHelpName, fileName);
 
 			var position = CreateTextDocumentPosition (fileName, completionContext);
 
 			return jsonRpc.InvokeWithParameterObjectAsync<SignatureHelp> (
-				ProtocolMethods.TextDocumentSignatureHelper,
+				Methods.TextDocumentSignatureHelpName,
 				position,
 				token);
 		}
@@ -673,11 +673,11 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 
 			if (!IsDocumentFormattingProvider) {
-				Log ("Document formatting is not supported by server for '{0}'. File: '{1}'", Methods.TextDocumentFormatting, editor.FileName);
+				Log ("Document formatting is not supported by server for '{0}'. File: '{1}'", Methods.TextDocumentFormattingName, editor.FileName);
 				return Task.FromResult<TextEdit[]> (null);
 			}
 
-			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentFormatting, editor.FileName);
+			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentFormattingName, editor.FileName);
 
 			var message = new DocumentFormattingParams {
 				TextDocument = TextDocumentIdentifierFactory.Create (editor.FileName),
@@ -688,7 +688,7 @@ namespace MonoDevelop.LanguageServer.Client
 			};
 
 			return jsonRpc.InvokeWithParameterObjectAsync<TextEdit[]> (
-				Methods.TextDocumentFormatting,
+				Methods.TextDocumentFormattingName,
 				message,
 				token);
 		}
@@ -700,11 +700,11 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 
 			if (!IsDocumentFormattingProvider) {
-				Log ("Document formatting is not supported by server for '{0}'. File: '{1}'", Methods.TextDocumentRangeFormatting, editor.FileName);
+				Log ("Document formatting is not supported by server for '{0}'. File: '{1}'", Methods.TextDocumentRangeFormattingName, editor.FileName);
 				return Task.FromResult<TextEdit[]> (null);
 			}
 
-			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentRangeFormatting, editor.FileName);
+			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentRangeFormattingName, editor.FileName);
 
 			var message = new DocumentRangeFormattingParams {
 				TextDocument = TextDocumentIdentifierFactory.Create (editor.FileName),
@@ -719,7 +719,7 @@ namespace MonoDevelop.LanguageServer.Client
 			};
 
 			return jsonRpc.InvokeWithParameterObjectAsync<TextEdit[]> (
-				Methods.TextDocumentRangeFormatting,
+				Methods.TextDocumentRangeFormattingName,
 				message,
 				token);
 		}
@@ -737,11 +737,11 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 
 			if (!IsRenameProvider) {
-				Log ("Rename is not supported by server for '{0}'. File: '{1}'", Methods.TextDocumentRename, fileName);
+				Log ("Rename is not supported by server for '{0}'. File: '{1}'", Methods.TextDocumentRenameName, fileName);
 				return Task.FromResult<WorkspaceEdit> (null);
 			}
 
-			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentRename, fileName);
+			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentRenameName, fileName);
 
 			var message = new RenameParams {
 				TextDocument = TextDocumentIdentifierFactory.Create (fileName),
@@ -750,7 +750,7 @@ namespace MonoDevelop.LanguageServer.Client
 			};
 
 			return jsonRpc.InvokeWithParameterObjectAsync<WorkspaceEdit> (
-				Methods.TextDocumentRename,
+				Methods.TextDocumentRenameName,
 				message,
 				token);
 		}
@@ -772,11 +772,11 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 
 			if (!IsCodeActionProvider) {
-				Log ("Code actions are not supported by server for '{0}'. File: '{1}'", Methods.TextDocumentCodeAction, fileName);
+				Log ("Code actions are not supported by server for '{0}'. File: '{1}'", Methods.TextDocumentCodeActionName, fileName);
 				return Task.FromResult<Command[]> (null);
 			}
 
-			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentCodeAction, fileName);
+			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentCodeActionName, fileName);
 
 			var message = new CodeActionParams {
 				TextDocument = TextDocumentIdentifierFactory.Create (fileName),
@@ -787,7 +787,7 @@ namespace MonoDevelop.LanguageServer.Client
 			};
 
 			return jsonRpc.InvokeWithParameterObjectAsync<Command[]> (
-				Methods.TextDocumentCodeAction,
+				Methods.TextDocumentCodeActionName,
 				message,
 				token);
 		}
@@ -798,7 +798,7 @@ namespace MonoDevelop.LanguageServer.Client
 				return Task.CompletedTask;
 			}
 
-			Log ("Sending '{0}'.", Methods.WorkspaceExecuteCommand);
+			Log ("Sending '{0}'.", Methods.WorkspaceExecuteCommandName);
 
 			var message = new ExecuteCommandParams {
 				Command = command.CommandIdentifier,
@@ -821,11 +821,11 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 
 			if (!IsWorkspaceSymbolProvider) {
-				Log ("Workspace symbols are not supported by server.", Methods.WorkspaceSymbol);
+				Log ("Workspace symbols are not supported by server.", Methods.WorkspaceSymbolName);
 				return Task.FromResult<SymbolInformation[]> (null);
 			}
 
-			Log ("Sending '{0}'.", Methods.WorkspaceSymbol);
+			Log ("Sending '{0}'.", Methods.WorkspaceSymbolName);
 
 			var message = new WorkspaceSymbolParams {
 				Query = query

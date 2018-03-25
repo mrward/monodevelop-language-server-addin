@@ -79,7 +79,7 @@ namespace MonoDevelop.LanguageServer.Client
 
 		SearchResult CreateSearchResult (Location location)
 		{
-			ITextDocument document = TextFileProvider.Instance.GetTextEditorData (location.Uri);
+			ITextDocument document = TextFileProvider.Instance.GetTextEditorData (location.Uri.ToFilePath ());
 
 			if (document != null) {
 				return document.CreateSearchResult (location);

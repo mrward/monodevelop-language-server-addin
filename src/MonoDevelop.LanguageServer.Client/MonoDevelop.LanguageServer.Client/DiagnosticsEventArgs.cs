@@ -38,7 +38,7 @@ namespace MonoDevelop.LanguageServer.Client
 			this.diagnostic = diagnostic;
 		}
 
-		public string Uri {
+		public Uri Uri {
 			get { return diagnostic.Uri; }
 		}
 

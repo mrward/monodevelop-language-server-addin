@@ -79,7 +79,7 @@ namespace MonoDevelop.LanguageServer.Client
 
 		static void OpenDeclaration (Location location)
 		{
-			var fileInfo = new FileOpenInformation (location.Uri);
+			var fileInfo = new FileOpenInformation (location.Uri.ToFilePath ());
 
 			if (location.Range?.Start != null) {
 				fileInfo.Line = location.Range.Start.Line + 1;

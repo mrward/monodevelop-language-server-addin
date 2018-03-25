@@ -61,10 +61,10 @@ namespace MonoDevelop.LanguageServer.Client
 
 		TooltipItem CreateTooltipItem (TextEditor editor, Hover result)
 		{
-			if (result?.Contents?.Length > 0) {
+			if (result?.Contents != null) {
 				var tooltipInfo = CreateTooltipInformation (result.Contents);
 
-				if (!tooltipInfo.IsEmpty) {
+				if (tooltipInfo != null && !tooltipInfo.IsEmpty) {
 					return new TooltipItem (
 						tooltipInfo,
 						editor.GetTextSegment (result.Range)
@@ -72,6 +72,14 @@ namespace MonoDevelop.LanguageServer.Client
 				}
 			}
 
+			return null;
+		}
+
+		TooltipInformation CreateTooltipInformation (object contents)
+		{
+			if (contents is object[] objectArray) {
+				return CreateTooltipInformation (objectArray);
+			}
 			return null;
 		}
 

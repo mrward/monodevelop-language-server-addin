@@ -53,7 +53,7 @@ namespace MonoDevelop.LanguageServer.Client
 
 		Task<SymbolInformation[]> RequestWorkspaceSymbolsInternal (WorkspaceSymbolParams param, CancellationToken token)
 		{
-			return jsonRpc.InvokeWithParameterObjectAsync<SymbolInformation[]> (Methods.WorkspaceSymbol, param, token);
+			return jsonRpc.InvokeWithParameterObjectAsync<SymbolInformation[]> (Methods.WorkspaceSymbolName, param, token);
 		}
 	}
 }

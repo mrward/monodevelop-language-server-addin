@@ -25,10 +25,10 @@ namespace LanguageServer
 
 		public event EventHandler Initialized;
 
-		[JsonRpcMethod(Methods.Initialize)]
+		[JsonRpcMethod(Methods.InitializeName)]
 		public object Initialize(JToken arg)
 		{
-			Log(Methods.Initialize, arg);
+			Log(Methods.InitializeName, arg);
 
 			var capabilities = new ServerCapabilities();
 			capabilities.TextDocumentSync = new TextDocumentSyncOptions();
@@ -51,37 +51,37 @@ namespace LanguageServer
 			return result;
 		}
 
-		[JsonRpcMethod(Methods.TextDocumentDidOpen)]
+		[JsonRpcMethod(Methods.TextDocumentDidOpenName)]
 		public void OnTextDocumentOpened(JToken arg)
 		{
-			Log(Methods.TextDocumentDidOpen, arg);
+			Log(Methods.TextDocumentDidOpenName, arg);
 
 			var parameter = arg.ToObject<DidOpenTextDocumentParams>();
 			server.OnTextDocumentOpened(parameter);
 		}
 
-		[JsonRpcMethod(Methods.TextDocumentDidClose)]
+		[JsonRpcMethod(Methods.TextDocumentDidCloseName)]
 		public void OnTextDocumentClosed(JToken arg)
 		{
-			Log(Methods.TextDocumentDidClose, arg);
+			Log(Methods.TextDocumentDidCloseName, arg);
 
 			var parameter = arg.ToObject<DidCloseTextDocumentParams>();
 			server.OnTextDocumentClosed(parameter);
 		}
 
-		[JsonRpcMethod(Methods.TextDocumentDidChange)]
+		[JsonRpcMethod(Methods.TextDocumentDidChangeName)]
 		public void OnTextDocumentChanged(JToken arg)
 		{
-			Log(Methods.TextDocumentDidChange, arg);
+			Log(Methods.TextDocumentDidChangeName, arg);
 
 			var parameter = arg.ToObject<DidChangeTextDocumentParams>();
 			server.SendDiagnostics(parameter.TextDocument.Uri, parameter.ContentChanges[0].Text);
 		}
 
-		[JsonRpcMethod(Methods.TextDocumentCompletion)]
+		[JsonRpcMethod(Methods.TextDocumentCompletionName)]
 		public CompletionItem[] OnTextDocumentCompletion(JToken arg)
 		{
-			Log(Methods.TextDocumentCompletion, arg);
+			Log(Methods.TextDocumentCompletionName, arg);
 
 			List<CompletionItem> items = new List<CompletionItem>();
 
@@ -97,44 +97,44 @@ namespace LanguageServer
 			return items.ToArray();
 		}
 
-		[JsonRpcMethod(Methods.WorkspaceDidChangeConfiguration)]
+		[JsonRpcMethod(Methods.WorkspaceDidChangeConfigurationName)]
 		public void OnDidChangeConfiguration(JToken arg)
 		{
-			Log(Methods.WorkspaceDidChangeConfiguration, arg);
+			Log(Methods.WorkspaceDidChangeConfigurationName, arg);
 
 			var parameter = arg.ToObject<DidChangeConfigurationParams>();
 			this.server.SendSettings(parameter);
 		}
 
-		[JsonRpcMethod(Methods.Shutdown)]
+		[JsonRpcMethod(Methods.ShutdownName)]
 		public object Shutdown()
 		{
-			Log(Methods.Shutdown);
+			Log(Methods.ShutdownName);
 
 			return null;
 		}
 
-		[JsonRpcMethod(Methods.Exit)]
+		[JsonRpcMethod(Methods.ExitName)]
 		public void Exit()
 		{
-			Log(Methods.Exit);
+			Log(Methods.ExitName);
 
 			server.Exit();
 		}
 
-		[JsonRpcMethod(Methods.TextDocumentReferences)]
+		[JsonRpcMethod(Methods.TextDocumentReferencesName)]
 		public Location[] OnTextDocumentReferences(JToken arg)
 		{
-			Log(Methods.TextDocumentReferences, arg);
+			Log(Methods.TextDocumentReferencesName, arg);
 
 			var parameter = arg.ToObject<ReferenceParams>();
 			return server.FindReferences(parameter);
 		}
 
-		[JsonRpcMethod("textDocument/hover")]
+		[JsonRpcMethod(Methods.TextDocumentHoverName)]
 		public Hover OnTextDocumentHover(JToken arg)
 		{
-			Log("textDocument/hover", arg);
+			Log(Methods.TextDocumentHoverName, arg);
 
 			var contents = new List<MarkedString>();
 
@@ -153,19 +153,19 @@ namespace LanguageServer
 			};
 		}
 
-		[JsonRpcMethod(Methods.TextDocumentDefinition)]
+		[JsonRpcMethod(Methods.TextDocumentDefinitionName)]
 		public Location[] OnTextDocumentDefinition(JToken arg)
 		{
-			Log(Methods.TextDocumentDefinition, arg);
+			Log(Methods.TextDocumentDefinitionName, arg);
 
 			var parameter = arg.ToObject<TextDocumentPositionParams>();
 			return server.GoToDefinition(parameter);
 		}
 
-		[JsonRpcMethod("textDocument/signatureHelp")]
+		[JsonRpcMethod(Methods.TextDocumentSignatureHelpName)]
 		public SignatureHelp OnTextDocumentSignaureHelp(JToken arg)
 		{
-			Log("textDocument/signatureHelp", arg);
+			Log(Methods.TextDocumentSignatureHelpName, arg);
 
 			var signatures = new List<SignatureInformation>();
 
@@ -173,7 +173,7 @@ namespace LanguageServer
 			{
 				var signature = new SignatureInformation
 				{
-					Documentation = "Signature documentation " + i,
+					Documentation = CreateMarkupContent("Signature documentation " + i),
 					Label = "Signature " + i
 				};
 
@@ -183,7 +183,7 @@ namespace LanguageServer
 				{
 					var parameter = new ParameterInformation
 					{
-						Documentation = "Parameter documentation " + i,
+						Documentation = CreateMarkupContent("Parameter documentation " + i),
 						Label = "Parameter " + i
 					};
 				}
@@ -196,6 +196,15 @@ namespace LanguageServer
 			return new SignatureHelp
 			{
 				Signatures = signatures.ToArray()
+			};
+		}
+
+		static MarkupContent CreateMarkupContent(string text)
+		{
+			return new MarkupContent
+			{
+				Kind = MarkupKind.PlainText,
+				Value = text
 			};
 		}
 

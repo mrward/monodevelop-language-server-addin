@@ -41,11 +41,11 @@ namespace MonoDevelop.LanguageServer.Client
 			this.session = session;
 		}
 
-		[JsonRpcMethod (Methods.WindowLogMessage)]
+		[JsonRpcMethod (Methods.WindowLogMessageName)]
 		public void OnWindowLogMessage (JToken arg)
 		{
 			try {
-				Log (Methods.WindowLogMessage, arg);
+				Log (Methods.WindowLogMessageName, arg);
 
 				var message = arg.ToObject<LogMessageParams> ();
 				LogMessage (message);
@@ -68,11 +68,11 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 		}
 
-		[JsonRpcMethod (Methods.WindowShowMessage)]
+		[JsonRpcMethod (Methods.WindowShowMessageName)]
 		public void OnWindowShowMessage (JToken arg)
 		{
 			try {
-				Log (Methods.WindowShowMessage, arg);
+				Log (Methods.WindowShowMessageName, arg);
 
 				var message = arg.ToObject<ShowMessageParams> ();
 				LanguageClientMessageService.ShowMessage (message);
@@ -81,11 +81,11 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 		}
 
-		[JsonRpcMethod (Methods.WindowShowMessageRequest)]
+		[JsonRpcMethod (Methods.WindowShowMessageRequestName)]
 		public object OnWindowShowRequestMessage (JToken arg)
 		{
 			try {
-				Log (Methods.WindowShowMessageRequest, arg);
+				Log (Methods.WindowShowMessageRequestName, arg);
 
 				var message = arg.ToObject<ShowMessageRequestParams> ();
 				return LanguageClientMessageService.ShowMessage (message);
@@ -95,11 +95,11 @@ namespace MonoDevelop.LanguageServer.Client
 			return null;
 		}
 
-		[JsonRpcMethod (Methods.TextDocumentPublishDiagnostics)]
+		[JsonRpcMethod (Methods.TextDocumentPublishDiagnosticsName)]
 		public void OnPublishDiagnostics (JToken arg)
 		{
 			try {
-				Log (Methods.TextDocumentPublishDiagnostics, arg);
+				Log (Methods.TextDocumentPublishDiagnosticsName, arg);
 
 				var message = arg.ToObject<PublishDiagnosticParams> ();
 				session.OnPublishDiagnostics (message);
@@ -108,11 +108,11 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 		}
 
-		[JsonRpcMethod (Methods.WorkspaceApplyEdit)]
+		[JsonRpcMethod (Methods.WorkspaceApplyEditName)]
 		public void OnWorkspaceApplyEdit (JToken arg)
 		{
 			try {
-				Log (Methods.WorkspaceApplyEdit, arg);
+				Log (Methods.WorkspaceApplyEditName, arg);
 
 				var message = arg.ToObject<ApplyWorkspaceEditParams> ();
 				Runtime.RunInMainThread (() => {
