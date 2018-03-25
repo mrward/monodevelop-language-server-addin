@@ -24,7 +24,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.LanguageServer.Protocol;
 using StreamJsonRpc;
 
 namespace MonoDevelop.LanguageServer.Client
@@ -44,6 +46,23 @@ namespace MonoDevelop.LanguageServer.Client
 		{
 			Task result = await Task.WhenAny (task, Task.Delay (timeout));
 			return result == task;
+		}
+
+		public static Task<TResult> InvokeWithParameterObjectAsync<TArgument, TResult> (
+			this JsonRpc jsonRpc,
+			LspRequest<TArgument, TResult> request,
+			TArgument argument,
+			CancellationToken cancellationToken = default (CancellationToken))
+		{
+			return jsonRpc.InvokeWithParameterObjectAsync<TResult> (request.Name, argument, cancellationToken);
+		}
+
+		public static Task NotifyWithParameterObjectAsync<TArgument> (
+			this JsonRpc jsonRpc,
+			LspNotification<TArgument> notification,
+			TArgument argument)
+		{
+			return jsonRpc.NotifyWithParameterObjectAsync (notification.Name, argument);
 		}
 	}
 }

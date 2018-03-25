@@ -53,7 +53,11 @@ namespace MonoDevelop.LanguageServer.Client
 
 		Task<object> RequestCompletionsInternal (TextDocumentPositionParams param, CancellationToken token)
 		{
-			return jsonRpc.InvokeWithParameterObjectAsync<object> (Methods.TextDocumentCompletionName, param, token);
+			var completionParams = new CompletionParams {
+				Position = param.Position,
+				TextDocument = param.TextDocument
+			};
+			return jsonRpc.InvokeWithParameterObjectAsync (Methods.TextDocumentCompletion, completionParams, token);
 		}
 
 		public Task<CompletionItem> ResolveCompletion (CompletionItem completionItem, CancellationToken token)
@@ -66,8 +70,8 @@ namespace MonoDevelop.LanguageServer.Client
 
 		Task<CompletionItem> ResolveCompletionInternal (CompletionItem completionItem, CancellationToken token)
 		{
-			return jsonRpc.InvokeWithParameterObjectAsync<CompletionItem> (
-				Methods.TextDocumentCompletionResolveName,
+			return jsonRpc.InvokeWithParameterObjectAsync (
+				Methods.TextDocumentCompletionResolve,
 				completionItem,
 				token);
 		}

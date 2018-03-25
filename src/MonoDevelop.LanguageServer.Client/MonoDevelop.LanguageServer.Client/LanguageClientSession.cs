@@ -176,7 +176,7 @@ namespace MonoDevelop.LanguageServer.Client
 
 			var message = CreateInitializeParams (client, rootPath);
 
-			var result = await jsonRpc.InvokeWithParameterObjectAsync<InitializeResult> (Methods.InitializeName, message);
+			var result = await jsonRpc.InvokeWithParameterObjectAsync (Methods.Initialize, message);
 
 			Log ("Initialized.", Id);
 
@@ -307,7 +307,7 @@ namespace MonoDevelop.LanguageServer.Client
 				}
 			};
 
-			return jsonRpc.NotifyWithParameterObjectAsync (Methods.TextDocumentDidOpenName, message);
+			return jsonRpc.NotifyWithParameterObjectAsync (Methods.TextDocumentDidOpen, message);
 		}
 
 		public void CloseDocument (Document document)
@@ -328,7 +328,7 @@ namespace MonoDevelop.LanguageServer.Client
 				TextDocument = TextDocumentIdentifierFactory.Create (fileName)
 			};
 
-			return jsonRpc.NotifyWithParameterObjectAsync (Methods.TextDocumentDidCloseName, message);
+			return jsonRpc.NotifyWithParameterObjectAsync (Methods.TextDocumentDidClose, message);
 		}
 
 		public void OnPublishDiagnostics (PublishDiagnosticParams diagnostic)
@@ -489,8 +489,8 @@ namespace MonoDevelop.LanguageServer.Client
 
 			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentReferencesName, fileName);
 
-			return jsonRpc.InvokeWithParameterObjectAsync<Location[]> (
-				Methods.TextDocumentReferencesName,
+			return jsonRpc.InvokeWithParameterObjectAsync (
+				Methods.TextDocumentReferences,
 				message,
 				token);
 		}
@@ -501,15 +501,15 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 		}
 
-		public Task<Location[]> FindDefinitions (FilePath fileName, Position position, CancellationToken token)
+		public async Task<Location[]> FindDefinitions (FilePath fileName, Position position, CancellationToken token)
 		{
 			if (!IsStarted) {
-				return Task.FromResult (new Location [0]);
+				return Array.Empty<Location> ();
 			}
 
 			if (!IsDefinitionProvider) {
 				Log ("Find definitions is not supported by server for '{0}'. File: '{1}'", Methods.TextDocumentDefinitionName, fileName);
-				return Task.FromResult (new Location [0]);
+				return Array.Empty<Location> ();
 			}
 
 			var message = new TextDocumentPositionParams {
@@ -519,10 +519,24 @@ namespace MonoDevelop.LanguageServer.Client
 
 			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentDefinitionName, fileName);
 
-			return jsonRpc.InvokeWithParameterObjectAsync<Location[]> (
-				Methods.TextDocumentDefinitionName,
+			var result = await jsonRpc.InvokeWithParameterObjectAsync (
+				Methods.TextDocumentDefinition,
 				message,
 				token);
+
+			return ConvertToLocations (result);
+		}
+
+		Location[] ConvertToLocations (object result)
+		{
+			if (result is JArray arrayResult) {
+				return arrayResult.ToObject<Location[]> (jsonRpc.JsonSerializer);
+			} else if (result is Location location) {
+				return new [] { location };
+			} else if (result is Location[] locations) {
+				return locations;
+			}
+			return Array.Empty<Location> ();
 		}
 
 		public bool IsHoverProvider {
@@ -546,8 +560,8 @@ namespace MonoDevelop.LanguageServer.Client
 
 			var position = CreateTextDocumentPosition (fileName, location);
 
-			return jsonRpc.InvokeWithParameterObjectAsync<Hover> (
-				Methods.TextDocumentHoverName,
+			return jsonRpc.InvokeWithParameterObjectAsync (
+				Methods.TextDocumentHover,
 				position,
 				token);
 		}
@@ -573,7 +587,7 @@ namespace MonoDevelop.LanguageServer.Client
 					.ToArray ()
 			};
 
-			return jsonRpc.NotifyWithParameterObjectAsync (Methods.TextDocumentDidChangeName, message);
+			return jsonRpc.NotifyWithParameterObjectAsync (Methods.TextDocumentDidChange, message);
 		}
 
 		void OnServerCapabilitiesChanged ()
@@ -648,8 +662,8 @@ namespace MonoDevelop.LanguageServer.Client
 
 			var position = CreateTextDocumentPosition (fileName, completionContext);
 
-			return jsonRpc.InvokeWithParameterObjectAsync<SignatureHelp> (
-				Methods.TextDocumentSignatureHelpName,
+			return jsonRpc.InvokeWithParameterObjectAsync (
+				Methods.TextDocumentSignatureHelp,
 				position,
 				token);
 		}
@@ -687,8 +701,8 @@ namespace MonoDevelop.LanguageServer.Client
 				}
 			};
 
-			return jsonRpc.InvokeWithParameterObjectAsync<TextEdit[]> (
-				Methods.TextDocumentFormattingName,
+			return jsonRpc.InvokeWithParameterObjectAsync (
+				Methods.TextDocumentFormatting,
 				message,
 				token);
 		}
@@ -718,8 +732,8 @@ namespace MonoDevelop.LanguageServer.Client
 				}
 			};
 
-			return jsonRpc.InvokeWithParameterObjectAsync<TextEdit[]> (
-				Methods.TextDocumentRangeFormattingName,
+			return jsonRpc.InvokeWithParameterObjectAsync (
+				Methods.TextDocumentRangeFormatting,
 				message,
 				token);
 		}
@@ -749,8 +763,8 @@ namespace MonoDevelop.LanguageServer.Client
 				Position = position
 			};
 
-			return jsonRpc.InvokeWithParameterObjectAsync<WorkspaceEdit> (
-				Methods.TextDocumentRenameName,
+			return jsonRpc.InvokeWithParameterObjectAsync (
+				Methods.TextDocumentRename,
 				message,
 				token);
 		}
@@ -786,8 +800,8 @@ namespace MonoDevelop.LanguageServer.Client
 				Range = range
 			};
 
-			return jsonRpc.InvokeWithParameterObjectAsync<Command[]> (
-				Methods.TextDocumentCodeActionName,
+			return jsonRpc.InvokeWithParameterObjectAsync (
+				Methods.TextDocumentCodeAction,
 				message,
 				token);
 		}
