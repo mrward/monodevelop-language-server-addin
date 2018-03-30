@@ -43,20 +43,16 @@ namespace MonoDevelop.LanguageServer.Client
 			this.completionProvider = completionProvider;
 		}
 
-		public Task<object> RequestCompletions (TextDocumentPositionParams positionParams, CancellationToken token)
+		public Task<object> RequestCompletions (CompletionParams completionParams, CancellationToken token)
 		{
 			if (completionProvider != null) {
-				return completionProvider.RequestCompletions (positionParams, param => RequestCompletionsInternal (param, token));
+				return completionProvider.RequestCompletions (completionParams, param => RequestCompletionsInternal (param, token));
 			}
-			return RequestCompletionsInternal (positionParams, token);
+			return RequestCompletionsInternal (completionParams, token);
 		}
 
-		Task<object> RequestCompletionsInternal (TextDocumentPositionParams param, CancellationToken token)
+		Task<object> RequestCompletionsInternal (CompletionParams completionParams, CancellationToken token)
 		{
-			var completionParams = new CompletionParams {
-				Position = param.Position,
-				TextDocument = param.TextDocument
-			};
 			return jsonRpc.InvokeWithParameterObjectAsync (Methods.TextDocumentCompletion, completionParams, token);
 		}
 

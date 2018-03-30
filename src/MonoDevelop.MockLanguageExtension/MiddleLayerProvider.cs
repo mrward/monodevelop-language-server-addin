@@ -34,8 +34,8 @@ namespace MockLanguageExtension
 	class MiddleLayerProvider : ILanguageClientCompletionProvider
 	{
 		public Task<object> RequestCompletions (
-			TextDocumentPositionParams param,
-			Func<TextDocumentPositionParams, Task<object>> sendRequest)
+			CompletionParams param,
+			Func<CompletionParams, Task<object>> sendRequest)
 		{
 			return sendRequest (param);
 		}

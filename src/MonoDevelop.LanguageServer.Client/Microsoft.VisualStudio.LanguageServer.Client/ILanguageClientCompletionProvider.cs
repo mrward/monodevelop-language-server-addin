@@ -32,7 +32,7 @@ namespace Microsoft.VisualStudio.LanguageServer.Client
 {
 	public interface ILanguageClientCompletionProvider
 	{
-		Task<object> RequestCompletions (TextDocumentPositionParams param, Func<TextDocumentPositionParams, Task<object>> sendRequest);
+		Task<object> RequestCompletions (CompletionParams param, Func<CompletionParams, Task<object>> sendRequest);
 
 		Task<CompletionItem> ResolveCompletion (CompletionItem item, Func<CompletionItem, Task<CompletionItem>> sendRequest);
 	}

@@ -352,9 +352,14 @@ namespace MonoDevelop.LanguageServer.Client
 
 			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentCompletionName, fileName);
 
-			var message = CreateTextDocumentPosition (fileName, completionContext);
+			var position = CreateTextDocumentPosition (fileName, completionContext);
 
-			var result = await completionProvider.RequestCompletions (message, token);
+			var completionParams = new CompletionParams {
+				Position = position.Position,
+				TextDocument = position.TextDocument
+			};
+
+			var result = await completionProvider.RequestCompletions (completionParams, token);
 
 			return ConvertToCompletionList (result);
 		}
