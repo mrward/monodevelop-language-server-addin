@@ -46,9 +46,15 @@ namespace LanguageServer
 			var result = new InitializeResult();
 			result.Capabilities = capabilities;
 
-			Initialized?.Invoke(this, new EventArgs());
-
 			return result;
+		}
+
+		[JsonRpcMethod(Methods.InitializedName)]
+		public void OnInitialized(JToken arg)
+		{
+			Log(Methods.InitializeName, arg);
+
+			Initialized?.Invoke(this, new EventArgs());
 		}
 
 		[JsonRpcMethod(Methods.TextDocumentDidOpenName)]

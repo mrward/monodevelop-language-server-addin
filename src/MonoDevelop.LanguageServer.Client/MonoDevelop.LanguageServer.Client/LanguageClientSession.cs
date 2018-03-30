@@ -215,6 +215,14 @@ namespace MonoDevelop.LanguageServer.Client
 				throw;
 			}
 
+			try {
+				Log ("Sending '{0}' message.", Methods.InitializedName);
+
+				await jsonRpc.NotifyWithParameterObjectAsync (Methods.Initialized, new InitializedParams ());
+			} catch (Exception ex) {
+				LogError ("Sending Initialized notification to server failed.", ex);
+			}
+
 			Log ("Initialized.", Id);
 
 			return result;
