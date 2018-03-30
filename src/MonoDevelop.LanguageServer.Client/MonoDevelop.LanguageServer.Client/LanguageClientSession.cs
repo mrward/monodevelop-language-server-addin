@@ -172,13 +172,7 @@ namespace MonoDevelop.LanguageServer.Client
 			jsonRpc.StartListening ();
 			jsonRpc.JsonSerializer.NullValueHandling = NullValueHandling.Ignore;
 
-			Log ("Sending '{0}' message.", Methods.InitializeName);
-
-			var message = CreateInitializeParams (client, rootPath);
-
-			var result = await jsonRpc.InvokeWithParameterObjectAsync (Methods.Initialize, message);
-
-			Log ("Initialized.", Id);
+			InitializeResult result = await Initialize ();
 
 			ServerCapabilities = result.Capabilities;
 			OnServerCapabilitiesChanged ();
@@ -204,6 +198,26 @@ namespace MonoDevelop.LanguageServer.Client
 				jsonRpc,
 				customClient?.MiddleLayer as ILanguageClientWorkspaceSymbolProvider
 			);
+		}
+
+		async Task<InitializeResult> Initialize ()
+		{
+			Log ("Sending '{0}' message.", Methods.InitializeName);
+
+			var message = CreateInitializeParams (client, rootPath);
+
+			InitializeResult result = null;
+			try {
+				result = await jsonRpc.InvokeWithParameterObjectAsync (Methods.Initialize, message);
+				await client.OnServerInitializedAsync ();
+			} catch (Exception ex) {
+				await client.OnServerInitializeFailedAsync (ex);
+				throw;
+			}
+
+			Log ("Initialized.", Id);
+
+			return result;
 		}
 
 		static InitializeParams CreateInitializeParams (ILanguageClient client, FilePath rootPath)

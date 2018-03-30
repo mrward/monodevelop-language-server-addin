@@ -100,12 +100,22 @@ namespace MockLanguageExtension
 		{
 			Rpc = rpc;
 
-			return Task.FromResult (0);
+			return Task.CompletedTask;
 		}
 
 		public async Task OnLoadedAsync()
 		{
 			await StartAsync?.InvokeAsync(this, EventArgs.Empty);
+		}
+
+		public Task OnServerInitializedAsync ()
+		{
+			return Task.CompletedTask;
+		}
+
+		public Task OnServerInitializeFailedAsync (Exception e)
+		{
+			return Task.CompletedTask;
 		}
 	}
 }

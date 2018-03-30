@@ -139,5 +139,15 @@ namespace MonoDevelop.Docker
 		{
 			await StartAsync?.InvokeAsync (this, EventArgs.Empty);
 		}
+
+		public Task OnServerInitializedAsync ()
+		{
+			return Task.CompletedTask;
+		}
+
+		public Task OnServerInitializeFailedAsync (Exception e)
+		{
+			return Task.CompletedTask;
+		}
 	}
 }

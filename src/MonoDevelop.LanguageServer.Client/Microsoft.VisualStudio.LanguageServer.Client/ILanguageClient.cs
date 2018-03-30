@@ -44,5 +44,8 @@ namespace Microsoft.VisualStudio.LanguageServer.Client
 
 		Task<Connection> ActivateAsync (CancellationToken token);
 		Task OnLoadedAsync ();
+
+		Task OnServerInitializedAsync ();
+		Task OnServerInitializeFailedAsync (Exception e);
 	}
 }
