@@ -7,7 +7,7 @@ API for integrating a language client is based on the [Visual Studio Language Se
 # Language Server Protocol Features
 
  - [x] initialize
- - [ ] initialized
+ - [x] initialized
  - [x] shutdown
  - [x] exit
  - [ ] $/cancelRequest
@@ -54,7 +54,7 @@ API for integrating a language client is based on the [Visual Studio Language Se
    - [x] ILanguageClientExecuteCommandProvider
    - [x] ILanguageClientWorkspaceSymbolProvider
  - [x] Connection
- - [x] IContentTypeMetadata
+ - [ ] IContentTypeMetadata
  - [x] CodeRemoteContentDefinition
  - [x] ILanguageClientCustomMessage
  - [ ] ILanguageClient
@@ -65,6 +65,8 @@ API for integrating a language client is based on the [Visual Studio Language Se
    - [x] StartAsync
    - [x] ActivateAsync
    - [x] OnLoadedAsync
+   - [x] OnServerInitializedAsync
+   - [x] OnServerInitializeFailedAsync
 
 # Example Language Server Clients
 
