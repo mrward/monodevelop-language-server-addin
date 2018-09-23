@@ -1,5 +1,5 @@
 ﻿//
-// MyClass.cs
+// DockerContentTypeDefinition.cs
 //
 // Author:
 //       Matt Ward <matt.ward@microsoft.com>
@@ -32,7 +32,7 @@ namespace MonoDevelop.Docker
 {
 	#pragma warning disable CS0649 // Field is never assigned to.
 
-	class PowerShellContentTypeDefinition
+	class DockerContentTypeDefinition
 	{
 		[Export]
 		[Name ("docker")]
