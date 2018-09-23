@@ -43,12 +43,20 @@ namespace MonoDevelop.LanguageServer.Client
 				case CompletionItemKind.Function:
 					return Stock.Method;
 
-				case CompletionItemKind.Text:
+				case CompletionItemKind.Constant:
+				case CompletionItemKind.EnumMember:
 				case CompletionItemKind.Keyword:
+				case CompletionItemKind.Snippet:
+				case CompletionItemKind.Text:
+				case CompletionItemKind.Value:
 					return Stock.Literal;
 
 				case CompletionItemKind.Class:
+				case CompletionItemKind.TypeParameter:
 					return Stock.Class;
+
+				case CompletionItemKind.Event:
+					return Stock.Event;
 
 				case CompletionItemKind.Field:
 					return Stock.PrivateField;
@@ -57,6 +65,7 @@ namespace MonoDevelop.LanguageServer.Client
 					return Stock.Interface;
 
 				case CompletionItemKind.Module:
+				case CompletionItemKind.Unit:
 					return Stock.NameSpace;
 
 				case CompletionItemKind.Enum:
@@ -67,6 +76,15 @@ namespace MonoDevelop.LanguageServer.Client
 
 				case CompletionItemKind.File:
 					return Stock.EmptyFileIcon;
+
+				case CompletionItemKind.Folder:
+					return Stock.OpenFolder;
+
+				case CompletionItemKind.Reference:
+					return Stock.Reference;
+
+				case CompletionItemKind.Struct:
+					return Stock.Struct;
 
 				default:
 					return null;
