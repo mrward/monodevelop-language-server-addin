@@ -58,7 +58,7 @@ namespace MonoDevelop.Bash
 		/// <summary>
 		/// Run the following from the 'bin' directory:
 		/// 
-		/// npm install dockerfile-language-server-nodejs
+		/// npm install -g bash-language-server
 		/// </summary>
 		public async Task<Connection> ActivateAsync (CancellationToken token)
 		{
