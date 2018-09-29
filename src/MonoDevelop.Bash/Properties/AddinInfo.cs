@@ -33,7 +33,7 @@ using Mono.Addins;
 	Category = "IDE extensions")]
 
 [assembly:AddinName ("Bash Language Server Client")]
-[assembly:AddinDescription ("Uses Bash Language Server from https://github.com/mads-hartmann/bash-language-server")]
+[assembly:AddinDescription ("Uses Bash Language Server from https://github.com/mads-hartmann/bash-language-server and bash syntax from https://github.com/textmate/shellscript.tmbundle")]
 
 [assembly:AddinDependency ("Core", "7.4")]
 [assembly:AddinDependency ("Ide", "7.4")]
