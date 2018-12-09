@@ -70,6 +70,9 @@
     <EmbeddedResource Include="Properties\MonoDevelop.Swift.addin.xml">
       <LogicalName>MonoDevelop.Swift.addin.xml</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="MonoDevelop.Swift\Swift.tmLanguage">
+      <LogicalName>Swift.tmLanguage</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

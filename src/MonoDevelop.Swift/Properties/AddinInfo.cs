@@ -33,7 +33,7 @@ using Mono.Addins;
 	Category = "IDE extensions")]
 
 [assembly: AddinName ("Swift Language Server Client")]
-[assembly: AddinDescription ("Uses Swift Language Server https://github.com/apple/sourcekit-lsp")]
+[assembly: AddinDescription ("Uses Swift Language Server https://github.com/apple/sourcekit-lsp and swift syntax from https://github.com/P233/Syntax-highlighting-for-Swift")]
 
 [assembly: AddinDependency ("Core", "7.4")]
 [assembly: AddinDependency ("Ide", "7.4")]

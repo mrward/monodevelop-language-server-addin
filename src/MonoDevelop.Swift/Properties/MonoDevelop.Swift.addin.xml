@@ -6,4 +6,8 @@
 	<Extension path="/MonoDevelop/Ide/Composition">
 		<Assembly file="MonoDevelop.Swift.LanguageServer.Client.dll" />
 	</Extension>
+
+	<Extension path="/MonoDevelop/Ide/Editor/Bundles">
+		<Bundle resource="Swift.tmLanguage" />
+	</Extension>
 </ExtensionModel>
