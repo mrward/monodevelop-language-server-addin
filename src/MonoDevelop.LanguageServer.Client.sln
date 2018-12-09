@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoDevelop.TypeScript", "M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoDevelop.Bash", "MonoDevelop.Bash\MonoDevelop.Bash.csproj", "{2266D0A8-BA71-468E-B5FD-F967F8A2B377}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoDevelop.Swift", "MonoDevelop.Swift\MonoDevelop.Swift.csproj", "{0D71525A-EA4D-4AD2-A887-C24B35ECD475}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,10 @@ Global
 		{2266D0A8-BA71-468E-B5FD-F967F8A2B377}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2266D0A8-BA71-468E-B5FD-F967F8A2B377}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2266D0A8-BA71-468E-B5FD-F967F8A2B377}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D71525A-EA4D-4AD2-A887-C24B35ECD475}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D71525A-EA4D-4AD2-A887-C24B35ECD475}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D71525A-EA4D-4AD2-A887-C24B35ECD475}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D71525A-EA4D-4AD2-A887-C24B35ECD475}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{738B3D86-F59E-4E15-A890-155A6DCACB9F} = {3D98DFCB-2F89-40FF-8120-6051F80202D0}

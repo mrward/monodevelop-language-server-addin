@@ -1,0 +1,9 @@
+﻿<ExtensionModel>
+	<Runtime>
+		<Import assembly="MonoDevelop.Swift.LanguageServer.Client.dll" />
+	</Runtime>
+
+	<Extension path="/MonoDevelop/Ide/Composition">
+		<Assembly file="MonoDevelop.Swift.LanguageServer.Client.dll" />
+	</Extension>
+</ExtensionModel>
