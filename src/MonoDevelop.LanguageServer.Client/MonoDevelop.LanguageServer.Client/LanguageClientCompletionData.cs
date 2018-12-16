@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.LanguageServer.Protocol;
@@ -45,6 +46,10 @@ namespace MonoDevelop.LanguageServer.Client
 
 			if (CompletionText == null) {
 				CompletionText = item.Label;
+			}
+
+			if (item.InsertTextFormat == InsertTextFormat.Snippet) {
+				CompletionText = RemoveSnippet (CompletionText);
 			}
 
 			Icon = item.GetIcon ();
@@ -107,6 +112,35 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 
 			return await base.CreateTooltipInformation (smartWrap, token);
+		}
+
+		static string RemoveSnippet (string completionText)
+		{
+			if (string.IsNullOrEmpty (completionText)) {
+				return completionText;
+			}
+
+			var builder = new StringBuilder (completionText.Length);
+
+			int i = 0;
+			while (i < completionText.Length) {
+				char currentChar = completionText [i];
+				if (currentChar == '$') {
+					++i;
+					if ((i >= completionText.Length) || (completionText [i] != '{')) {
+						builder.Append ('$');
+					} else {
+						while ((i < completionText.Length) && (completionText [i] != '}')) {
+							++i;
+						}
+					}
+				} else {
+					builder.Append (currentChar);
+				}
+				++i;
+			}
+
+			return builder.ToString ();
 		}
 	}
 }
