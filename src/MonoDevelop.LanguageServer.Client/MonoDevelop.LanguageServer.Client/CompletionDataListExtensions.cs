@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.LanguageServer.Protocol;
 using MonoDevelop.Ide.CodeCompletion;
+using MonoDevelop.Ide.Editor.Extension;
 
 namespace MonoDevelop.LanguageServer.Client
 {
@@ -36,11 +37,12 @@ namespace MonoDevelop.LanguageServer.Client
 		public static void AddRange (
 			this CompletionDataList completionList,
 			LanguageClientSession session,
+			TextEditorExtension textEditorExtension,
 			IEnumerable<CompletionItem> items)
 		{
 			if (items?.Any () == true) {
 				completionList.AddRange (
-					items.Select (item => new LanguageClientCompletionData (session, item)));
+					items.Select (item => new LanguageClientCompletionData (session, textEditorExtension, item)));
 			}
 		}
 	}

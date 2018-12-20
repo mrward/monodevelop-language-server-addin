@@ -30,15 +30,22 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.LanguageServer.Protocol;
 using MonoDevelop.Ide.CodeCompletion;
+using MonoDevelop.Ide.CodeTemplates;
+using MonoDevelop.Ide.Editor.Extension;
 
 namespace MonoDevelop.LanguageServer.Client
 {
 	class LanguageClientCompletionData : CompletionData
 	{
 		LanguageClientSession session;
+		CodeTemplate codeTemplate;
+		TextEditorExtension textEditorExtension;
 		bool resolved;
 
-		public LanguageClientCompletionData (LanguageClientSession session, CompletionItem item)
+		public LanguageClientCompletionData (
+			LanguageClientSession session,
+			TextEditorExtension textEditorExtension,
+			CompletionItem item)
 		{
 			this.session = session;
 			CompletionItem = item;
@@ -49,6 +56,8 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 
 			if (item.InsertTextFormat == InsertTextFormat.Snippet) {
+				this.textEditorExtension = textEditorExtension;
+				codeTemplate = CodeTemplateFactory.ConvertToTemplate (CompletionText);
 				CompletionText = RemoveSnippet (CompletionText);
 			}
 
@@ -112,6 +121,15 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 
 			return await base.CreateTooltipInformation (smartWrap, token);
+		}
+
+		public override void InsertCompletionText (CompletionListWindow window, ref KeyActions ka, KeyDescriptor descriptor)
+		{
+			if (codeTemplate != null) {
+				codeTemplate.Insert (textEditorExtension.Editor, textEditorExtension.DocumentContext);
+			} else {
+				base.InsertCompletionText (window, ref ka, descriptor);
+			}
 		}
 
 		static string RemoveSnippet (string completionText)

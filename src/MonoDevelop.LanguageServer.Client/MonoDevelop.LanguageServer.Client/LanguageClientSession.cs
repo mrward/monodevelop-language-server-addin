@@ -37,6 +37,7 @@ using MonoDevelop.Core;
 using MonoDevelop.Core.Text;
 using MonoDevelop.Ide.CodeCompletion;
 using MonoDevelop.Ide.Editor;
+using MonoDevelop.Ide.Editor.Extension;
 using MonoDevelop.Ide.Gui;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -426,13 +427,14 @@ namespace MonoDevelop.LanguageServer.Client
 		public async Task<CompletionDataList> GetCompletionList (
 			FilePath fileName,
 			CodeCompletionContext completionContext,
+			TextEditorExtension textEditorExtension,
 			CancellationToken token)
 		{
 			var completionList = await GetCompletionItems (fileName, completionContext, token);
 
 			var completionDataList = new CompletionDataList ();
 			if (completionList?.Items != null) {
-				completionDataList.AddRange (this, completionList.Items);
+				completionDataList.AddRange (this, textEditorExtension, completionList.Items);
 			}
 
 			return completionDataList;

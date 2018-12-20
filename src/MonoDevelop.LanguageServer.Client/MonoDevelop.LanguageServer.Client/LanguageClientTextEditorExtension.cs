@@ -133,7 +133,7 @@ namespace MonoDevelop.LanguageServer.Client
 					return null;
 				}
 
-				var completionList = await session.GetCompletionList (fileName, completionContext, token);
+				var completionList = await session.GetCompletionList (fileName, completionContext, this, token);
 
 				if (!word.IsEmpty) {
 					completionList.TriggerWordLength = word.Length;
