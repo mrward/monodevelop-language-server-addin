@@ -89,10 +89,12 @@ namespace MonoDevelop.Ide.CodeTemplates
 							sb.Append ("$end$");
 							sb.Append (nameBuilder);
 						} else {
+							string defaultName = nameBuilder.ToString ();
+							nameBuilder.Append (number);
 							sb.Append ("$");
 							sb.Append (nameBuilder);
 							sb.Append ("$");
-							result.AddVariable (new CodeTemplateVariable (nameBuilder.ToString ()) { Default = nameBuilder.ToString (), IsEditable = true });
+							result.AddVariable (new CodeTemplateVariable (nameBuilder.ToString ()) { Default = defaultName, IsEditable = true });
 						}
 						nameBuilder.Length = 0;
 						number = 0;
