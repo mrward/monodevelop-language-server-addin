@@ -35,12 +35,13 @@ using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.LanguageServer.Client;
 using Microsoft.VisualStudio.Threading;
 using Microsoft.VisualStudio.Utilities;
+using Mono.Unix;
+using MonoDevelop.LanguageServer.Client;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using StreamJsonRpc;
@@ -88,13 +89,14 @@ namespace MonoDevelop.PowerShell
 			var extensionDirectory = Directory.GetDirectories (vscodeDirectory)
 				.FirstOrDefault (m => m.Contains ("ms-vscode.powershell"));
 
-			var script = Path.Combine (extensionDirectory, "scripts", "Start-EditorServices.ps1");
+			var script = Path.Combine (extensionDirectory, "modules", "PowerShellEditorServices" , "Start-EditorServices.ps1");
 
 			var info = new ProcessStartInfo {
 				FileName = @"/usr/local/bin/pwsh",
-				Arguments = $@"-NoProfile -NonInteractive -ExecutionPolicy Bypass -Command "" & '{script}' -EditorServicesVersion '1.6.0' -HostName 'Visual Studio Code Host' -HostProfileId 'Microsoft.VSCode' -HostVersion '1.5.1' -AdditionalModules @('PowerShellEditorServices.VSCode') -BundledModulesPath '{extensionDirectory}/modules' -EnableConsoleRepl -LogLevel 'Diagnostic' -LogPath '{extensionDirectory}/logs/VSEditorServices.log' -SessionDetailsPath '{extensionDirectory}/logs/PSES-VS' -FeatureFlags @()""",
+				Arguments = $@"-NoProfile -NonInteractive -ExecutionPolicy Bypass -Command "" & '{script}' -HostName 'Visual Studio Code Host' -HostProfileId 'Microsoft.VSCode' -HostVersion '1.5.1' -AdditionalModules @('PowerShellEditorServices.VSCode') -BundledModulesPath '{extensionDirectory}/modules' -EnableConsoleRepl -LogLevel 'Diagnostic' -LogPath '{extensionDirectory}/logs/VSEditorServices.log' -SessionDetailsPath '{extensionDirectory}/logs/PSES-VS' -FeatureFlags @()""",
 				RedirectStandardInput = true,
 				RedirectStandardOutput = true,
+				RedirectStandardError = true,
 				UseShellExecute = false,
 				CreateNoWindow = true
 			};
@@ -104,17 +106,24 @@ namespace MonoDevelop.PowerShell
 
 			if (process.Start ()) {
 				//Wait for startup....
-				Thread.Sleep (5000);
+				string sessionFile = $@"{extensionDirectory}/logs/PSES-VS";
+				var sessionInfo = await WaitForSessionFile (sessionFile);
 
-				var sessionInfo = File.ReadAllText ($@"{extensionDirectory}/logs/PSES-VS");
+				File.Delete (sessionFile);
 
 				var sessionInfoJObject = JsonConvert.DeserializeObject<JObject> (sessionInfo);
 
-				var languageServicePort = (int)sessionInfoJObject ["languageServicePort"];
-				var tcpClient = new TcpClient ("localhost", languageServicePort);
-				NetworkStream ns = tcpClient.GetStream ();
+				var status = (string)sessionInfoJObject ["status"];
+				if (status != "started") {
+					LanguageClientLoggingService.Log (sessionInfoJObject.ToString ());
+					var reason = (string)sessionInfoJObject ["reason"];
+					throw new ApplicationException ($"Failed to start PowerShell console. {reason}");
+				}
 
-				return new Connection (ns, ns);
+				var languageServicePipeName = (string)sessionInfoJObject ["languageServicePipeName"];
+				var client = new UnixClient (languageServicePipeName);
+				var stream = client.GetStream ();
+				return new Connection (stream, stream);
 			}
 
 			return null;
@@ -124,7 +133,6 @@ namespace MonoDevelop.PowerShell
 		{
 			await StartAsync?.InvokeAsync (this, EventArgs.Empty);
 		}
-
 
 		public Task OnServerInitializedAsync ()
 		{
@@ -139,6 +147,21 @@ namespace MonoDevelop.PowerShell
 		Task ILanguageClientCustomMessage.AttachForCustomMessageAsync (JsonRpc rpc)
 		{
 			return Task.CompletedTask;
+		}
+
+		async Task<string> WaitForSessionFile (string sessionFilePath)
+		{
+			int remainingTries = 60;
+			int delayMilliseconds = 2000;
+
+			while (remainingTries > 0) {
+				if (File.Exists (sessionFilePath)) {
+					return File.ReadAllText (sessionFilePath);
+				}
+				await Task.Delay (delayMilliseconds);
+				--remainingTries;
+			}
+			throw new ApplicationException ("Timed out waiting for session file to appear");
 		}
 	}
 }
