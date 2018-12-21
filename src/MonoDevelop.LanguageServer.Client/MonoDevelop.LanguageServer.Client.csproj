@@ -107,7 +107,7 @@
     <EmbeddedResource Include="Properties\MonoDevelop.LanguageServer.Client.addin.xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.VisualStudio.LanguageServer.Protocol" Version="1.1.6-pre" />
+    <PackageReference Include="Microsoft.VisualStudio.LanguageServer.Protocol" Version="15.9.3032" />
     <PackageReference Include="Microsoft.VisualStudio.Threading" Version="15.4.4">
       <ExcludeAssets>runtime</ExcludeAssets>
       <PrivateAssets>all</PrivateAssets>
