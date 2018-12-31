@@ -70,11 +70,13 @@ API for integrating a language client is based on the [Visual Studio Language Se
 
 # Example Language Server Clients
 
+ - Bash
  - Dockerfile
  - Java
  - Mock foo language
  - PowerShell
  - SQL
+ - Swift
  - TypeScript
  - Yaml
  
