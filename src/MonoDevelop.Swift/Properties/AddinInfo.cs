@@ -35,5 +35,5 @@ using Mono.Addins;
 [assembly: AddinName ("Swift Language Server Client")]
 [assembly: AddinDescription ("Uses Swift Language Server https://github.com/apple/sourcekit-lsp and swift syntax from https://github.com/P233/Syntax-highlighting-for-Swift")]
 
-[assembly: AddinDependency ("Core", "8.0")]
-[assembly: AddinDependency ("Ide", "8.0")]
+[assembly: AddinDependency ("Core", "8.1")]
+[assembly: AddinDependency ("Ide", "8.1")]

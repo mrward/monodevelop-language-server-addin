@@ -35,7 +35,7 @@ using Mono.Addins;
 [assembly:AddinName ("Language Server Client")]
 [assembly:AddinDescription ("Language Server support")]
 
-[assembly:AddinDependency ("Core", "8.0")]
-[assembly:AddinDependency ("Ide", "8.0")]
-[assembly:AddinDependency ("Refactoring", "8.0")]
-[assembly:AddinDependency ("SourceEditor2", "8.0")]
+[assembly:AddinDependency ("Core", "8.1")]
+[assembly:AddinDependency ("Ide", "8.1")]
+[assembly:AddinDependency ("Refactoring", "8.1")]
+[assembly:AddinDependency ("SourceEditor2", "8.1")]

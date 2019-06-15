@@ -102,6 +102,8 @@
     <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientWorkspaceSymbolProvider.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\UriExtensions.cs" />
     <Compile Include="MonoDevelop.Ide.CodeTemplates\CodeTemplateFactory.cs" />
+    <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientDocumentControllerExtension.cs" />
+    <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientDocumentContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\MonoDevelop.LanguageServer.Client.addin.xml" />

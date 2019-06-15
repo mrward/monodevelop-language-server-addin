@@ -1,10 +1,10 @@
 ﻿//
-// LanguageClientServices.cs
+// RequireServiceAttribute.cs
 //
 // Author:
-//       Matt Ward <matt.ward@microsoft.com>
+//       Lluis Sanchez <llsan@microsoft.com>
 //
-// Copyright (c) 2017 Microsoft
+// Copyright (c) 2019 Microsoft
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,52 +23,18 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using MonoDevelop.Core;
-using MonoDevelop.Ide.Composition;
 
-namespace MonoDevelop.LanguageServer.Client
+namespace UnitTests
 {
-	static class LanguageClientServices
+	[AttributeUsage (AttributeTargets.Class, AllowMultiple = true)]
+	public class RequireServiceAttribute : Attribute
 	{
-		static LanguageClientProvider provider;
-		static LanguageClientWorkspace workspace;
-
-		static void Initialize ()
+		public RequireServiceAttribute (Type serviceType)
 		{
-			provider = CompositionManager.Instance.GetExportedValue<LanguageClientProvider> ();
-			provider.Initialize ();
-			provider.LogClientsFound ();
-
-			workspace = new LanguageClientWorkspace ();
-			workspace.Initialize ();
+			ServiceType = serviceType;
 		}
 
-		internal static void EnsureInitialized ()
-		{
-			if (provider != null)
-				return;
-
-			try {
-				Initialize ();
-			} catch (Exception ex) {
-				LanguageClientLoggingService.LogError ("Unable to initialize LanguageServerServices.", ex);
-			}
-		}
-
-		public static LanguageClientProvider ClientProvider {
-			get {
-				EnsureInitialized ();
-				return provider;
-			}
-		}
-
-		public static LanguageClientWorkspace Workspace {
-			get {
-				EnsureInitialized ();
-				return workspace;
-			}
-		}
+		public Type ServiceType { get; }
 	}
 }

@@ -35,5 +35,5 @@ using Mono.Addins;
 [assembly:AddinName ("TypeScript Language Server Client")]
 [assembly:AddinDescription ("Uses TypeScript Language Server from https://github.com/theia-ide/typescript-language-server")]
 
-[assembly:AddinDependency ("Core", "8.0")]
-[assembly:AddinDependency ("Ide", "8.0")]
+[assembly:AddinDependency ("Core", "8.1")]
+[assembly:AddinDependency ("Ide", "8.1")]

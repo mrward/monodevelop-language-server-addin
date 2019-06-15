@@ -25,6 +25,10 @@
       <Private>False</Private>
       <HintPath>$(MDBinDir)\Microsoft.CodeAnalysis.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.Workspaces">
+      <Private>False</Private>
+      <HintPath>$(MDBinDir)\Microsoft.CodeAnalysis.Workspaces.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.Composition">
       <Private>False</Private>
       <HintPath>$(MDBinDir)\Microsoft.VisualStudio.Composition.dll</HintPath>

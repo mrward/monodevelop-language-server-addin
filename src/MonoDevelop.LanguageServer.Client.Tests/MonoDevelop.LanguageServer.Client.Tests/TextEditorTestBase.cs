@@ -26,9 +26,11 @@
 
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using MonoDevelop.Core;
-using MonoDevelop.Ide;
+using MonoDevelop.Core.Assemblies;
 using NUnit.Framework;
+using UnitTests;
 
 namespace MonoDevelop.LanguageServer.Client.Tests
 {
@@ -47,33 +49,52 @@ namespace MonoDevelop.LanguageServer.Client.Tests
 		}
 
 		[TestFixtureSetUp]
-		public virtual void Setup ()
+		public async Task Setup ()
 		{
 			if (firstRun) {
 				string configRootDir = Path.Combine (TestsRootDir, "config");
 				try {
 					firstRun = false;
-					InternalSetup (configRootDir);
+					await InternalSetup (configRootDir);
 				} catch (Exception) {
 					// if we encounter an error, try to re create the configuration directory
 					// (This takes much time, therfore it's only done when initialization fails)
 					try {
 						if (Directory.Exists (configRootDir))
 							Directory.Delete (configRootDir, true);
-						InternalSetup (configRootDir);
+						await InternalSetup (rootDir);
 					} catch (Exception) {
 					}
 				}
+				await InitializeServices ();
 			}
 		}
 
-		protected virtual void InternalSetup (string rootDir)
+		//protected virtual void InternalSetup (string rootDir)
+		//{
+			//Environment.SetEnvironmentVariable ("MONO_ADDINS_REGISTRY", rootDir);
+			//Environment.SetEnvironmentVariable ("XDG_CONFIG_HOME", rootDir);
+			//Runtime.Initialize (true);
+			//Gtk.Application.Init ();
+			//DesktopService.Initialize ();
+		//}
+
+		async Task InitializeServices ()
 		{
+			foreach (RequireServiceAttribute attribute in Attribute.GetCustomAttributes (GetType (), typeof (RequireServiceAttribute), true)) {
+				var m = typeof (ServiceProvider).GetMethod ("GetService").MakeGenericMethod (attribute.ServiceType);
+				var task = (Task)m.Invoke (Runtime.ServiceProvider, new object[0]);
+				await task;
+			}
+		}
+
+		protected virtual async Task InternalSetup (string rootDir)
+		{
+			//Util.ClearTmpDir ();
 			Environment.SetEnvironmentVariable ("MONO_ADDINS_REGISTRY", rootDir);
 			Environment.SetEnvironmentVariable ("XDG_CONFIG_HOME", rootDir);
-			Runtime.Initialize (true);
-			Gtk.Application.Init ();
-			DesktopService.Initialize ();
+			global::MonoDevelop.Projects.Services.ProjectService.DefaultTargetFramework
+				= Runtime.SystemAssemblyService.GetTargetFramework (TargetFrameworkMoniker.NET_4_0);
 		}
 	}
 }

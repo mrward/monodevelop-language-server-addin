@@ -35,5 +35,5 @@ using Mono.Addins;
 [assembly:AddinName ("Bash Language Server Client")]
 [assembly:AddinDescription ("Uses Bash Language Server from https://github.com/mads-hartmann/bash-language-server and bash syntax from https://github.com/textmate/shellscript.tmbundle")]
 
-[assembly:AddinDependency ("Core", "8.0")]
-[assembly:AddinDependency ("Ide", "8.0")]
+[assembly:AddinDependency ("Core", "8.1")]
+[assembly:AddinDependency ("Ide", "8.1")]

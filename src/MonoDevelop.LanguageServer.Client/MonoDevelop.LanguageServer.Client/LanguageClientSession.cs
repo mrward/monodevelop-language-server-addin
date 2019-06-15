@@ -39,6 +39,7 @@ using MonoDevelop.Ide.CodeCompletion;
 using MonoDevelop.Ide.Editor;
 using MonoDevelop.Ide.Editor.Extension;
 using MonoDevelop.Ide.Gui;
+using MonoDevelop.Projects;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using StreamJsonRpc;
@@ -297,8 +298,9 @@ namespace MonoDevelop.LanguageServer.Client
 
 		public bool IsSupportedDocument (Document document)
 		{
-			if (document.HasProject) {
-				if (rootPath.IsNull || document.Project.ParentSolution.BaseDirectory != rootPath) {
+			Project project = document?.DocumentContext?.Project;
+			if (project != null) {
+				if (rootPath.IsNull || project.ParentSolution.BaseDirectory != rootPath) {
 					return false;
 				}
 			}

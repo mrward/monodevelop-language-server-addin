@@ -59,6 +59,15 @@ namespace MonoDevelop.LanguageServer.Client
 			IdeApp.Workspace.SolutionUnloaded -= SolutionUnloaded;
 		}
 
+		public bool IsSupported (DocumentContext context)
+		{
+			var languageClientContext = context as LanguageClientDocumentContext;
+			if (languageClientContext == null)
+				return false;
+
+			return IsSupported (languageClientContext.FileName);
+		}
+
 		public bool IsSupported (Document document)
 		{
 			return IsSupported (document.FileName);
@@ -69,6 +78,11 @@ namespace MonoDevelop.LanguageServer.Client
 			return LanguageClientServices.ClientProvider.HasLanguageClient (fileName);
 		}
 
+		public LanguageClientSession GetSession (Document document)
+		{
+			return GetSession (document.Name, document.Owner as Project, true);
+		}
+
 		public LanguageClientSession GetSession (DocumentContext context)
 		{
 			Runtime.AssertMainThread ();
@@ -76,18 +90,28 @@ namespace MonoDevelop.LanguageServer.Client
 			return GetSession (context, true);
 		}
 
+		public LanguageClientSession GetSession (Document document, bool createNewSession)
+		{
+			return GetSession (document.Name, document.Owner as Project, createNewSession);
+		}
+
 		public LanguageClientSession GetSession (DocumentContext context, bool createNewSession)
 		{
 			Runtime.AssertMainThread ();
 
-			IContentType contentType = LanguageClientServices.ClientProvider.GetContentType (context.Name);
+			return GetSession (context.Name, context.Project, createNewSession);
+		}
+
+		LanguageClientSession GetSession (FilePath fileName, Project project, bool createNewSession)
+		{
+			IContentType contentType = LanguageClientServices.ClientProvider.GetContentType (fileName);
 			if (contentType.IsUnknown ()) {
 				return null;
 			}
 
-			if (!TryGetSession (contentType, context.Project, out LanguageClientSession session)) {
+			if (!TryGetSession (contentType, project, out LanguageClientSession session)) {
 				if (createNewSession) {
-					session = CreateSession (contentType, context.Project);
+					session = CreateSession (contentType, project);
 
 					if (session.RootPath.IsNull) {
 						sessions [session.Id] = session;

@@ -54,12 +54,13 @@ namespace MonoDevelop.LanguageServer.Client
 
 		public override bool IsValidInContext (DocumentContext context)
 		{
-			return LanguageClientServices.Workspace.IsSupported (context.Name);
+			return LanguageClientServices.Workspace.IsSupported (context);
 		}
 
 		protected override void Initialize ()
 		{
-			fileName = DocumentContext.Name;
+			var context = (LanguageClientDocumentContext)DocumentContext;
+			fileName = context.FileName;
 
 			session = LanguageClientServices.Workspace.GetSession (DocumentContext);
 			session.DiagnosticsPublished += OnDiagnostics;

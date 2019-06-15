@@ -35,5 +35,5 @@ using Mono.Addins;
 [assembly:AddinName ("SQL Server Language Server Client")]
 [assembly:AddinDescription ("Uses SQL Language Server from Visual Studio Code")]
 
-[assembly:AddinDependency ("Core", "8.0")]
-[assembly:AddinDependency ("Ide", "8.0")]
+[assembly:AddinDependency ("Core", "8.1")]
+[assembly:AddinDependency ("Ide", "8.1")]

@@ -28,11 +28,18 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.LanguageServer.Protocol;
 using MonoDevelop.Core.Text;
+using MonoDevelop.Ide;
 using MonoDevelop.Ide.Editor;
+using MonoDevelop.Ide.Fonts;
+using MonoDevelop.Ide.TextEditing;
 using NUnit.Framework;
+using UnitTests;
 
 namespace MonoDevelop.LanguageServer.Client.Tests
 {
+	[RequireService (typeof (DesktopService))]
+	[RequireService (typeof (TextEditorService))]
+	[RequireService (typeof (FontService))]
 	[TestFixture]
 	class TextChangeEventArgsExtensionsTests : TextEditorTestBase
 	{

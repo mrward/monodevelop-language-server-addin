@@ -1,10 +1,10 @@
 ﻿//
-// LanguageClientServices.cs
+// LanguageClientDocumentControllerExtension.cs
 //
 // Author:
 //       Matt Ward <matt.ward@microsoft.com>
 //
-// Copyright (c) 2017 Microsoft
+// Copyright (c) 2019 Microsoft
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,50 +25,48 @@
 // THE SOFTWARE.
 
 using System;
+using System.Threading.Tasks;
 using MonoDevelop.Core;
-using MonoDevelop.Ide.Composition;
+using MonoDevelop.Ide.Editor;
+using MonoDevelop.Ide.Gui.Documents;
 
 namespace MonoDevelop.LanguageServer.Client
 {
-	static class LanguageClientServices
+	class LanguageClientDocumentControllerExtension : DocumentControllerExtension
 	{
-		static LanguageClientProvider provider;
-		static LanguageClientWorkspace workspace;
+		LanguageClientDocumentContext context;
 
-		static void Initialize ()
+		public override Task<bool> SupportsController (DocumentController controller)
 		{
-			provider = CompositionManager.Instance.GetExportedValue<LanguageClientProvider> ();
-			provider.Initialize ();
-			provider.LogClientsFound ();
+			bool supported = false;
+			if (controller is FileDocumentController fileController) {
+				supported = LanguageClientServices.Workspace.IsSupported (fileController.FilePath);
+			}
 
-			workspace = new LanguageClientWorkspace ();
-			workspace.Initialize ();
+			return Task.FromResult (supported);
 		}
 
-		internal static void EnsureInitialized ()
+		public override Task Initialize (Properties status)
 		{
-			if (provider != null)
-				return;
+			var fileController = Controller as FileDocumentController;
+			if (fileController != null)
+				context = new LanguageClientDocumentContext (fileController);
 
-			try {
-				Initialize ();
-			} catch (Exception ex) {
-				LanguageClientLoggingService.LogError ("Unable to initialize LanguageServerServices.", ex);
-			}
+			return base.Initialize (status);
 		}
 
-		public static LanguageClientProvider ClientProvider {
-			get {
-				EnsureInitialized ();
-				return provider;
-			}
+		protected override object OnGetContent (Type type)
+		{
+			if (typeof (DocumentContext).IsAssignableFrom (type))
+				return context;
+
+			return base.OnGetContent (type);
 		}
 
-		public static LanguageClientWorkspace Workspace {
-			get {
-				EnsureInitialized ();
-				return workspace;
-			}
+		public override void Dispose ()
+		{
+			context?.Dispose ();
+			base.Dispose ();
 		}
 	}
 }

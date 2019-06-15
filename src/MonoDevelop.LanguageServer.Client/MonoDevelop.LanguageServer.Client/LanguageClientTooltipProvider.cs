@@ -29,8 +29,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.LanguageServer.Protocol;
 using MonoDevelop.Components;
+using MonoDevelop.Ide;
 using MonoDevelop.Ide.CodeCompletion;
 using MonoDevelop.Ide.Editor;
+using MonoDevelop.Ide.Gui;
+using MonoDevelop.Projects;
 
 namespace MonoDevelop.LanguageServer.Client
 {
@@ -43,11 +46,16 @@ namespace MonoDevelop.LanguageServer.Client
 			CancellationToken token = default (CancellationToken))
 		{
 			try {
-				LanguageClientSession session = LanguageClientServices.Workspace.GetSession (ctx, false);
+				// DocumentContext is null so get the document information again.
+				Document doc = IdeApp.Workbench.ActiveDocument;
+				if (doc == null)
+					return null;
+
+				LanguageClientSession session = LanguageClientServices.Workspace.GetSession (doc, false);
 
 				if (session != null) {
 					DocumentLocation location = editor.OffsetToLocation (offset);
-					Hover result = await session.Hover (ctx.Name, location, token);
+					Hover result = await session.Hover (doc.FileName, location, token);
 					return CreateTooltipItem (editor, result);
 				}
 			} catch (OperationCanceledException) {
