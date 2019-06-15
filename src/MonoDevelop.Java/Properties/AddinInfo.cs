@@ -35,5 +35,5 @@ using Mono.Addins;
 [assembly:AddinName ("Java Language Server Client")]
 [assembly:AddinDescription ("Uses Java from Visual Studio Code - https://github.com/redhat-developer/vscode-java")]
 
-[assembly:AddinDependency ("Core", "7.4")]
-[assembly:AddinDependency ("Ide", "7.4")]
+[assembly:AddinDependency ("Core", "8.0")]
+[assembly:AddinDependency ("Ide", "8.0")]
