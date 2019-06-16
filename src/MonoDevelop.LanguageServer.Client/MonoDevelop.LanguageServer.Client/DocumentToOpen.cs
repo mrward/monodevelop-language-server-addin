@@ -25,17 +25,11 @@
 // THE SOFTWARE.
 
 using MonoDevelop.Core;
-using MonoDevelop.Ide.Gui;
 
 namespace MonoDevelop.LanguageServer.Client
 {
 	class DocumentToOpen
 	{
-		public DocumentToOpen (Document document)
-			: this (document.FileName, document.Editor.Text)
-		{
-		}
-
 		public DocumentToOpen (FilePath fileName, string text)
 		{
 			FileName = fileName;

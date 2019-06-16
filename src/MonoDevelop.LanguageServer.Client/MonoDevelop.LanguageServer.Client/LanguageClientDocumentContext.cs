@@ -24,9 +24,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MonoDevelop.Core;
+using MonoDevelop.Core.Text;
 using MonoDevelop.Ide.Editor;
 using MonoDevelop.Ide.Gui.Documents;
 using MonoDevelop.Ide.TypeSystem;
@@ -42,6 +44,8 @@ namespace MonoDevelop.LanguageServer.Client
 		{
 			this.controller = controller;
 		}
+
+		public LanguageClientSession Session { get; set; }
 
 		public override string Name {
 			get { return controller.DocumentTitle; }
@@ -86,6 +90,21 @@ namespace MonoDevelop.LanguageServer.Client
 		public override IEnumerable<T> GetContents<T> ()
 		{
 			return controller.GetContents<T> ();
+		}
+
+		public TextEditor GetEditor ()
+		{
+			return controller.GetContent<TextEditor> ();
+		}
+
+		public string GetText ()
+		{
+			TextEditor editor = GetEditor ();
+			if (editor != null) {
+				return editor.Text;
+			}
+
+			return TextFileUtility.ReadAllText (controller.FilePath);
 		}
 	}
 }

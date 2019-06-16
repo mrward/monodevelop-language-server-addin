@@ -35,6 +35,7 @@ namespace MonoDevelop.LanguageServer.Client
 	class LanguageClientDocumentControllerExtension : DocumentControllerExtension
 	{
 		LanguageClientDocumentContext context;
+		bool didOpen;
 
 		public override Task<bool> SupportsController (DocumentController controller)
 		{
@@ -49,10 +50,30 @@ namespace MonoDevelop.LanguageServer.Client
 		public override Task Initialize (Properties status)
 		{
 			var fileController = Controller as FileDocumentController;
-			if (fileController != null)
-				context = new LanguageClientDocumentContext (fileController);
+			if (fileController != null) {
+				return Initialize (fileController, status);
+			}
 
 			return base.Initialize (status);
+		}
+
+		async Task Initialize (FileDocumentController fileController, Properties status)
+		{
+			await base.Initialize (status);
+
+			context = new LanguageClientDocumentContext (fileController);
+			context.Session = LanguageClientServices.Workspace.GetSession (context);
+
+			if (context.Session == null) {
+				LanguageClientLoggingService.LogError (string.Format ("Unable to get language client session for {0}", context.FileName));
+
+				context = null;
+				return;
+			}
+
+			if (!context.Session.IsStarted) {
+				context.Session.Started += SessionStarted;
+			}
 		}
 
 		protected override object OnGetContent (Type type)
@@ -65,8 +86,57 @@ namespace MonoDevelop.LanguageServer.Client
 
 		public override void Dispose ()
 		{
-			context?.Dispose ();
+			if (context != null) {
+				context.Dispose ();
+
+				if (context.Session != null) {
+					context.Session.Started -= SessionStarted;
+				}
+			}
+
 			base.Dispose ();
+		}
+
+		protected override void OnContentChanged ()
+		{
+			base.OnContentChanged ();
+
+			if (!didOpen) {
+				OnDocumentedOpened ();
+			}
+		}
+
+		void OnDocumentedOpened ()
+		{
+			if (didOpen || context == null)
+				return;
+
+			if (!context.Session.IsStarted)
+				return;
+
+			TextEditor editor = context.GetEditor ();
+			if (editor == null)
+				return;
+
+			didOpen = true;
+			LanguageClientServices.Workspace.OnDocumentOpened (context, editor.Text);
+		}
+
+		protected override void OnClosed ()
+		{
+			if (context != null)
+				LanguageClientServices.Workspace.OnDocumentClosed (context);
+
+			base.OnClosed ();
+		}
+
+		void SessionStarted (object sender, EventArgs e)
+		{
+			Runtime.RunInMainThread (() => {
+				context.Session.Started -= SessionStarted;
+
+				OnDocumentedOpened ();
+			}).LogFault ();
 		}
 	}
 }

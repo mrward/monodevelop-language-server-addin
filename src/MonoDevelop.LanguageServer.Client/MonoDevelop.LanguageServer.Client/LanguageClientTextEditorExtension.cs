@@ -62,7 +62,7 @@ namespace MonoDevelop.LanguageServer.Client
 			var context = (LanguageClientDocumentContext)DocumentContext;
 			fileName = context.FileName;
 
-			session = LanguageClientServices.Workspace.GetSession (DocumentContext);
+			session = context.Session;
 			session.DiagnosticsPublished += OnDiagnostics;
 
 			Editor.TextChanged += TextChanged;

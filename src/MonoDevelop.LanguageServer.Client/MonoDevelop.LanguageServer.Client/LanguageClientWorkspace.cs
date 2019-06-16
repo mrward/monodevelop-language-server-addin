@@ -47,15 +47,11 @@ namespace MonoDevelop.LanguageServer.Client
 
 		public void Initialize ()
 		{
-			IdeApp.Workbench.DocumentOpened += WorkbenchDocumentOpened;
-			IdeApp.Workbench.DocumentClosed += WorkbenchDocumentClosed;
 			IdeApp.Workspace.SolutionUnloaded += SolutionUnloaded;
 		}
 
 		public void Dispose ()
 		{
-			IdeApp.Workbench.DocumentOpened -= WorkbenchDocumentOpened;
-			IdeApp.Workbench.DocumentClosed -= WorkbenchDocumentClosed;
 			IdeApp.Workspace.SolutionUnloaded -= SolutionUnloaded;
 		}
 
@@ -138,34 +134,9 @@ namespace MonoDevelop.LanguageServer.Client
 			ILanguageClient client = LanguageClientServices.ClientProvider.GetLanguageClient (contentType);
 
 			var session = new LanguageClientSession (client, contentType, project.SafeGetParentSolutionBaseDirectory ());
-			session.Started += SessionStarted;
 			session.Start ();
 
 			return session;
-		}
-
-		void SessionStarted (object sender, EventArgs e)
-		{
-			var session = (LanguageClientSession)sender;
-
-			if (Runtime.IsMainThread) {
-				AddOpenDocumentsToSession (session);
-			} else {
-				Runtime.RunInMainThread (() => {
-					AddOpenDocumentsToSession (session);
-				}).LogFault ();
-			}
-		}
-
-		void AddOpenDocumentsToSession (LanguageClientSession session)
-		{
-			try {
-				foreach (Document document in GetOpenDocumentsForSession (session)) {
-					session.OpenDocument (document);
-				}
-			} catch (Exception ex) {
-				LanguageClientLoggingService.LogError ("Error processing after session started.", ex);
-			}
 		}
 
 		IEnumerable<Document> GetOpenDocumentsForSession (LanguageClientSession session)
@@ -178,42 +149,25 @@ namespace MonoDevelop.LanguageServer.Client
 			return GetOpenDocumentsForSession (session).Any ();
 		}
 
-		void WorkbenchDocumentOpened (object sender, DocumentEventArgs e)
-		{
-			if (IsSupported (e.Document)) {
-				LanguageClientDocumentOpened (e.Document);
-			}
-		}
-
-		void LanguageClientDocumentOpened (Document document)
+		public void OnDocumentOpened (LanguageClientDocumentContext context, string text)
 		{
 			try {
-				LanguageClientSession currentSession = GetSession (document);
-				currentSession.OpenDocument (document);
+				context.Session.OpenDocument (context.FileName, text);
 			} catch (Exception ex) {
 				LanguageClientLoggingService.LogError ("Error opening document.", ex);
 			}
 		}
 
-		void WorkbenchDocumentClosed (object sender, DocumentEventArgs e)
+		public void OnDocumentClosed (LanguageClientDocumentContext context)
 		{
-			if (IsSupported (e.Document)) {
-				LanguageClientDocumentClosed (e.Document);
-			}
-		}
-
-		void LanguageClientDocumentClosed (Document document)
-		{
-			LanguageClientSession currentSession = GetSession (document, false);
-
-			if (currentSession == null) {
+			if (context.Session == null) {
 				return;
 			}
 
-			if (IsAnyDocumentOpenForSession (currentSession)) {
-				currentSession.CloseDocument (document);
+			if (IsAnyDocumentOpenForSession (context.Session)) {
+				context.Session.CloseDocument (context.FileName);
 			} else {
-				ShutdownSession (currentSession).LogFault ();
+				ShutdownSession (context.Session).LogFault ();
 			}
 		}
 
@@ -221,8 +175,6 @@ namespace MonoDevelop.LanguageServer.Client
 		{
 			try {
 				LanguageClientLoggingService.Log ("Shutting down language client[{0}]", session.Id);
-
-				session.Started -= SessionStarted;
 
 				if (session.RootPath.IsNull) {
 					sessions.Remove (session.Id);

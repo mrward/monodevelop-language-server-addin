@@ -310,12 +310,12 @@ namespace MonoDevelop.LanguageServer.Client
 			return contentTypeFound.TypeName == contentType.TypeName;
 		}
 
-		public void OpenDocument (Document document)
+		public void OpenDocument (FilePath fileName, string text)
 		{
 			Runtime.AssertMainThread ();
 
 			if (IsStarted) {
-				SendOpenDocumentMessage (new DocumentToOpen (document))
+				SendOpenDocumentMessage (new DocumentToOpen (fileName, text))
 					.LogFault ();
 			}
 		}
@@ -335,12 +335,12 @@ namespace MonoDevelop.LanguageServer.Client
 			return jsonRpc.NotifyWithParameterObjectAsync (Methods.TextDocumentDidOpen, message);
 		}
 
-		public void CloseDocument (Document document)
+		public void CloseDocument (FilePath fileName)
 		{
 			Runtime.AssertMainThread ();
 
 			if (IsStarted) {
-				SendCloseDocumentMessage (document.FileName)
+				SendCloseDocumentMessage (fileName)
 					.LogFault ();
 			}
 		}
