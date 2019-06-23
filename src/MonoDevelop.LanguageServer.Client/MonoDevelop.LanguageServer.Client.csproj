@@ -77,7 +77,6 @@
     <Compile Include="MonoDevelop.LanguageServer.Client\TextDocumentIdentifierFactory.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientConfigurationSettingsProvider.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientSystemInformation.cs" />
-    <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientStartupHandler.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\DocumentFormatter.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\ProjectExtensions.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\SolutionLanguageClientSessions.cs" />

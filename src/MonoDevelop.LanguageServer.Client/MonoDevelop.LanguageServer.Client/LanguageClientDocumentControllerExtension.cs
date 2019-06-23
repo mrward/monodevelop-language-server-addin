@@ -41,6 +41,7 @@ namespace MonoDevelop.LanguageServer.Client
 		{
 			bool supported = false;
 			if (controller is FileDocumentController fileController) {
+				LanguageClientServices.EnsureInitialized ();
 				supported = LanguageClientServices.Workspace.IsSupported (fileController.FilePath);
 			}
 
