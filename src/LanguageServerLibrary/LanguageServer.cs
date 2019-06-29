@@ -240,7 +240,7 @@ namespace LanguageServer
 			for (int i = 0; i < lines.Length; ++i)
 			{
 				string line = lines[i];
-				int index = line.IndexOf(item, StringComparison.Ordinal);
+				int index = line.IndexOf(item, StringComparison.OrdinalIgnoreCase);
 				if (index >=0)
 				{
 					yield return new Location
@@ -478,6 +478,43 @@ namespace LanguageServer
 		{
 			string json = JsonConvert.SerializeObject(parameter);
 			Log(message + "\n" + json + "\n");
+		}
+
+		public SymbolInformation[] GetWorkspaceSymbols(string query)
+		{
+			var symbols = new List<SymbolInformation>();
+
+			lock (textDocuments)
+			{
+				foreach (TextDocumentItem document in textDocuments)
+				{
+					string[] lines = textDocument.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+					foreach (Location location in FindReferences(query, textDocument.Uri, lines))
+					{
+						var symbol = new SymbolInformation
+						{
+							ContainerName = "WorkspaceSymbol.Container",
+							Kind = SymbolKind.Class,
+							Location = location,
+							Name = "WorkspaceSymbol " + query
+						};
+						symbols.Add(symbol);
+					}
+				}
+			}
+
+			if (!symbols.Any())
+			{
+				var symbol = new SymbolInformation
+				{
+					ContainerName = "WorkspaceSymbol.Container",
+					Kind = SymbolKind.Class,
+					Name = "Default WorkspaceSymbol " + query
+				};
+				symbols.Add (symbol);
+			}
+
+			return symbols.ToArray();
 		}
 	}
 }

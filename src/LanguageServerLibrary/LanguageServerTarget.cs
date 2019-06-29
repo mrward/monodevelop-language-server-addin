@@ -42,6 +42,7 @@ namespace LanguageServer
 			capabilities.DefinitionProvider = true;
 			capabilities.ReferencesProvider = true;
 			capabilities.HoverProvider = true;
+			capabilities.WorkspaceSymbolProvider = true;
 
 			var result = new InitializeResult();
 			result.Capabilities = capabilities;
@@ -217,6 +218,15 @@ namespace LanguageServer
 		public string GetText()
 		{
 			return string.IsNullOrWhiteSpace(this.server.CustomText) ? "custom text from language server target" : this.server.CustomText;
+		}
+
+		[JsonRpcMethod (Methods.WorkspaceSymbolName)]
+		public SymbolInformation[] OnWorkspaceSymbolName(JToken arg)
+		{
+			Log (Methods.WorkspaceSymbolName, arg);
+
+			var parameter = arg.ToObject<WorkspaceSymbolParams> ();
+			return server.GetWorkspaceSymbols(parameter.Query);
 		}
 
 		void Log(string message)
