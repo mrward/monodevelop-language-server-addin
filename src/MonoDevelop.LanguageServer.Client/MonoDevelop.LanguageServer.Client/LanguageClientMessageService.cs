@@ -42,7 +42,7 @@ namespace MonoDevelop.LanguageServer.Client
 
 			Runtime.RunInMainThread (() => {
 				ShowMessageInternal (message);
-			});
+			}).LogFault ();
 		}
 
 		static void ShowMessageInternal (ShowMessageParams message)
@@ -60,6 +60,8 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 		}
 
+		#pragma warning disable VSTHRD002 // Avoid problematic synchronous waits
+
 		public static MessageActionItem ShowMessage (ShowMessageRequestParams message)
 		{
 			MessageActionItem result = null;
@@ -70,6 +72,8 @@ namespace MonoDevelop.LanguageServer.Client
 
 			return result;
 		}
+
+		#pragma warning restore VSTHRD002 // Avoid problematic synchronous waits
 
 		static MessageActionItem ShowMessageInternal (ShowMessageRequestParams message)
 		{

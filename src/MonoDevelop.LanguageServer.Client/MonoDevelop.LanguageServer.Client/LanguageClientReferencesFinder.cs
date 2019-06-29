@@ -36,6 +36,7 @@ using MonoDevelop.Ide.FindInFiles;
 
 namespace MonoDevelop.LanguageServer.Client
 {
+	[Obsolete]
 	class LanguageClientReferencesFinder
 	{
 		TextEditor editor;

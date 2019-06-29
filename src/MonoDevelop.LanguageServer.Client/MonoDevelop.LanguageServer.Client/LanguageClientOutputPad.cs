@@ -94,15 +94,15 @@ namespace MonoDevelop.LanguageServer.Client
 		public static void WriteText (string message)
 		{
 			Runtime.RunInMainThread (() => {
-				logView.WriteText (message + Environment.NewLine);
-			});
+				logView.WriteText (null, message + Environment.NewLine);
+			}).Ignore ();
 		}
 
 		public static void WriteError (string message)
 		{
 			Runtime.RunInMainThread (() => {
-				logView.WriteError (message + Environment.NewLine);
-			});
+				logView.WriteError (null, message + Environment.NewLine);
+			}).Ignore ();
 		}
 	}
 }

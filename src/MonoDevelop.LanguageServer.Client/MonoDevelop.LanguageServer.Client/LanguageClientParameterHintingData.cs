@@ -34,6 +34,7 @@ using MonoDevelop.Ide.Editor;
 
 namespace MonoDevelop.LanguageServer.Client
 {
+	[Obsolete]
 	class LanguageClientParameterHintingData : ParameterHintingData
 	{
 		SignatureInformation signature;

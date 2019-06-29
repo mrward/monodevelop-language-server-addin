@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.LanguageServer.Protocol;
@@ -33,6 +34,7 @@ using MonoDevelop.Ide.FindInFiles;
 
 namespace MonoDevelop.LanguageServer.Client
 {
+	[Obsolete]
 	static class TextEditorExtensions
 	{
 		public static void StartTextEditorRename (this TextEditor editor, IEnumerable<SearchResult> references)

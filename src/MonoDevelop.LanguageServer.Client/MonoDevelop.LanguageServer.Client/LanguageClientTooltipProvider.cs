@@ -37,6 +37,7 @@ using MonoDevelop.Projects;
 
 namespace MonoDevelop.LanguageServer.Client
 {
+	[Obsolete]
 	class LanguageClientTooltipProvider : TooltipProvider
 	{
 		public override async Task<TooltipItem> GetItem (

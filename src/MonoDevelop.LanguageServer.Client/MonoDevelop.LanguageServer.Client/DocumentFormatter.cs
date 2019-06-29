@@ -32,6 +32,7 @@ using MonoDevelop.Ide.Editor;
 
 namespace MonoDevelop.LanguageServer.Client
 {
+	[Obsolete]
 	class DocumentFormatter
 	{
 		TextEditor editor;

@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.LanguageServer.Protocol;
@@ -32,6 +33,7 @@ using MonoDevelop.Ide.Editor;
 
 namespace MonoDevelop.LanguageServer.Client
 {
+	[Obsolete]
 	static class TextChangeEventArgsExtensions
 	{
 		public static IEnumerable<TextDocumentContentChangeEvent> CreateTextDocumentContentChangeEvents (

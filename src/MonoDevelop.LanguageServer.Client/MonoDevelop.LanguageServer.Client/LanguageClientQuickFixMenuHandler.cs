@@ -33,6 +33,7 @@ using MonoDevelop.Ide;
 
 namespace MonoDevelop.LanguageServer.Client
 {
+	[Obsolete]
 	class LanguageClientQuickFixMenuHandler : CommandHandler
 	{
 		/// <summary>

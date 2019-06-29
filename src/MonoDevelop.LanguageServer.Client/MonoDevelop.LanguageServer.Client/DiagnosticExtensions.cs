@@ -24,12 +24,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
 using Microsoft.VisualStudio.LanguageServer.Protocol;
 using MonoDevelop.Ide.Editor;
 using MonoDevelop.Ide.TypeSystem;
 
 namespace MonoDevelop.LanguageServer.Client
 {
+	[Obsolete]
 	static class DiagnosticExtensions
 	{
 		public static Error CreateError (this Diagnostic diagnostic)

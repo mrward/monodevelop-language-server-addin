@@ -32,6 +32,7 @@ using MonoDevelop.Ide.Gui.Documents;
 
 namespace MonoDevelop.LanguageServer.Client
 {
+	[Obsolete]
 	class LanguageClientDocumentControllerExtension : DocumentControllerExtension
 	{
 		LanguageClientDocumentContext context;

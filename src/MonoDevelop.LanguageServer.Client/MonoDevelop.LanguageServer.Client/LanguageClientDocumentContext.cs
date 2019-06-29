@@ -59,8 +59,10 @@ namespace MonoDevelop.LanguageServer.Client
 			get { return controller.Owner as Project; }
 		}
 
+		[Obsolete]
 		public override Microsoft.CodeAnalysis.Document AnalysisDocument { get; }
 
+		[Obsolete]
 		public override ParsedDocument ParsedDocument { get; }
 
 		public override void AttachToProject (Project project)
@@ -72,10 +74,12 @@ namespace MonoDevelop.LanguageServer.Client
 			return null;
 		}
 
+		[Obsolete]
 		public override void ReparseDocument ()
 		{
 		}
 
+		[Obsolete]
 		public override Task<ParsedDocument> UpdateParseDocument ()
 		{
 			ParsedDocument document = null;
@@ -92,11 +96,13 @@ namespace MonoDevelop.LanguageServer.Client
 			return controller.GetContents<T> ();
 		}
 
+		[Obsolete]
 		public TextEditor GetEditor ()
 		{
 			return controller.GetContent<TextEditor> ();
 		}
 
+		[Obsolete]
 		public string GetText ()
 		{
 			TextEditor editor = GetEditor ();

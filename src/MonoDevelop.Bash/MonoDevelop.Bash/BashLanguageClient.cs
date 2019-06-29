@@ -62,7 +62,7 @@ namespace MonoDevelop.Bash
 		/// </summary>
 		public async Task<Connection> ActivateAsync (CancellationToken token)
 		{
-			string baseLanguageServerFileName = await  GetBashLanguageServerFileName (token);
+			string baseLanguageServerFileName = await GetBashLanguageServerFileNameAsync (token);
 
 			var info = new ProcessStartInfo {
 				FileName = baseLanguageServerFileName,
@@ -84,7 +84,7 @@ namespace MonoDevelop.Bash
 			return connection;
 		}
 
-		async Task<string> GetBashLanguageServerFileName (CancellationToken token)
+		async Task<string> GetBashLanguageServerFileNameAsync (CancellationToken token)
 		{
 			var info = new ProcessStartInfo {
 				FileName = "npm",

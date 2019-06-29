@@ -108,6 +108,7 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 		}
 
+		[Obsolete]
 		[JsonRpcMethod (Methods.WorkspaceApplyEditName)]
 		public void OnWorkspaceApplyEdit (JToken arg)
 		{

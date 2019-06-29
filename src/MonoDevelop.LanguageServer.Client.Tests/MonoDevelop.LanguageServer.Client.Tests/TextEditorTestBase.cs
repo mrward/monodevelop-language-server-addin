@@ -49,24 +49,24 @@ namespace MonoDevelop.LanguageServer.Client.Tests
 		}
 
 		[TestFixtureSetUp]
-		public async Task Setup ()
+		public async Task SetupAsync ()
 		{
 			if (firstRun) {
 				string configRootDir = Path.Combine (TestsRootDir, "config");
 				try {
 					firstRun = false;
-					await InternalSetup (configRootDir);
+					await InternalSetupAsync (configRootDir);
 				} catch (Exception) {
 					// if we encounter an error, try to re create the configuration directory
 					// (This takes much time, therfore it's only done when initialization fails)
 					try {
 						if (Directory.Exists (configRootDir))
 							Directory.Delete (configRootDir, true);
-						await InternalSetup (rootDir);
+						await InternalSetupAsync (rootDir);
 					} catch (Exception) {
 					}
 				}
-				await InitializeServices ();
+				await InitializeServicesAsync ();
 			}
 		}
 
@@ -79,7 +79,7 @@ namespace MonoDevelop.LanguageServer.Client.Tests
 			//DesktopService.Initialize ();
 		//}
 
-		async Task InitializeServices ()
+		async Task InitializeServicesAsync ()
 		{
 			foreach (RequireServiceAttribute attribute in Attribute.GetCustomAttributes (GetType (), typeof (RequireServiceAttribute), true)) {
 				var m = typeof (ServiceProvider).GetMethod ("GetService").MakeGenericMethod (attribute.ServiceType);
@@ -88,13 +88,15 @@ namespace MonoDevelop.LanguageServer.Client.Tests
 			}
 		}
 
-		protected virtual async Task InternalSetup (string rootDir)
+		protected virtual Task InternalSetupAsync (string rootDir)
 		{
 			//Util.ClearTmpDir ();
 			Environment.SetEnvironmentVariable ("MONO_ADDINS_REGISTRY", rootDir);
 			Environment.SetEnvironmentVariable ("XDG_CONFIG_HOME", rootDir);
 			global::MonoDevelop.Projects.Services.ProjectService.DefaultTargetFramework
 				= Runtime.SystemAssemblyService.GetTargetFramework (TargetFrameworkMoniker.NET_4_0);
+
+			return Task.CompletedTask;
 		}
 	}
 }

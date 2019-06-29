@@ -38,16 +38,19 @@ namespace MockLanguageExtension
 			info.Enabled = FooLanguageClient.Instance?.Rpc != null;
 		}
 
-		protected override void Run ()
+#pragma warning disable VSTHRD100 // Avoid async void methods
+
+		protected override async void Run ()
 		{
 			try {
-				SendMessage ().Ignore ();
+				await SendMessageAsync ();
 			} catch (Exception ex) {
 				MessageService.ShowError ("Unable to send message.", ex.Message);
 			}
 		}
+#pragma warning restore VSTHRD100 // Avoid async void methods
 
-		async Task SendMessage ()
+		async Task SendMessageAsync ()
 		{
 			string text = await FooLanguageClient.Instance.Rpc.InvokeWithParameterObjectAsync<string> ("GetText");
 

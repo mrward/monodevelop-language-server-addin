@@ -426,6 +426,7 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 		}
 
+		[Obsolete]
 		public async Task<CompletionDataList> GetCompletionList (
 			FilePath fileName,
 			CodeCompletionContext completionContext,
@@ -597,6 +598,7 @@ namespace MonoDevelop.LanguageServer.Client
 				token);
 		}
 
+		[Obsolete]
 		public Task TextChanged (FilePath fileName, int version, TextChangeEventArgs e, TextEditor editor)
 		{
 			Runtime.AssertMainThread ();
@@ -711,6 +713,7 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 		}
 
+		[Obsolete]
 		public Task<TextEdit[]> FormatDocument (TextEditor editor, CancellationToken token)
 		{
 			if (!IsStarted) {
@@ -738,6 +741,7 @@ namespace MonoDevelop.LanguageServer.Client
 				token);
 		}
 
+		[Obsolete]
 		public Task<TextEdit[]> FormatDocumentRange (TextEditor editor, CancellationToken token)
 		{
 			if (!IsStarted) {

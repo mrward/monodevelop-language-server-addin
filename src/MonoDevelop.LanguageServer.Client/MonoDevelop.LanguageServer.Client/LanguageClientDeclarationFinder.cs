@@ -37,6 +37,7 @@ using MonoDevelop.Ide.Gui;
 
 namespace MonoDevelop.LanguageServer.Client
 {
+	[Obsolete]
 	class LanguageClientDeclarationFinder
 	{
 		TextEditor editor;

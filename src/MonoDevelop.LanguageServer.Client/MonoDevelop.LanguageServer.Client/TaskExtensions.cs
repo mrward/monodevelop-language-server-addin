@@ -28,8 +28,12 @@ using System.Threading.Tasks;
 
 namespace MonoDevelop.LanguageServer.Client
 {
+	#pragma warning disable VSTHRD110 // Observe result of async calls
+	#pragma warning disable VSTHRD105 // Avoid method overloads that assume TaskScheduler.Current
+
 	static class TaskExtensions
 	{
+
 		public static void LogFault (this Task task)
 		{
 			task.ContinueWith (t => {
@@ -39,4 +43,7 @@ namespace MonoDevelop.LanguageServer.Client
 			});
 		}
 	}
+
+	#pragma warning restore VSTHRD105 // Avoid method overloads that assume TaskScheduler.Current
+	#pragma warning restore VSTHRD110 // Observe result of async calls
 }

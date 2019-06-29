@@ -37,7 +37,7 @@ namespace MonoDevelop.LanguageServer.Client.Tests
 	{
 		IReadonlyTextDocument document;
 
-		public async Task CreateTextDocument (string text)
+		public async Task CreateTextDocumentAsync (string text)
 		{
 			var textSource = new StringTextSource (text);
 			document = await SimpleReadonlyDocument.CreateReadonlyDocumentAsync (textSource);
@@ -65,7 +65,7 @@ namespace MonoDevelop.LanguageServer.Client.Tests
 		[TestCase ("a[b]", 1, 3, "b", 2, 3)]
 		[TestCase ("a[b]", 1, 4, "b", 2, 3)]
 		[TestCase ("a[b]", 1, 5, null, -1, -1)]
-		public async Task GetWordAtPosition (
+		public async Task GetWordAtPositionAsync (
 			string text,
 			int line,
 			int column,
@@ -73,7 +73,7 @@ namespace MonoDevelop.LanguageServer.Client.Tests
 			int expectedColumn,
 			int expectedEndColumn)
 		{
-			await CreateTextDocument (text);
+			await CreateTextDocumentAsync (text);
 
 			var word = document.GetWordAtPosition (line, column);
 

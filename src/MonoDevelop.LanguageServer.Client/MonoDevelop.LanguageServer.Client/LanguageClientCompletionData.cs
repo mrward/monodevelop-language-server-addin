@@ -35,6 +35,7 @@ using MonoDevelop.Ide.Editor.Extension;
 
 namespace MonoDevelop.LanguageServer.Client
 {
+	[Obsolete]
 	class LanguageClientCompletionData : CompletionData
 	{
 		LanguageClientSession session;

@@ -35,6 +35,7 @@ using MonoDevelop.Ide.FindInFiles;
 
 namespace MonoDevelop.LanguageServer.Client
 {
+	[Obsolete]
 	static class ITextDocumentExtensions
 	{
 		public static int PositionToOffset (this ITextDocument editor, Position position)

@@ -24,11 +24,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
 using MonoDevelop.Ide.Editor;
 using MonoDevelop.Ide.CodeCompletion;
 
 namespace MonoDevelop.LanguageServer.Client
 {
+	[Obsolete]
 	static class IReadonlyTextDocumentExtensions
 	{
 		/// <summary>

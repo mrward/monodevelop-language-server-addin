@@ -44,6 +44,7 @@ using MonoDevelop.Refactoring;
 
 namespace MonoDevelop.LanguageServer.Client
 {
+	[Obsolete]
 	class LanguageClientTextEditorExtension : CompletionTextEditorExtension
 	{
 		LanguageClientSession session;
@@ -94,7 +95,7 @@ namespace MonoDevelop.LanguageServer.Client
 
 			Runtime.RunInMainThread (() => {
 				ShowDiagnostics (e.Diagnostics);
-			});
+			}).LogFault ();
 		}
 
 		void ShowDiagnostics (Diagnostic[] diagnostics)

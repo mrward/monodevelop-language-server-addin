@@ -107,7 +107,7 @@ namespace MonoDevelop.PowerShell
 			if (process.Start ()) {
 				//Wait for startup....
 				string sessionFile = $@"{extensionDirectory}/logs/PSES-VS";
-				var sessionInfo = await WaitForSessionFile (sessionFile);
+				var sessionInfo = await WaitForSessionFileAsync (sessionFile);
 
 				File.Delete (sessionFile);
 
@@ -149,7 +149,7 @@ namespace MonoDevelop.PowerShell
 			return Task.CompletedTask;
 		}
 
-		async Task<string> WaitForSessionFile (string sessionFilePath)
+		async Task<string> WaitForSessionFileAsync (string sessionFilePath)
 		{
 			int remainingTries = 60;
 			int delayMilliseconds = 2000;
