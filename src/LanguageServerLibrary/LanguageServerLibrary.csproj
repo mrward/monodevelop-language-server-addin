@@ -36,8 +36,8 @@
     <Compile Include="LoggingService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="StreamJsonRpc" Version="1.2.8" />
-    <PackageReference Include="Microsoft.VisualStudio.LanguageServer.Protocol" Version="15.9.3032" />
+    <PackageReference Include="StreamJsonRpc" Version="$(StreamJsonRpcVersion)" />
+    <PackageReference Include="Microsoft.VisualStudio.LanguageServer.Protocol" Version="$(LanguageServerProtocolVersion)" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
