@@ -54,7 +54,8 @@ namespace MonoDevelop.LanguageServer.Client
 
 		public override string GetParameterName (int parameter)
 		{
-			return signature.Parameters [parameter].Label;
+			string label = signature.Parameters[parameter].Label as string;
+			return label ?? string.Empty;
 		}
 
 		public override Task<TooltipInformation> CreateTooltipInformation (

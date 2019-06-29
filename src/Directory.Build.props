@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
 
-    <LanguageServerProtocolVersion>15.9.3032</LanguageServerProtocolVersion>
+    <LanguageServerProtocolVersion>16.1.3121</LanguageServerProtocolVersion>
     <NewtonsoftJsonVersion>10.0.3</NewtonsoftJsonVersion>
     <StreamJsonRpcVersion>1.5.43</StreamJsonRpcVersion>
     <VisualStudioThreadingVersion>15.8.192</VisualStudioThreadingVersion>
