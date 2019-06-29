@@ -47,12 +47,10 @@ namespace MonoDevelop.LanguageServer.Client
 
 		public void Initialize ()
 		{
-			IdeApp.Workspace.SolutionUnloaded += SolutionUnloaded;
 		}
 
 		public void Dispose ()
 		{
-			IdeApp.Workspace.SolutionUnloaded -= SolutionUnloaded;
 		}
 
 		public bool IsSupported (DocumentContext context)
@@ -187,28 +185,6 @@ namespace MonoDevelop.LanguageServer.Client
 				LanguageClientLoggingService.Log ("Language client[{0}] shutdown.", session.Id);
 			} catch (Exception ex) {
 				LanguageClientLoggingService.LogError ("Error shutting down language client.", ex);
-			}
-		}
-
-		void SolutionUnloaded (object sender, SolutionEventArgs e)
-		{
-			ShutdownAllSessions ().LogFault ();
-		}
-
-		async Task ShutdownAllSessions ()
-		{
-			await ShutdownAllSessions (solutionSessions.GetAllSessions ());
-			solutionSessions.Clear ();
-		}
-
-		async Task ShutdownAllSessions (IEnumerable<LanguageClientSession> sessionsToShutdown)
-		{
-			foreach (var session in sessionsToShutdown) {
-				try {
-					await ShutdownSession (session);
-				} catch (Exception ex) {
-					LanguageClientLoggingService.LogError ("Shutdown error.", ex);
-				}
 			}
 		}
 	}

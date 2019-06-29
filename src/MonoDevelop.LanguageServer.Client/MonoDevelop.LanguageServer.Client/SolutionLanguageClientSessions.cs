@@ -89,15 +89,6 @@ namespace MonoDevelop.LanguageServer.Client
 			solutionSessions [session.Id] = session;
 		}
 
-		public IEnumerable<LanguageClientSession> GetAllSessions ()
-		{
-			foreach (var solutionSessions in sessions.Values) {
-				foreach (var session in solutionSessions.Values) {
-					yield return session;
-				}
-			}
-		}
-
 		public void RemoveSession (LanguageClientSession session)
 		{
 			var solutionSessions = GetSolutionSession (session.RootPath);
