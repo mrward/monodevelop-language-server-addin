@@ -2,8 +2,8 @@
   <PropertyGroup>
     <LanguageServerProtocolVersion>15.9.3032</LanguageServerProtocolVersion>
     <NewtonsoftJsonVersion>10.0.3</NewtonsoftJsonVersion>
-    <StreamJsonRpcVersion>1.2.8</StreamJsonRpcVersion>
-    <VisualStudioThreadingVersion>15.4.4</VisualStudioThreadingVersion>
+    <StreamJsonRpcVersion>1.5.43</StreamJsonRpcVersion>
+    <VisualStudioThreadingVersion>15.8.192</VisualStudioThreadingVersion>
     <VisualStudioValidationVersion>15.3.15</VisualStudioValidationVersion>
   </PropertyGroup>
 </Project>
