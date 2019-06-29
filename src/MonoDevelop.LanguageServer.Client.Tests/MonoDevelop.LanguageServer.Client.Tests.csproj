@@ -8,7 +8,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>MonoDevelop.LanguageServer.Client.Tests</RootNamespace>
     <AssemblyName>MonoDevelop.LanguageServer.Client.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <TestRunnerCommand>$(MDBinDir)\vstool.exe</TestRunnerCommand>
     <TestRunnerArgs>run-md-tests</TestRunnerArgs>
   </PropertyGroup>

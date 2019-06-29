@@ -1,5 +1,7 @@
 ﻿<Project>
   <PropertyGroup>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+
     <LanguageServerProtocolVersion>15.9.3032</LanguageServerProtocolVersion>
     <NewtonsoftJsonVersion>10.0.3</NewtonsoftJsonVersion>
     <StreamJsonRpcVersion>1.5.43</StreamJsonRpcVersion>

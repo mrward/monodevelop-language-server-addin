@@ -8,7 +8,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>MonoDevelop.Sql</RootNamespace>
     <AssemblyName>MonoDevelop.Sql.LanguageServer.Client</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
