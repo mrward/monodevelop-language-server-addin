@@ -47,11 +47,11 @@ namespace MonoDevelop.LanguageServer.Client
 
 			FilePath settingsFile = GetDefaultSettingsFile ();
 
-			if (!File.Exists (settingsFile)) {
-				return null;
+			string json = "{}";
+			if (File.Exists (settingsFile)) {
+				json = File.ReadAllText (settingsFile);
 			}
 
-			string json = File.ReadAllText (settingsFile);
 			return GetSettings (type, configurationSections, json);
 		}
 
