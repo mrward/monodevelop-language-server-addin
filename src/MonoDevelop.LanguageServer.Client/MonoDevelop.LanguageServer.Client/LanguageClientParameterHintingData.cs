@@ -54,7 +54,7 @@ namespace MonoDevelop.LanguageServer.Client
 
 		public override string GetParameterName (int parameter)
 		{
-			string label = signature.Parameters[parameter].Label as string;
+			string label = signature.Parameters[parameter].Label.Value as string;
 			return label ?? string.Empty;
 		}
 
@@ -66,7 +66,7 @@ namespace MonoDevelop.LanguageServer.Client
 			CancellationToken cancelToken)
 		{
 			var tooltipInfo = new TooltipInformation ();
-			tooltipInfo.SummaryMarkup = EscapeMarkup (signature.Documentation?.Value);
+			tooltipInfo.SummaryMarkup = EscapeMarkup (signature.Documentation.GetStringValue ());
 			tooltipInfo.SignatureMarkup = EscapeMarkup (GetSignatureMarkup ());
 			return Task.FromResult (tooltipInfo);
 		}

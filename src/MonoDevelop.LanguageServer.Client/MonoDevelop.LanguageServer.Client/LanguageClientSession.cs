@@ -810,19 +810,19 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 		}
 
-		public Task<Command[]> GetCodeActions (
+		public async Task<Command[]> GetCodeActions (
 			FilePath fileName,
 			Range range,
 			Diagnostic[] diagnostics,
 			CancellationToken token)
 		{
 			if (!IsStarted) {
-				return Task.FromResult<Command[]> (null);
+				return null;
 			}
 
 			if (!IsCodeActionProvider) {
 				Log ("Code actions are not supported by server for '{0}'. File: '{1}'", Methods.TextDocumentCodeActionName, fileName);
-				return Task.FromResult<Command[]> (null);
+				return null;
 			}
 
 			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentCodeActionName, fileName);
@@ -835,10 +835,15 @@ namespace MonoDevelop.LanguageServer.Client
 				Range = range
 			};
 
-			return jsonRpc.InvokeWithParameterObjectAsync (
+			SumType<Command, CodeAction>[] result = await jsonRpc.InvokeWithParameterObjectAsync (
 				Methods.TextDocumentCodeAction,
 				message,
 				token);
+
+			return result
+				.Select (item => item.GetCommand ())
+				.Where (command => command != null)
+				.ToArray ();
 		}
 
 		public Task ExecuteCommand (Command command)

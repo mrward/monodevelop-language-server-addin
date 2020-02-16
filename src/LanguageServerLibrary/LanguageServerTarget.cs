@@ -37,6 +37,7 @@ namespace LanguageServer
 			capabilities.CompletionProvider = new CompletionOptions();
 			capabilities.CompletionProvider.ResolveProvider = false;
 			capabilities.CompletionProvider.TriggerCharacters = new string[] { ",", "." };
+			capabilities.CodeActionProvider = true;
 			capabilities.SignatureHelpProvider = new SignatureHelpOptions ();
 			capabilities.SignatureHelpProvider.TriggerCharacters = new string [] { "(" };
 			capabilities.DefinitionProvider = true;
@@ -98,6 +99,15 @@ namespace LanguageServer
 				item.Label = "Item " + i;
 				item.InsertText = "Item" + i;
 				item.Kind = (CompletionItemKind)(i % (Enum.GetNames(typeof(CompletionItemKind)).Length) + 1);
+				item.Detail = "Detail: " + item.Label;
+				if (i % 2 == 0) {
+					item.Documentation = "Documentation: " + item.Label;
+				} else {
+					item.Documentation = new MarkupContent () {
+						Kind = MarkupKind.PlainText,
+						Value = "Documentation.Markup: " + item.Label
+					};
+				}
 				items.Add(item);
 			}
 
@@ -143,14 +153,16 @@ namespace LanguageServer
 		{
 			Log(Methods.TextDocumentHoverName, arg);
 
-			var contents = new List<MarkedString>();
+			var contents = new List<SumType<string, MarkedString>> ();
 
 			contents.Add(new MarkedString
 			{
+				Language = "Foo",
 				Value = "Documentation"
 			});
 			contents.Add(new MarkedString
 			{
+				Language = "Foo",
 				Value = "Summary"
 			});
 
@@ -181,7 +193,7 @@ namespace LanguageServer
 				var signature = new SignatureInformation
 				{
 					Documentation = CreateMarkupContent("Signature documentation " + i),
-					Label = "Signature " + i
+					Label = "Signature " + i,
 				};
 
 				var parameters = new List<ParameterInformation>();
@@ -193,6 +205,7 @@ namespace LanguageServer
 						Documentation = CreateMarkupContent("Parameter documentation " + i),
 						Label = "Parameter " + i
 					};
+					parameters.Add (parameter);
 				}
 
 				signature.Parameters = parameters.ToArray();
@@ -227,6 +240,23 @@ namespace LanguageServer
 
 			var parameter = arg.ToObject<WorkspaceSymbolParams> ();
 			return server.GetWorkspaceSymbols(parameter.Query);
+		}
+
+		[JsonRpcMethod (Methods.TextDocumentCodeActionName)]
+		public Command[] OnCodeAction (JToken arg)
+		{
+			Log (Methods.TextDocumentCodeActionName, arg);
+
+			var parameter = arg.ToObject<CodeActionParams> ();
+
+			var commands = new List<Command> ();
+			for (int i = 0; i < 3; ++i) {
+				commands.Add (new Command () {
+					Title = "Command " + i.ToString (),
+					CommandIdentifier = "Command." + i.ToString ()
+				});
+			}
+			return commands.ToArray();
 		}
 
 		void Log(string message)

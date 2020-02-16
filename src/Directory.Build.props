@@ -1,8 +1,8 @@
-﻿<Project>
+<Project>
   <PropertyGroup>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
 
-    <LanguageServerProtocolVersion>16.1.3121</LanguageServerProtocolVersion>
+    <LanguageServerProtocolVersion>16.4.30</LanguageServerProtocolVersion>
     <NewtonsoftJsonVersion>10.0.3</NewtonsoftJsonVersion>
     <StreamJsonRpcVersion>1.5.43</StreamJsonRpcVersion>
     <VisualStudioThreadingVersion>15.8.192</VisualStudioThreadingVersion>

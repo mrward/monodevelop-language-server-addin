@@ -82,12 +82,13 @@ namespace MonoDevelop.LanguageServer.Client
 		string GetDescription ()
 		{
 			string description = CompletionItem.Detail;
+			string documentation = CompletionItem.Documentation.GetStringValue ();
 
-			if (CompletionItem.Documentation != null) {
+			if (!string.IsNullOrEmpty (documentation)) {
 				if (description == null) {
-					description = CompletionItem.Documentation.Value;
+					description = documentation;
 				} else {
-					description += Environment.NewLine + CompletionItem.Documentation.Value;
+					description += Environment.NewLine + documentation;
 				}
 			}
 

@@ -84,15 +84,18 @@ namespace MonoDevelop.LanguageServer.Client
 			return null;
 		}
 
-		TooltipInformation CreateTooltipInformation (object contents)
+		/// <summary>
+		/// TODO: Handle all hover result contents.
+		/// </summary>
+		TooltipInformation CreateTooltipInformation (SumType<SumType<string, MarkedString>, SumType<string, MarkedString>[], MarkupContent> contents)
 		{
-			if (contents is object[] objectArray) {
-				return CreateTooltipInformation (objectArray);
-			}
-			return null;
+			return contents.Match  (
+				stringOrMarkedstring => null,
+				arrayOfStringOrMarkedString => CreateTooltipInformation (arrayOfStringOrMarkedString),
+				markup => null);
 		}
 
-		TooltipInformation CreateTooltipInformation (object[] contents)
+		TooltipInformation CreateTooltipInformation (SumType<string, MarkedString>[] contents)
 		{
 			var tooltipInfo = new TooltipInformation ();
 			tooltipInfo.SummaryMarkup = EscapeMarkup (GetSummaryMarkup (contents));
@@ -105,19 +108,19 @@ namespace MonoDevelop.LanguageServer.Client
 			return GLib.Markup.EscapeText (text ?? string.Empty);
 		}
 
-		static string GetSummaryMarkup (object[] contents)
+		static string GetSummaryMarkup (SumType<string, MarkedString>[] contents)
 		{
 			if (contents.Length > 1) {
-				return GetStringFromMarkedString (contents [1]);
+				return GetStringFromMarkedString (contents [1].Value);
 			}
 
 			return string.Empty;
 		}
 
-		static string GetSignatureMarkup (object[] contents)
+		static string GetSignatureMarkup (SumType<string, MarkedString>[] contents)
 		{
 			if (contents.Length > 0) {
-				return GetStringFromMarkedString (contents [0]);
+				return GetStringFromMarkedString (contents [0].Value);
 			}
 
 			return string.Empty;
