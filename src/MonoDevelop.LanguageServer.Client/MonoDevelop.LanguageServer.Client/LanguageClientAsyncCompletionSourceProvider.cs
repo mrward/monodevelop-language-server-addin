@@ -1,10 +1,10 @@
 ﻿//
-// CodeRemoteContentDefinition.cs
+// LanguageClientAsyncCompletionProvider.cs
 //
 // Author:
 //       Matt Ward <matt.ward@microsoft.com>
 //
-// Copyright (c) 2017 Microsoft
+// Copyright (c) 2020 Microsoft Corporation
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,23 +25,20 @@
 // THE SOFTWARE.
 
 using System.ComponentModel.Composition;
+using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion;
+using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Utilities;
 
-namespace Microsoft.VisualStudio.LanguageServer.Client
+namespace MonoDevelop.LanguageServer.Client
 {
-	public class CodeRemoteContentDefinition
+	[Export (typeof (IAsyncCompletionSourceProvider))]
+	[ContentType ("text")] // Enable for all content types by using base content type of text.
+	[Name (nameof (LanguageClientAsyncCompletionProvider))]
+	class LanguageClientAsyncCompletionProvider : IAsyncCompletionSourceProvider
 	{
-		public const string CodeRemoteBaseTypeName = "code-languageserver-base";
-		public const string CodeRemoteContentTypeName = "code-languageserver-preview";
-
-		[Export]
-		[Name ("code-languageserver-base")]
-		[BaseDefinition ("code")]
-		internal static ContentTypeDefinition CodeRemoteBaseContentTypeDefinition;
-
-		[Export]
-		[Name ("code-languageserver-preview")]
-		[BaseDefinition ("code-languageserver-base")]
-		internal static ContentTypeDefinition CodeRemoteContentTypeDefinition;
+		public IAsyncCompletionSource GetOrCreate (ITextView textView)
+		{
+			return null;
+		}
 	}
 }

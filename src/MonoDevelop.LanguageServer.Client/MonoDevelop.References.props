@@ -53,5 +53,167 @@
       <Private>False</Private>
       <HintPath>$(MDBinDir)\Xwt.dll</HintPath>
     </Reference>
+
+    <!-- Text Editor -->
+    <Reference Include="Microsoft.VisualStudio.UI.Text.EditorPrimitives.Implementation">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.UI.Text.EditorPrimitives.Implementation.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.UI.Text.EditorOperations.Implementation">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.UI.Text.EditorOperations.Implementation.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.UI.Text.Commanding.Implementation">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.UI.Text.Commanding.Implementation.dll</HintPath>
+       <Private>False</Private>
+   </Reference>
+    <Reference Include="Microsoft.VisualStudio.Text.UI.Utilities">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.Text.UI.Utilities.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Text.UI">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.Text.UI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Text.UI.Cocoa.Utilities">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.Text.UI.Cocoa.Utilities.dll</HintPath>
+       <Private>False</Private>
+   </Reference>
+    <Reference Include="Microsoft.VisualStudio.Text.UI.Cocoa">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.Text.UI.Cocoa.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Text.PatternMatching.Implementation">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.Text.PatternMatching.Implementation.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Text.Outlining.Implementation">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.Text.Outlining.Implementation.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Text.MultiCaret.Implementation">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.Text.MultiCaret.Implementation.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Text.Model.Implementation">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.Text.Model.Implementation.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Text.Logic.Utilities">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.Text.Logic.Utilities.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Text.Logic">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.Text.Logic.dll</HintPath>
+      <Private>False</Private>
+   </Reference>
+    <Reference Include="Microsoft.VisualStudio.Text.Internal">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.Text.Internal.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Text.Implementation.StandaloneUndo">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.Text.Implementation.StandaloneUndo.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Text.EditorOptions.Implementation">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.Text.EditorOptions.Implementation.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Text.Differencing.Implementation">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.Text.Differencing.Implementation.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Text.Data.Utilities">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.Text.Data.Utilities.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Text.Data">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.Text.Data.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Text.BraceCompletion.Implementation">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.Text.BraceCompletion.Implementation.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Logic.Text.Tagging.Aggregator.Implementation">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.Logic.Text.Tagging.Aggregator.Implementation.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Logic.Text.Navigation.Implementation">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.Logic.Text.Navigation.Implementation.dll</HintPath>
+       <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Logic.Text.Find.Implementation">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.Logic.Text.Find.Implementation.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Logic.Text.Classification.LookUp.Implementation">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.Logic.Text.Classification.LookUp.Implementation.dll</HintPath>
+      <Private>False</Private>
+   </Reference>
+    <Reference Include="Microsoft.VisualStudio.Logic.Text.Classification.Aggregator.Implementation">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.Logic.Text.Classification.Aggregator.Implementation.dll</HintPath>
+       <Private>False</Private>
+   </Reference>
+    <Reference Include="Microsoft.VisualStudio.Logic.Text.BufferUndoManager.Implementation">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.Logic.Text.BufferUndoManager.Implementation.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Language.Utilities">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.Language.Utilities.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Language.StandardClassification">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.Language.StandardClassification.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Language.Intellisense">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.Language.Intellisense.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Language.Implementation">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.Language.Implementation.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Language">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.Language.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.CoreUtilityImplementation">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.CoreUtilityImplementation.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Imaging">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.Imaging.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.Scripting">
+      <HintPath>$(MDBinDir)\Microsoft.CodeAnalysis.Scripting.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.Features">
+      <HintPath>$(MDBinDir)\Microsoft.CodeAnalysis.Features.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.EditorFeatures">
+      <HintPath>$(MDBinDir)\Microsoft.CodeAnalysis.EditorFeatures.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.EditorFeatures.Text">
+      <HintPath>$(MDBinDir)\Microsoft.CodeAnalysis.EditorFeatures.Text.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Threading">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.Threading.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Utilities">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.Utilities.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Validation">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.Validation.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
 </Project>
