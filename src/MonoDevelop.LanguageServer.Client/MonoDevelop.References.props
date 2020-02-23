@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\build\Common.props" />
-  <PropertyGroup>
-    <MDBinDir Condition=" '$(MDBinDir)' == '' ">..\..\..\..\monodevelop\main\build\bin</MDBinDir>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Addins">
       <Private>False</Private>

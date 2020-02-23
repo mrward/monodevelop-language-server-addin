@@ -43,7 +43,7 @@ namespace MonoDevelop.LanguageServer.Client
 		public WorkspaceSymbolSearchCategory ()
 			: base (GettextCatalog.GetString ("Symbol"))
 		{
-			sortOrder = FirstCategory;
+			sortOrder = FirstCategoryOrder;
 		}
 
 		public override string[] Tags {

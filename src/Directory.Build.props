@@ -2,6 +2,9 @@
   <PropertyGroup>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
 
+    <MDBinDir>$(MSBuildThisFileDirectory)\..\..\monodevelop-8.5-preview2\main\build\bin</MDBinDir>
+    <!--<MDBinDir>..\..\..\vsmac\main\build\bin</MDBinDir>-->
+
     <LanguageServerProtocolVersion>16.4.30</LanguageServerProtocolVersion>
     <NewtonsoftJsonVersion>10.0.3</NewtonsoftJsonVersion>
     <StreamJsonRpcVersion>1.5.43</StreamJsonRpcVersion>
