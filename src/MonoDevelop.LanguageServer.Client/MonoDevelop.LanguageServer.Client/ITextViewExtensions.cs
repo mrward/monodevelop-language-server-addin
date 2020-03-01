@@ -1,5 +1,5 @@
 ﻿//
-// LanguageClientAsyncCompletionProvider.cs
+// ITextViewExtensions.cs
 //
 // Author:
 //       Matt Ward <matt.ward@microsoft.com>
@@ -24,24 +24,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System.ComponentModel.Composition;
-using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion;
+using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Utilities;
+using MonoDevelop.Core;
 
 namespace MonoDevelop.LanguageServer.Client
 {
-	[Export (typeof (IAsyncCompletionSourceProvider))]
-	[ContentType ("text")] // Enable for all content types by using base content type of text.
-	[Name (nameof (LanguageClientAsyncCompletionProvider))]
-	class LanguageClientAsyncCompletionProvider : IAsyncCompletionSourceProvider
+	static class ITextViewExtensions
 	{
-		public IAsyncCompletionSource GetOrCreate (ITextView textView)
+		public static FilePath GetFileName (this ITextView textView)
 		{
-			LanguageClientSession session = LanguageClientServices.Workspace.GetSession (textView);
-			if (session != null) {
-				return new LanguageClientAsyncCompletionSource (session, textView);
+			PropertyCollection properties = textView?.TextDataModel?.DocumentBuffer?.Properties;
+			if (properties == null) {
+				return null;
 			}
+
+			if (properties.TryGetProperty (typeof (ITextDocument), out ITextDocument textDocument)) {
+				return textDocument.FilePath;
+			}
+
 			return null;
 		}
 	}

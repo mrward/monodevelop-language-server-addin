@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.Text;
 using MonoDevelop.Core;
 using MonoDevelop.Core.Text;
 using MonoDevelop.Ide.Editor;
@@ -96,18 +97,16 @@ namespace MonoDevelop.LanguageServer.Client
 			return controller.GetContents<T> ();
 		}
 
-		[Obsolete]
-		public TextEditor GetEditor ()
-		{
-			return controller.GetContent<TextEditor> ();
-		}
-
-		[Obsolete]
 		public string GetText ()
 		{
-			TextEditor editor = GetEditor ();
+			var editor = controller.GetContent<TextEditor> ();
 			if (editor != null) {
 				return editor.Text;
+			}
+
+			var buffer = controller.GetContent<ITextBuffer> ();
+			if (buffer?.CurrentSnapshot != null) {
+				return buffer.CurrentSnapshot?.GetText ();
 			}
 
 			return TextFileUtility.ReadAllText (controller.FilePath);

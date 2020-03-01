@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.LanguageServer.Client;
+using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Utilities;
 using MonoDevelop.Core;
 using MonoDevelop.Ide;
@@ -96,9 +97,36 @@ namespace MonoDevelop.LanguageServer.Client
 			return GetSession (context.Name, context.Project, createNewSession);
 		}
 
+		public LanguageClientSession GetSession (ITextView textView)
+		{
+			Runtime.AssertMainThread ();
+
+			IContentType contentType = textView?.TextDataModel?.DocumentBuffer?.ContentType;
+			FilePath fileName = textView.GetFileName ();
+			Project project = GetProject (fileName);
+
+			return GetSession (contentType, project, createNewSession: false);
+		}
+
+		static Project GetProject (FilePath fileName)
+		{
+			foreach (Document document in IdeApp.Workbench.Documents) {
+				var context = document.GetContent<LanguageClientDocumentContext> ();
+				if (context != null && context.FileName == fileName) {
+					return context.Project;
+				}
+			}
+			return null;
+		}
+
 		LanguageClientSession GetSession (FilePath fileName, Project project, bool createNewSession)
 		{
 			IContentType contentType = LanguageClientServices.ClientProvider.GetContentType (fileName);
+			return GetSession (contentType, project, createNewSession);
+		}
+
+		LanguageClientSession GetSession (IContentType contentType, Project project, bool createNewSession)
+		{
 			if (contentType.IsUnknown ()) {
 				return null;
 			}

@@ -116,12 +116,12 @@ namespace MonoDevelop.LanguageServer.Client
 			if (!context.Session.IsStarted)
 				return;
 
-			TextEditor editor = context.GetEditor ();
-			if (editor == null)
+			string text = context.GetText ();
+			if (text == null)
 				return;
 
 			didOpen = true;
-			LanguageClientServices.Workspace.OnDocumentOpened (context, editor.Text);
+			LanguageClientServices.Workspace.OnDocumentOpened (context, text);
 		}
 
 		protected override void OnClosed ()

@@ -24,25 +24,51 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System.ComponentModel.Composition;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion;
+using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion.Data;
+using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Utilities;
 
 namespace MonoDevelop.LanguageServer.Client
 {
-	[Export (typeof (IAsyncCompletionSourceProvider))]
-	[ContentType ("text")] // Enable for all content types by using base content type of text.
-	[Name (nameof (LanguageClientAsyncCompletionProvider))]
-	class LanguageClientAsyncCompletionProvider : IAsyncCompletionSourceProvider
+	class LanguageClientAsyncCompletionSource : IAsyncCompletionSource
 	{
-		public IAsyncCompletionSource GetOrCreate (ITextView textView)
+		readonly LanguageClientSession session;
+		readonly ITextView textView;
+
+		public LanguageClientAsyncCompletionSource (LanguageClientSession session, ITextView textView)
 		{
-			LanguageClientSession session = LanguageClientServices.Workspace.GetSession (textView);
-			if (session != null) {
-				return new LanguageClientAsyncCompletionSource (session, textView);
-			}
+			this.session = session;
+			this.textView = textView;
+		}
+
+		public Task<CompletionContext> GetCompletionContextAsync (
+			IAsyncCompletionSession session,
+			CompletionTrigger trigger,
+			SnapshotPoint triggerLocation,
+			SnapshotSpan applicableToSpan,
+			CancellationToken token)
+		{
+			return Task.FromResult (CompletionContext.Empty);
+		}
+
+		public Task<object> GetDescriptionAsync (
+			IAsyncCompletionSession session,
+			CompletionItem item,
+			CancellationToken token)
+		{
 			return null;
+		}
+
+		public CompletionStartData InitializeCompletion (
+			CompletionTrigger trigger,
+			SnapshotPoint triggerLocation,
+			CancellationToken token)
+		{
+			var startData = new CompletionStartData (CompletionParticipation.DoesNotProvideItems);
+			return startData;
 		}
 	}
 }
