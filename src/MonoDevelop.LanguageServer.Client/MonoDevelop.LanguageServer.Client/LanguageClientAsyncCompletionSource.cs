@@ -24,17 +24,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System.Collections.Immutable;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion;
 using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion.Data;
 using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Text.Adornments;
 using Microsoft.VisualStudio.Text.Editor;
+
+using CommonCompletionUtilities = Microsoft.CodeAnalysis.Completion.CommonCompletionUtilities;
+using ProtocolCompletionItem = Microsoft.VisualStudio.LanguageServer.Protocol.CompletionItem;
 
 namespace MonoDevelop.LanguageServer.Client
 {
 	class LanguageClientAsyncCompletionSource : IAsyncCompletionSource
 	{
+		internal const string LanguageClientCompletionItem = nameof (LanguageClientCompletionItem);
+
 		readonly LanguageClientSession session;
 		readonly ITextView textView;
 
@@ -44,22 +51,52 @@ namespace MonoDevelop.LanguageServer.Client
 			this.textView = textView;
 		}
 
-		public Task<CompletionContext> GetCompletionContextAsync (
-			IAsyncCompletionSession session,
+		public async Task<CompletionContext> GetCompletionContextAsync (
+			IAsyncCompletionSession completionSession,
 			CompletionTrigger trigger,
 			SnapshotPoint triggerLocation,
 			SnapshotSpan applicableToSpan,
 			CancellationToken token)
 		{
-			return Task.FromResult (CompletionContext.Empty);
+			string fileName = textView.GetFileName();
+
+			(int line, int column) = triggerLocation.GetLineAndColumn1Based ();
+
+			var list = await session.GetCompletionItems (fileName, line, column, token);
+
+			if (list?.Items == null) {
+				return new CompletionContext (ImmutableArray<CompletionItem>.Empty);
+			}
+
+			var completionItems = ImmutableArray.CreateBuilder<CompletionItem> ();
+			foreach (var item in list.Items) {
+				var completionItem = new CompletionItem (
+					item.Label,
+					this,
+					item.GetImageElement (),
+					ImmutableArray<CompletionFilter>.Empty,
+					string.Empty,
+					item.GetInsertText (),
+					item.SortText ?? item.Label,
+					item.FilterText ?? item.Label,
+					ImmutableArray<ImageElement>.Empty);
+
+				completionItem.Properties [LanguageClientCompletionItem] = item;
+
+				completionItems.Add (completionItem);
+			}
+			return new CompletionContext (completionItems.ToImmutableArray ());
 		}
 
 		public Task<object> GetDescriptionAsync (
-			IAsyncCompletionSession session,
+			IAsyncCompletionSession completionSession,
 			CompletionItem item,
 			CancellationToken token)
 		{
-			return null;
+			if (item.Properties.TryGetProperty (LanguageClientCompletionItem, out ProtocolCompletionItem completionItem)) {
+				return Task.FromResult<object> (completionItem.Detail);
+			}
+			return Task.FromResult<object> (null);
 		}
 
 		public CompletionStartData InitializeCompletion (
@@ -67,8 +104,45 @@ namespace MonoDevelop.LanguageServer.Client
 			SnapshotPoint triggerLocation,
 			CancellationToken token)
 		{
-			var startData = new CompletionStartData (CompletionParticipation.DoesNotProvideItems);
-			return startData;
+			if (textView.Selection.Mode == TextSelectionMode.Box) {
+				// Multiple selection - not supported.
+				return new CompletionStartData (CompletionParticipation.DoesNotProvideItems);
+			}
+
+			if (!session.IsCompletionProvider) {
+				return new CompletionStartData (CompletionParticipation.DoesNotProvideItems);
+			}
+
+			if (!ShouldTriggerCompletion (trigger, triggerLocation)) {
+				return new CompletionStartData (CompletionParticipation.DoesNotProvideItems);
+			}
+
+			SnapshotSpan applicableToSpan = GetApplicableToSpan (triggerLocation);
+			return new CompletionStartData (CompletionParticipation.ProvidesItems, applicableToSpan);
+		}
+
+		bool ShouldTriggerCompletion (CompletionTrigger trigger, SnapshotPoint triggerLocation)
+		{
+			if (trigger.Reason == CompletionTriggerReason.Insertion) {
+				if (session.IsCompletionTriggerCharacter (trigger.Character)) {
+					return true;
+				}
+				// TODO - check for
+				return true;
+			} else if (trigger.Reason == CompletionTriggerReason.Invoke ||
+				trigger.Reason == CompletionTriggerReason.InvokeAndCommitIfUnique) {
+				return true;
+			}
+
+			return false;
+		}
+
+		SnapshotSpan GetApplicableToSpan (SnapshotPoint triggerLocation)
+		{
+			var textSpan = CommonCompletionUtilities.GetDefaultCompletionListSpan (textView, triggerLocation.Position);
+			return new SnapshotSpan (
+				triggerLocation.Snapshot,
+				new Span (textSpan.Start, textSpan.Length));
 		}
 	}
 }

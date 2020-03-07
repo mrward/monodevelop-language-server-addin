@@ -187,6 +187,10 @@
       <HintPath>$(MDBinDir)\Microsoft.VisualStudio.Imaging.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.ImageCatalog">
+      <HintPath>$(MDBinDir)\Microsoft.VisualStudio.ImageCatalog.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Microsoft.CodeAnalysis.Scripting">
       <HintPath>$(MDBinDir)\Microsoft.CodeAnalysis.Scripting.dll</HintPath>
       <Private>False</Private>

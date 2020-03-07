@@ -107,6 +107,7 @@
     <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientAsyncCompletionSourceProvider.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\ITextViewExtensions.cs" />
     <Compile Include="MonoDevelop.LanguageServer.Client\LanguageClientAsyncCompletionSource.cs" />
+    <Compile Include="Microsoft.CodeAnalysis.Completion\CommonCompletionUtilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\MonoDevelop.LanguageServer.Client.addin.xml" />

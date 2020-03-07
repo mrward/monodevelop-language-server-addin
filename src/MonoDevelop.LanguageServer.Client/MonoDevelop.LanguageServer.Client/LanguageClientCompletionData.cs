@@ -50,11 +50,7 @@ namespace MonoDevelop.LanguageServer.Client
 		{
 			this.session = session;
 			CompletionItem = item;
-			CompletionText = item.InsertText ?? item?.TextEdit?.NewText;
-
-			if (CompletionText == null) {
-				CompletionText = item.Label;
-			}
+			CompletionText = item.GetInsertText ();
 
 			if (item.InsertTextFormat == InsertTextFormat.Snippet) {
 				this.textEditorExtension = textEditorExtension;
@@ -74,26 +70,11 @@ namespace MonoDevelop.LanguageServer.Client
 
 		public override string Description {
 			get {
-				return GLib.Markup.EscapeText (GetDescription ());
+				return GLib.Markup.EscapeText (CompletionItem.GetDescription ());
 			}
 			set { base.Description = value; }
 		}
 
-		string GetDescription ()
-		{
-			string description = CompletionItem.Detail;
-			string documentation = CompletionItem.Documentation.GetStringValue ();
-
-			if (!string.IsNullOrEmpty (documentation)) {
-				if (description == null) {
-					description = documentation;
-				} else {
-					description += Environment.NewLine + documentation;
-				}
-			}
-
-			return description ?? string.Empty;
-		}
 
 		public override Task<TooltipInformation> CreateTooltipInformation (
 			bool smartWrap,

@@ -361,9 +361,28 @@ namespace MonoDevelop.LanguageServer.Client
 			DiagnosticsPublished?.Invoke (this, new DiagnosticsEventArgs (diagnostic));
 		}
 
-		async Task<CompletionList> GetCompletionItems (
+		public Task<CompletionList> GetCompletionItems (
+			FilePath fileName,
+			int line,
+			int column,
+			CancellationToken token)
+		{
+			var position = CreateTextDocumentPosition (fileName, column, line);
+			return GetCompletionItems (fileName, position, token);
+		}
+
+		Task<CompletionList> GetCompletionItems (
 			FilePath fileName,
 			CodeCompletionContext completionContext,
+			CancellationToken token)
+		{
+			var position = CreateTextDocumentPosition (fileName, completionContext);
+			return GetCompletionItems (fileName, position, token);
+		}
+
+		async Task<CompletionList> GetCompletionItems (
+			FilePath fileName,
+			TextDocumentPositionParams position,
 			CancellationToken token)
 		{
 			if (!IsStarted) {
@@ -376,8 +395,6 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 
 			Log ("Sending '{0}'. File: '{1}'", Methods.TextDocumentCompletionName, fileName);
-
-			var position = CreateTextDocumentPosition (fileName, completionContext);
 
 			var completionParams = new CompletionParams {
 				Position = position.Position,
