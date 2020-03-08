@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Text.Editor;
 using MonoDevelop.Core;
 using MonoDevelop.Core.Text;
 using MonoDevelop.Ide.Editor;
@@ -110,6 +111,32 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 
 			return TextFileUtility.ReadAllText (controller.FilePath);
+		}
+
+		bool? originalSuggestionModeValue;
+
+		public void DisableSuggestionMode ()
+		{
+			ITextView textView = controller.GetContent<ITextView> ();
+			if (textView == null)
+				return;
+
+			if (!originalSuggestionModeValue.HasValue)
+				originalSuggestionModeValue = textView.IsSuggestionModeEnabled ();
+
+			textView.SetSuggestionMode (false);
+		}
+
+		public void ResetSuggestionMode ()
+		{
+			if (!originalSuggestionModeValue.HasValue)
+				return;
+
+			ITextView textView = controller.GetContent<ITextView> ();
+			if (textView == null)
+				return;
+
+			textView.SetSuggestionMode (originalSuggestionModeValue.Value);
 		}
 	}
 }

@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Utilities;
@@ -45,6 +46,19 @@ namespace MonoDevelop.LanguageServer.Client
 			}
 
 			return null;
+		}
+
+		public static void SetSuggestionMode (this ITextView textView, bool value)
+		{
+			if (textView == null)
+				return;
+
+			textView.Options.GlobalOptions.SetOptionValue (PredefinedCompletionNames.SuggestionModeInCompletionOptionName, value);
+		}
+
+		public static bool IsSuggestionModeEnabled (this ITextView textView)
+		{
+			return textView.Options.GlobalOptions.GetOptionValue<bool> (PredefinedCompletionNames.SuggestionModeInCompletionOptionName);
 		}
 	}
 }

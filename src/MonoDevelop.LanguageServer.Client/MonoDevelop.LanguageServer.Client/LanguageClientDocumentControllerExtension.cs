@@ -86,6 +86,20 @@ namespace MonoDevelop.LanguageServer.Client
 			return base.OnGetContent (type);
 		}
 
+		protected override void OnContentHidden ()
+		{
+			context?.ResetSuggestionMode ();
+
+			base.OnContentHidden ();
+		}
+
+		protected override void OnContentShown ()
+		{
+			context?.DisableSuggestionMode ();
+
+			base.OnContentShown ();
+		}
+
 		public override void Dispose ()
 		{
 			if (context != null) {
@@ -119,6 +133,8 @@ namespace MonoDevelop.LanguageServer.Client
 			string text = context.GetText ();
 			if (text == null)
 				return;
+
+			context.DisableSuggestionMode ();
 
 			didOpen = true;
 			LanguageClientServices.Workspace.OnDocumentOpened (context, text);
