@@ -126,8 +126,15 @@ namespace MonoDevelop.LanguageServer.Client
 			if (trigger.Reason == CompletionTriggerReason.Insertion) {
 				if (session.IsCompletionTriggerCharacter (trigger.Character)) {
 					return true;
+				} else if (trigger.Character == '\n') {
+					return false;
+				} else if (trigger.Character == '\t') {
+					// No snippet support currently.
+					return false;
+				} else if (session.IsSignatureHelpTriggerCharacter(trigger.Character)) {
+					return false;
 				}
-				// TODO - check for
+				// TODO - restrict?
 				return true;
 			} else if (trigger.Reason == CompletionTriggerReason.Invoke ||
 				trigger.Reason == CompletionTriggerReason.InvokeAndCommitIfUnique) {
